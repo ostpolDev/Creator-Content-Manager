@@ -119,6 +119,8 @@ const createVideo = function(youtubeId, channel, req) {
 const updateVideoData = function(video) {
     return new Promise(async (res) => {
 
+        let start = new Date();
+
         if (video.meta.requestInfo.lastRequest) {
             let diff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime();
             let diffHours = diff / 3.6e+6;
@@ -141,6 +143,9 @@ const updateVideoData = function(video) {
         let stats = item.statistics;
         let status = item.status;
 
+        let end = new Date();
+        let diff = end.getTime() - start.getTime();
+
         video.isEmpty = false;
         video.youtubeId = item.id;
         video.title = snippet.title;
@@ -154,6 +159,12 @@ const updateVideoData = function(video) {
         video.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
         video.youtubeChannelId = snippet.channelId;
         video.meta.publishedAt = new Date(snippet.publishedAt);
+        video.meta.requestInfo = {
+            lastRequest: start,
+            start,
+            end,
+            time: diff
+        }
 
         video.save((err, video) => {
             if (err) {
