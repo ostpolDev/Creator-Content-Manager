@@ -6,6 +6,7 @@ const validation = require('../modules/validation');
 const youtube = require('../modules/youtube');
 const rateLimiter = require('../modules/rateLimiter');
 const userFunctions = require('../modules/userFunctions');
+const channelFunctions = require('../modules/channelFunctions');
 
 const {body, validationResult} = require('express-validator');
 
@@ -47,66 +48,15 @@ router.post('/add', validation.ensureAuthenticated, [
     }
     let id = req.body.id;
 
-    let start = new Date();
-
-    let youtubeCount = await userFunctions.getChannelCount(id);
-    if (youtubeCount > 0) {
-        req.flash('danger', "This channel already exists.");
+    let channelCreationResult = await channelFunctions.createFromId(id, true);
+    if (channelCreationResult.success === false) {
+        req.flash('danger', channelCreationResult.msg);
         res.redirect('/channels/add');
         return;
     }
 
-    let channelInfo = await youtube.getChannelInfo(encodeURIComponent(id));
-
-    if (!channelInfo || !channelInfo.items) {
-        req.flash('danger', "The channel was not found");
-        res.redirect('/channels/add');
-        return;
-    }
-
-    let item = channelInfo.items[0];
-    if (!item) {
-        req.flash('danger', "The channel was not found");
-        res.redirect('/channels/add');
-        return;
-    }
-
-    let end = new Date();
-
-    let snippet = item.snippet;
-    let stats = item.statistics;
-    let status = item.status;
-
-    let newChannel = new Channel({
-        createdBy: req.user.id,
-        name: snippet.title,
-        thumbnails: snippet.thumbnails,
-        youtubeId: item.id,
-        url: `https://www.youtube.com/channel/${item.id}`,
-        description: snippet.localized.description,
-        meta: {
-            requestInfo: {
-                lastRequest: start,
-                start,
-                end,
-                time: end.getTime() - start.getTime()
-            }
-        },
-        statistics: stats,
-        status
-    })
-
-    newChannel.save((err, channel) => {
-        if (err) {
-            logger.error(err);
-            req.flash('danger', "Something went wrong. Please try again later...");
-            res.redirect('/channels');
-            return;
-        }
-
-        req.flash('success', "Successfully added the channel \"" + channel.name + "\"");
-        res.redirect("/channels/v/"+channel.id);
-    })
+    req.flash('success', "Successfully added the channel \"" + channel.name + "\"");
+    res.redirect("/channels/v/"+channel.id);
 
 })
 

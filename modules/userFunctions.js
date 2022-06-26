@@ -19,17 +19,4 @@ const getMailCount = function(mail) {
     })
 }
 
-const getChannelCount = function(id) {
-    return new Promise((res) => {
-        Channel.countDocuments({youtubeId: id}).exec((err, count) => {
-            if (err) {
-                logger.error(err);
-                return res(-1);
-            }
-            return res(count);
-        })
-    })
-}
-
-
-module.exports = {createSafeName, getMailCount, getChannelCount};
+module.exports = {createSafeName, getMailCount};
