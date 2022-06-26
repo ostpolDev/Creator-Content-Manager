@@ -41,7 +41,7 @@ router.get('/add', validation.ensureAuthenticated, validation.ensureChannel, (re
 })
 
 router.post('/add', rateLimiter.apiRequestRateLimiterMiddleware, [
-    body("id", "ID has to be 11 characters long").isLength({min: 11, max: 11}).optional(),
+    body("id", "ID has to be 11 characters long").optional({checkFalsy: true}).isLength({min: 11, max: 11}),
     body("editor", "Editor cannot be longer than 256 characters").isLength({max: 256}).optional(),
     body("starring", "Starring members cannot be longer than 1024 characters").isLength({max: 1024}).optional(),
     body("title", "Title cannot be longer than 70 characters").isLength({max: 70}).optional(),

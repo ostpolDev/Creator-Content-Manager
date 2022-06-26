@@ -1,6 +1,9 @@
 const logger = require("./logger");
 const uuid = require('uuid').v4;
 
+const Video = require('../models/video');
+const youtube = require('./youtube');
+
 const categories = ['', 'Film & Animation', 'Autos & Vehicles', '', '', '', '', '', '', '', 'Music', '', '', '', '', 'Pets & Animals', '', 'Sports', 'Short Movies', 'Travel & Events', 'Gaming', 'Videoblogging', 'People & Blogs', 'Comedy', 'Entertainment', 'News & Politics', 'Howto & Style', 'Education', 'Science & Technology', 'Nonprofits & Activism', 'Movies', 'Anime/Animation', 'Action/Adventure', 'Classics', 'Comedy', 'Documentary', 'Drama', 'Family', 'Foreign', 'Horror', 'Sci-Fi/Fantasy', 'Thriller', 'Shorts', 'Shows', 'Trailers']
 
 const getCategory = function(index) {
@@ -17,7 +20,7 @@ const getCategory = function(index) {
 }
 
 const createVideo = function(youtubeId, channel, req) {
-    return new Promise((res) => {
+    return new Promise(async (res) => {
 
         let editor = req.body.editor;
         let starring = req.body.starring;
@@ -62,7 +65,7 @@ const createVideo = function(youtubeId, channel, req) {
             newVideo.thumbnails = snippet.thumbnails;
             newVideo.youtubeTags = snippet.tags;
             newVideo.categoryId = snippet.categoryId;
-            newVideo.category = videoFunctions.getCategory(snippet.categoryId);
+            newVideo.category = getCategory(snippet.categoryId);
             newVideo.status = status;
             newVideo.statistics = stats;
             newVideo.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
@@ -80,7 +83,7 @@ const createVideo = function(youtubeId, channel, req) {
 }
 
 const updateVideoData = function(video) {
-    return new Promise((res) => {
+    return new Promise(async (res) => {
 
         if (video.meta.requestInfo.lastRequest) {
             let diff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime();
@@ -111,7 +114,7 @@ const updateVideoData = function(video) {
         video.thumbnails = snippet.thumbnails;
         video.youtubeTags = snippet.tags;
         video.categoryId = snippet.categoryId;
-        video.category = videoFunctions.getCategory(snippet.categoryId);
+        video.category = getCategory(snippet.categoryId);
         video.status = status;
         video.statistics = stats;
         video.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
