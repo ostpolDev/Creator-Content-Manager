@@ -30,7 +30,7 @@ p, h1, h2, h3, h4, h5, div, span {
     color: black !important;
 }
 
-input, textarea {
+input, textarea, select {
     background-color: var(--off-white) !important;
     color: var(--text-black) !important;
 }

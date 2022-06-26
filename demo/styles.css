@@ -634,7 +634,7 @@ form {
     width: 100%;
 }
 
-input.input, textarea.textarea {
+input.input, textarea.textarea, select.input {
     width: 100%;
     border: 1px solid var(--default-dark-border-color);
     font-size: 16px;
@@ -644,7 +644,7 @@ input.input, textarea.textarea {
     transition: border var(--default-transition-time) ease;
 }
 
-input.input:focus, textarea.textarea:focus {
+input.input:focus, textarea.textarea:focus, select.input:focus {
     outline: none;
     border: 1px solid var(--dark-blue);
 }
@@ -655,7 +655,7 @@ textarea.textarea {
     min-height: 100px;
 }
 
-input.input::placeholder, textarea.textarea::placeholder {
+input.input::placeholder, textarea.textarea::placeholder, select.input::placeholder {
     font-style: italic;
 }
 
