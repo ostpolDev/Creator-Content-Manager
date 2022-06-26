@@ -2,3 +2,26 @@ extends ../layout
 
 block content
     .container
+        .segment
+            form(action="/videos/add", method="post") 
+                
+                .field
+                    label.label(for="youtube") YouTube ID
+                    .control.hasIcon
+                        input.input(type="text", name="youtube", placeholder="EOTyLqJWhZQ", required, id="youtube", maxlength="128")
+                        span.icon
+                            i.fab.fa-youtube
+                    p.help This is optional for now. If no id is given, an empty placeholder will be created.
+
+                .field
+                    button.button   
+                        span.icon
+                            i.fas.fa-video
+                        span Add Video
+
+                .field
+                    label.label
+
+            .divider
+            p
+                small * Required

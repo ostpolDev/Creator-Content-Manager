@@ -7,6 +7,7 @@ const Channel = require('../models/channel');
 const Video = require('../models/video');
 
 const logger = require('../modules/logger');
+const User = require('../models/user');
 
 router.get("/", validation.ensureAuthenticated, (req, res) => {
     Channel.find({$or: [
@@ -24,8 +25,11 @@ router.get("/", validation.ensureAuthenticated, (req, res) => {
 })
 
 router.get('/add', validation.ensureAuthenticated, (req, res) => {
-    res.render('videos/add', {
-        title: "Add Video"
+    User.find({}).select("username").exec((err, users) => {
+        res.render('videos/add', {
+            title: "Add Video",
+            users
+        })
     })
 })
 
