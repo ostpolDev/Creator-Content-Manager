@@ -58,9 +58,6 @@ router.post('/add', rateLimiter.apiRequestRateLimiterMiddleware, [
     }
 
     let id = req.body.id;
-    let editor = req.body.editor;
-    let starring = req.body.starring;
-    let title = req.body.title;
     let channel = req.body.channel;
 
     if (!isValidObjectId(channel)) {
@@ -76,7 +73,7 @@ router.post('/add', rateLimiter.apiRequestRateLimiterMiddleware, [
         return;
     }
 
-    let videoCreationResponse = await videoFunctions.createVideo(id, channelAccessResponse.channel);
+    let videoCreationResponse = await videoFunctions.createVideo(id, channelAccessResponse.channel, req);
     if (videoCreationResponse.success === false) {
         req.flash('danger', videoCreationResponse.msg);
         res.redirect('/videos/add');

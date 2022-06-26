@@ -15,8 +15,13 @@ const getCategory = function(index) {
     }
 }
 
-const createVideo = function(youtubeId, channel) {
+const createVideo = function(youtubeId, channel, req) {
     return new Promise((res) => {
+
+        let editor = req.body.editor;
+        let starring = req.body.starring;
+        let title = req.body.title;
+
         let newVideo = new Video({
             createdBy: req.user.id,
             channel: channel.id,
