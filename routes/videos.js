@@ -23,4 +23,10 @@ router.get("/", validation.ensureAuthenticated, (req, res) => {
     })
 })
 
+router.get('/add', validation.ensureAuthenticated, (req, res) => {
+    res.render('videos/add', {
+        title: "Add Video"
+    })
+})
+
 module.exports = router;
