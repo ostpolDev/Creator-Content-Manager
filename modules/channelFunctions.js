@@ -21,7 +21,7 @@ const createFromId = function(id, checkExistence) {
     return new Promise(async (res) => {
         let start = new Date();
 
-        
+
         if (checkExistence) {
             let youtubeCount = await getChannelCount(id);
             if (youtubeCount > 0) {
@@ -71,8 +71,6 @@ const createFromId = function(id, checkExistence) {
                 return res({success: false, error: err, msg: "Something went wrong. Please try again later..."});
             }
             return res({success: true, channel});
-            req.flash('success', "Successfully added the channel \"" + channel.name + "\"");
-            res.redirect("/channels/v/"+channel.id);
         })
     })
 }
