@@ -23,6 +23,8 @@ const getCategory = function(index) {
 const createVideo = function(youtubeId, channel, req) {
     return new Promise(async (res) => {
 
+        let start = new Date();
+
         let editor = req.body.editor;
         let starring = req.body.starring;
         let title = req.body.title;
@@ -79,6 +81,9 @@ const createVideo = function(youtubeId, channel, req) {
             let snippet = item.snippet;
             let stats = item.statistics;
             let status = item.status;
+
+            let end = new Date();
+            let diff = end.getTime() - start.getTime();
     
             newVideo.isEmpty = false;
             newVideo.youtubeId = item.id;
@@ -93,6 +98,12 @@ const createVideo = function(youtubeId, channel, req) {
             newVideo.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
             newVideo.youtubeChannelId = snippet.channelId;
             newVideo.meta.publishedAt = new Date(snippet.publishedAt);
+            newVideo.meta.requestInfo = {
+                lastRequest: start,
+                start,
+                end,
+                time: diff
+            }
     
             newVideo.save((err, video) => {
                 if (err) {

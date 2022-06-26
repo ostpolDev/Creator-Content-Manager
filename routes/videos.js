@@ -97,7 +97,7 @@ router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
         return next({status: 404});
     }
 
-    Video.findById(id).populate("channel").exec((err, video) => {
+    Video.findById(id).populate("channel createdBy editor starring").exec((err, video) => {
         if (err) {
             logger.error(err);
             req.flash('danger', "Something went wrong");
