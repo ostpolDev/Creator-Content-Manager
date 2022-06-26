@@ -3,6 +3,7 @@ const uuid = require('uuid').v4;
 
 const Video = require('../models/video');
 const youtube = require('./youtube');
+const userFunctions = require('./userFunctions');
 
 const categories = ['', 'Film & Animation', 'Autos & Vehicles', '', '', '', '', '', '', '', 'Music', '', '', '', '', 'Pets & Animals', '', 'Sports', 'Short Movies', 'Travel & Events', 'Gaming', 'Videoblogging', 'People & Blogs', 'Comedy', 'Entertainment', 'News & Politics', 'Howto & Style', 'Education', 'Science & Technology', 'Nonprofits & Activism', 'Movies', 'Anime/Animation', 'Action/Adventure', 'Classics', 'Comedy', 'Documentary', 'Drama', 'Family', 'Foreign', 'Horror', 'Sci-Fi/Fantasy', 'Thriller', 'Shorts', 'Shows', 'Trailers']
 
@@ -26,12 +27,33 @@ const createVideo = function(youtubeId, channel, req) {
         let starring = req.body.starring;
         let title = req.body.title;
 
+        let editorString, starringString;
+        if (editor) {
+            let editorResponse = await userFunctions.getUsers(editor, "username");
+            if (editorResponse.users) {
+                let editorNameArray = editorResponse.users.map(x => x.username);
+                editorString = editorNameArray.join(", ");
+            }
+        }
+
+        if (starring) {
+            let starringResponse = await userFunctions.getUsers(editor, "username");
+            if (starringResponse.users) {
+                let starringNameArray = starringResponse.users.map(x => x.username);
+                starringString = starringNameArray.join(", ");
+            }
+        }
+
         let newVideo = new Video({
             createdBy: req.user.id,
             channel: channel.id,
             title: title || uuid(),
             editor,
-            starring: starring
+            starring: starring,
+            meta: {
+                editorsString: editorString,
+                starringString
+            }
         })
     
         if (!youtubeId) {

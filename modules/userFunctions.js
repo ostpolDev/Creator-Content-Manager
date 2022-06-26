@@ -19,4 +19,22 @@ const getMailCount = function(mail) {
     })
 }
 
-module.exports = {createSafeName, getMailCount};
+const getUsers = function(ids, select) {
+    return new Promise((res) => {
+        if (!ids) {
+            return res({success: true, users: []});
+        }
+        if (!Array.isArray(ids)) {
+            ids = [ids];
+        }
+        User.find({_id: {$in: ids}}).select(select).exec((err, users) => {
+            if (err) {
+                logger.error(err);
+                return res({success: false, error: err});
+            }
+            return res({success: true, users})
+        })
+    })
+}
+
+module.exports = {createSafeName, getMailCount, getUsers};

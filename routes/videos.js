@@ -24,7 +24,7 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, 
         if (err) {
             logger.error(err)
         }
-        Video.find({channel: res.locals.channel.id}).select("title createdAt ").limit(40).sort({createdAt: -1}).exec((err, videos) => {
+        Video.find({channel: res.locals.channel.id}).select("title createdAt thumbnails").limit(40).sort({createdAt: -1}).exec((err, videos) => {
             res.render('videos/index', {
                 title: "Videos",
                 channels
