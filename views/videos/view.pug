@@ -1,0 +1,49 @@
+extends ../layout
+
+block content
+    .container 
+        .buttons
+            a.button(href="/videos") 
+                span.icon
+                    i.fas.fa-arrow-left
+                span Back
+        h1.header #{video.title}
+        p.subtitle #{video.channel.name}
+            if !video.isEmpty
+                |  | Uploaded #{formatDate(video.meta.publishedAt)}
+            else
+                |  | Added #{formatDate(video.createdAt)}
+
+        .columns
+            .column
+                if video.isEmpty
+                    .message.info
+                        .messageHeader Empty Video
+                        .messageBody
+                            p This video is empty, meaning it does not contain any YouTube information. To change this, go into the video settings and add a YouTube Video ID.
+                else
+                    iframe(style="width:100%;max-height:480px;" height="800" src="https://www.youtube-nocookie.com/embed/"+video.youtubeId title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
+                    p
+                        span.icon
+                            i.fas.fa-eye
+                        span #{numberWithCommas(video.statistics.viewCount)} views | 
+                        span.icon
+                            i.fas.fa-thumbs-up
+                        span #{numberWithCommas(video.statistics.likeCount)} likes | 
+                        span.icon
+                            i.fas.fa-comment
+                        span #{numberWithCommas(video.statistics.commentCount)} comments
+                    .divider
+                    if video.description
+                        .segment
+                            pre!=replace_content(video.description)
+                    if video.youtubeTags
+                        .tags
+                            each tag, i in video.youtubeTags
+                                span.tag #{tag}
+            .column.oneQuarter
+                if !video.isEmpty
+                    a.button(href=video.url target="_BLANK")
+                        span.icon
+                            i.fab.fa-youtube
+                        span View on YouTube 

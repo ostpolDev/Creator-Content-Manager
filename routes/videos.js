@@ -15,6 +15,7 @@ const youtube = require('../modules/youtube');
 const channelFunctions = require('../modules/channelFunctions');
 const videoFunctions = require('../modules/videoFunctions');
 const { isValidObjectId } = require('mongoose');
+const marked = require('../modules/marked');
 
 router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, res) => {
     Channel.find({$or: [
@@ -88,6 +89,38 @@ router.post('/add', rateLimiter.apiRequestRateLimiterMiddleware, [
     req.flash("success", videoCreationResponse.msg);
     res.redirect('/videos/v/'+videoCreationResponse.video.id);
 
+})
+
+router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return next({status: 404});
+    }
+
+    Video.findById(id).populate("channel").exec((err, video) => {
+        if (err) {
+            logger.error(err);
+            req.flash('danger', "Something went wrong");
+            res.redirect('/videos');
+            return;
+        }
+        if (!video) {
+            return next({status: 404});
+        }
+        if (video.channel.createdBy == req.user.id || video.channel.access.includes(req.user.id)) {
+            let description = video.description;
+            if (description) {
+                description = marked.sanitizeDefault(description);
+            }
+            res.render("videos/view", {
+                title: video.title,
+                video,
+                description
+            })
+        } else {
+            return next({status: 404});
+        }
+    })
 })
 
 module.exports = router;

@@ -8,7 +8,7 @@ const VideoSchema = mongoose.Schema({
     },
     channel: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Channel',
         required: true
     },
     url: {
