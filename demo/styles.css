@@ -900,6 +900,11 @@ figcaption::before {
     background-color: var(--darker-white);
     border-radius: var(--default-border-radius);
     font-size: 14px;
+    cursor: default;
+}
+
+a.tag {
+    cursor: pointer;
 }
 
 .tag.info {
