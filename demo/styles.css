@@ -453,6 +453,12 @@ table.table td .button:not(:last-child) {
     align-items: center;
 }
 
+.emptySpace {
+    display: block;
+    width: 100%;
+    height: 1em;
+}
+
 /* MODAL */
 
 .modal {
@@ -634,6 +640,7 @@ form {
     width: 100%;
 }
 
+
 input.input, textarea.textarea, select.input {
     width: 100%;
     border: 1px solid var(--default-dark-border-color);
@@ -740,6 +747,26 @@ span.icon {
     font-weight: 100;
     font-size: 14px;
     line-height: 5px;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.checkbox label {
+    margin-left: var(--default-spacing);
+}
+
+input[type="checkbox"].checkbox {
+    width: 25px;
+    height: 25px;
+    transition: filter var(--default-transition-time) ease;
+}
+
+input[type="checkbox"].checkbox:hover {
+    filter: brightness(.90);
 }
 
 /* MESSAGES */

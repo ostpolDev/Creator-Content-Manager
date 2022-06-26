@@ -2,6 +2,7 @@ extends ../layout
 
 block content
     .container
+        h1.header Add new video
         .segment
             form(action="/videos/add", method="post") 
                 
@@ -12,6 +13,32 @@ block content
                         span.icon
                             i.fab.fa-youtube
                     p.help This is optional for now. If no id is given, an empty placeholder will be created.
+
+                .field
+                    label.label(for="editorSelect") Editor
+                    .control
+                        select#editorSelect.input(name="editor")
+                            option(value=undefined) None given
+                            each u, i in users
+                                option(value=u.id)=u.username  
+                    p.help Who Edited the video?
+
+                .field
+                    legend Starring
+                    each u, i in users
+                        div.checkbox
+                            input.checkbox(type="checkbox" id=u.id name="starring" value=u.id)
+                            label(for=u.id)=u.username 
+
+                .emptySpace
+
+                .field
+                    label.label(for="title") Title
+                    .control.hasIcon
+                        input.input(type="text", name="title", placeholder="How to display anything | Fallout 76", required, id="title", maxlength="128")
+                        span.icon
+                            i.fas.fa-heading
+                    p.help This optional title will be replaced with the actual YouTube title if an ID is given.
 
                 .field
                     button.button   
