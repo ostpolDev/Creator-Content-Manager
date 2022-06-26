@@ -1,0 +1,42 @@
+extends ../layout
+
+block content
+    .container
+        .columns.centered
+            .column.oneQuarter
+                .card.circular
+                    .cardImage
+                        img(src="https://www.gravatar.com/avatar/"+toView.mailHash, alt=toView.username)
+                    .cardBody
+                        h1.header.centerText=toView.username
+                        p.centerText=toView.name
+                        .meta.centerText
+                            p(title=toView.createdAt.toLocaleString()) Member since #{formatDate(toView.createdAt)}
+
+        .columns
+            .column.oneQuarter
+                .segment
+                    p
+                        b Assets:
+                        br
+                        | #{toView.meta.assetCount}
+
+                .buttons.fluid
+                    if user && toView.id === user.id
+                        a.button(href="/users/settings")
+                            span.icon 
+                                i.fas.fa-cog
+                            span Settings 
+                    a.button(href="/assets/user/"+encodeURIComponent(toView.safeName))
+                        span.icon 
+                            i.fas.fa-list
+                        span View assets
+                    if !toView.meta.preferences.hiddenFavorites
+                        a.button(href="/assets/favorites/"+encodeURIComponent(toView.safeName))
+                            span.icon 
+                                i.fas.fa-star
+                            span View favorites
+            .column
+                if toView.description.rendered
+                    .segment
+                        pre!=toView.description.rendered

@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Test</title>
+
+    <link rel="stylesheet" href="/demo/styles.css">
+    <link rel="stylesheet" href="/demo/styles.auto.css">
+
+    <link rel="stylesheet" href="/public/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="/public/css/normalize.css">
+    <script src="/public/fontawesome/js/all.min.js"></script>
+</head>
+<body>
+
+    <div class="hoverTag" id="hoverTag">
+        <span id="hoverTagText">TEST</span>
+    </div>
+
+    <div id="musicPlayer" class="musicPlayer active">
+        <div class="playerContainer">
+            <div class="previewImage">
+                <a href="" id="playerImageLink">
+                    <img id="musicPlayerImage" src="https://placekitten.com/300/300" alt="">
+                </a>
+            </div>
+            <div class="playerControlsContainer">
+                <p class="playerSongName">
+                    <a id="playerLink" href="">
+                        <span id="playerSongTitle"></span>
+                        <span id="playerArtist" class="playerArtist"></span>
+                    </a>
+                </p>
+                <div class="playerControls">
+                    <span id="musicPlayerTime">00:00</span>
+                    <input id="musicPlayerProgress" class="playerProgress" type="range" min="0" max="0" value="0">
+                    <span id="musicPlayerTotalTime">00:00</span>
+                </div>
+                <div class="playerButtons">
+                    <div class="buttonContainer">
+                        <button id="musicPlayerPause" class="button rounded iconButton" data-hover="Pause / Resume">
+                            <div id="playerPauseIcon">
+                                <i class="fas fa-pause"></i>
+                            </div>
+                            <div id="playerPlayIcon" class="hidden">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </button>
+                        <button id="musicPlayerReplay" class="button rounded iconButton" data-hover="Replay">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <button id="musicPlayerClose" class="button rounded iconButton" data-hover="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="demoModal">
+        <div class="modalBackground" data-modal="close"></div>
+        <div class="modalContainer">
+            <div class="modalHeader">
+                <h2>Demo Modal</h2>
+                <span class="close" data-modal="close">
+                    <i class="fas fa-times"></i>
+                </span>
+            </div>
+            <div class="modalContent">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque sit delectus qui pariatur dicta quas doloribus cumque minus ea, fuga quis impedit nulla eligendi nam velit recusandae nihil? Fugiat, ex?</p>
+            </div>
+            <div class="modalFooter">
+                <button class="button hasIcon" data-modal="close">
+                    <span class="icon">
+                        <i class="fas fa-times"></i>
+                    </span>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal image" id="demoImageModal">
+        <div class="modalBackground" data-modal="close"></div>
+        <div class="modalContainer">
+            <img class="rounded" src="https://picsum.photos/seed/picsum/2560/1440.webp" alt="" data-hover="Image name">
+            <div class="modalFooter">
+                <h1>Image Name</h1>
+                <button class="button hasIcon" data-modal="close">
+                    <span class="icon">
+                        <i class="fas fa-times"></i>
+                    </span>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="navContainer">
+            <div class="section">
+                <a class="navBrand" href="/">
+                    <img src="https://picsum.photos/seed/picsum/128/128.webp" alt="">
+                </a>
+                <div class="navButtons">
+                    <a href="/" class="navItem">
+                        <span class="icon">
+                            <i class="fas fa-home"></i>
+                        </span>
+                        <span>Home</span>
+                    </a>
+                    <a href="/" class="navItem">
+                        <span class="icon">
+                            <i class="fas fa-info"></i>
+                        </span>
+                        <span>Info  </span>
+                    </a>
+
+                    <div class="navItem dropdown">
+                        <a href="/" class="navItem chevron">Games</a>
+                        <div class="dropdown">
+                            <a href="/" class="navItem">
+                                <span class="icon">
+                                    <i class="fas fa-times"></i>
+                                </span>
+                                <span>Portal</span>
+                            </a>
+                            <a href="/" class="navItem">Minecraft</a>
+                            <a href="/" class="navItem">Minecraft 2</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="navButtons">
+                    <a href="/" class="navItem">
+                        <span class="icon">
+                            <i class="fab fa-github"></i>
+                        </span>
+                        <span>Github</span>
+                    </a>
+                    
+                    <a href="/" class="navItem button link">
+                        Login
+                    </a>
+                </div>
+            </div>
+
+            <div class="navToggle">
+                <span class="icon">
+                    <i class="fas fa-bars"></i>
+                </span>
+            </div>
+
+
+        </div>
+    </nav>
+
+    <section>
+
+        <div class="container">
+            <h1 class="header">Test</h1>
+            <p class="subtitle">Test Subtitle</p>
+
+            <h2 class="header">Segments</h2>
+
+            <div class="segment">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia assumenda debitis magnam modi nulla aut itaque fugiat iure, facilis blanditiis odit perferendis illum. Natus cum vel id delectus aliquid. Hic, optio. Dolore corporis voluptates saepe magni consectetur doloremque laboriosam amet aliquam, voluptatum delectus tempore, magnam atque ducimus, impedit velit. Dicta magni harum porro sequi reiciendis numquam, debitis quis, a qui quod possimus corrupti. Hic numquam tempora quae unde sequi autem harum natus cupiditate reprehenderit vel. Libero fugit vitae et commodi ex nemo voluptates sint assumenda enim similique, consectetur sequi, blanditiis molestiae ipsa excepturi veritatis velit cum. Veniam, nemo ea.</p>
+            </div>
+
+            <div class="segment elevated">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia assumenda debitis magnam modi nulla aut itaque fugiat iure, facilis blanditiis odit perferendis illum. Natus cum vel id delectus aliquid. Hic, optio. Dolore corporis voluptates saepe magni consectetur doloremque laboriosam amet aliquam, voluptatum delectus tempore, magnam atque ducimus, impedit velit. Dicta magni harum porro sequi reiciendis numquam, debitis quis, a qui quod possimus corrupti. Hic numquam tempora quae unde sequi autem harum natus cupiditate reprehenderit vel. Libero fugit vitae et commodi ex nemo voluptates sint assumenda enim similique, consectetur sequi, blanditiis molestiae ipsa excepturi veritatis velit cum. Veniam, nemo ea.</p>
+            </div>
+
+            <div class="segment split">
+                <div class="segmentHeader">
+                    <h1>Test Header</h1>
+                </div>
+                <div class="segmentBody">
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis numquam suscipit dolorum alias! Iure ex quod temporibus, nisi cumque cupiditate sed, necessitatibus veniam cum, dolorum vel dignissimos porro? Voluptate ratione numquam repellendus totam veritatis inventore natus laboriosam blanditiis nesciunt, expedita enim maxime deleniti velit impedit ab nulla, optio maiores facere excepturi aliquam quam laudantium veniam. Laudantium quo nihil numquam ipsa corrupti ut nobis error est! Dolorum sunt harum aspernatur eaque, minus aut optio cumque dicta repudiandae corrupti doloribus quasi asperiores ex quibusdam a natus, explicabo reiciendis. Quidem recusandae neque culpa harum quia dolorum veniam quibusdam rem reprehenderit est blanditiis consequatur non fugiat quasi explicabo, repellat, perspiciatis in? Dolore tempore similique quasi modi. Ipsam sint autem eligendi, a ullam cumque dolorem temporibus iure maxime sed perspiciatis commodi fugit ducimus facere nulla? Nobis dolorum placeat modi! Exercitationem esse velit perspiciatis mollitia praesentium omnis maiores numquam consectetur alias distinctio sequi iure beatae, sunt molestiae officiis ad quae dignissimos cupiditate dicta at. Accusantium dolorem perferendis dicta doloremque earum magni tempora voluptas tempore ab corporis, fugiat, quam suscipit. Sed ad dolorem vero illum tenetur voluptate expedita, eveniet nemo vel. Dicta non fuga cumque error, ipsa incidunt est cum amet vel animi, explicabo odio hic illum.
+                </div>
+                <div class="segmentFooter">
+                    <button class="button">
+                        <span class="icon">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                        <span>Read More</span>
+                    </button>
+                </div>
+            </div>
+
+            <h2 class="header">Tables</h2>
+
+            <table class="table striped hoverable">
+                <thead>
+                    <th>Action</th>
+                    <th>Name</th>
+                    <th>Uploaded by</th>
+                    <th>Uploaded</th>
+                    <th>Tags</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <button class="button iconButton rounded">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="button iconButton rounded">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </td>
+                        <td>Sneaky Snitch</td>
+                        <td><a href="/">ostpol</a></td>
+                        <td>20 June 2022</td>
+                        <td>classic, funny</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="button iconButton rounded">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="button iconButton rounded">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </td>
+                        <td>Sneaky Snitch</td>
+                        <td><a href="/">ostpol</a></td>
+                        <td>20 June 2022</td>
+                        <td>classic, funny</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="button iconButton rounded">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="button iconButton rounded">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </td>
+                        <td>Sneaky Snitch</td>
+                        <td><a href="/">ostpol</a></td>
+                        <td>20 June 2022</td>
+                        <td>classic, funny</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="button iconButton rounded">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="button iconButton rounded">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </td>
+                        <td>Sneaky Snitch</td>
+                        <td><a href="/">ostpol</a></td>
+                        <td>20 June 2022</td>
+                        <td>classic, funny</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="button iconButton rounded">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="button iconButton rounded">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </td>
+                        <td>Sneaky Snitch</td>
+                        <td><a href="/">ostpol</a></td>
+                        <td>20 June 2022</td>
+                        <td>classic, funny</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="button iconButton rounded">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="button iconButton rounded">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </td>
+                        <td>Sneaky Snitch</td>
+                        <td><a href="/">ostpol</a></td>
+                        <td>20 June 2022</td>
+                        <td>classic, funny</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 class="header">Buttons</h2>
+
+            <h3 class="header">Normal</h3>
+
+            <div class="buttons">
+                <a href="#" class="button">Default Button</a>
+                <a href="#" class="button info">Info Button</a>
+                <a href="#" class="button danger">Danger Button</a>
+                <a href="#" class="button warning">Warning Button</a>
+                <a href="#" class="button link">Link Button</a>
+                <a href="#" class="button success">Success Button</a>
+            </div>
+
+            <h3 class="header">Fluid</h3>
+
+            <div class="buttons fluid">
+                <a href="#" class="button">Default Button</a>
+                <a href="#" class="button info">Info Button</a>
+                <a href="#" class="button danger">Danger Button</a>
+                <a href="#" class="button warning">Warning Button</a>
+                <a href="#" class="button link">Link Button</a>
+                <a href="#" class="button success">Success Button</a>
+            </div>
+
+            <h3 class="header">Equally Spaced</h3>
+
+            <div class="buttons equal">
+                <a href="#" class="button">Default</a>
+                <a href="#" class="button info">Info</a>
+                <a href="#" class="button danger">Danger</a>
+                <a href="#" class="button warning">Warning</a>
+                <a href="#" class="button link">Link</a>
+                <a href="#" class="button success">Success</a>
+            </div>
+
+            <h3 class="header">Icons</h3>
+
+            <div class="buttons equal">
+                <a href="" class="button hasIcon">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    Default
+                </a>
+
+                <a href="" class="button hasIcon info">
+                    <span class="icon">
+                        <i class="fas fa-info"></i>
+                    </span>
+                    Info
+                </a>
+
+                <a href="" class="button hasIcon danger">
+                    <span class="icon">
+                        <i class="fas fa-trash"></i>
+                    </span>
+                    Danger
+                </a>
+
+                <a href="" class="button hasIcon warning">
+                    <span class="icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </span>
+                    Warning
+                </a>
+
+                <a href="" class="button hasIcon link">
+                    <span class="icon">
+                        <i class="fas fa-link"></i>
+                    </span>
+                    Link
+                </a>
+
+                <a href="" class="button hasIcon success">
+                    <span class="icon">
+                        <i class="fas fa-check"></i>
+                    </span>
+                    Success
+                </a>
+            </div>
+
+            <h2 class="header">Divider</h2>
+
+            <h3 class="header">Normal</h3>
+
+            <div class="divider"></div>
+
+            <h3 class="header">Light</h3>
+
+            <div class="divider light"></div>
+
+            <h3 class="header">With Text</h3>
+
+            <div class="divider">
+                <span>Divider with Text</span>
+            </div>
+
+            <h2 class="header">Modal</h2>
+
+            <div class="buttons">
+                <button class="button link" data-modal="#demoModal">Open Modal</button>
+
+                <button class="button link" data-modal="#demoImageModal">Open Image Modal</button>
+            </div>
+
+            <h2 class="header">Columns</h2>
+
+            <div class="columns">
+                <div class="column oneQuarter">
+                    <button class="button link fluid">oneQuarter</button>
+                </div>
+                <div class="column oneQuarter">
+                    <button class="button link fluid">oneQuarter</button>
+                </div>
+                <div class="column">
+                    <button class="button link fluid">column</button>
+                </div>
+            </div>
+
+            <div class="columns multiline">
+                <div class="column half">
+                    <button class="button link fluid">Half</button>
+                </div>
+                <div class="column">
+                    <button class="button link fluid">column</button>
+                </div>
+                <div class="column">
+                    <button class="button link fluid">column</button>
+                </div>
+            </div>
+
+            <div class="columns multiline">
+                <div class="column oneThird">
+                    <button class="button link fluid">Third</button>
+                </div>
+                <div class="column oneThird">
+                    <button class="button link fluid">Third</button>
+                </div>
+                <div class="column oneThird">
+                    <button class="button link fluid">Third</button>
+                </div>
+                <div class="column oneThird">
+                    <button class="button link fluid">Third</button>
+                </div>
+                <div class="column oneThird">
+                    <button class="button link fluid">Third</button>
+                </div>
+            </div>
+
+            <div class="columns">
+                <div class="column oneFifth">
+                    <button class="button link fluid">Fifth</button>
+                </div>
+                <div class="column oneFifth">
+                    <button class="button link fluid">Fifth</button>
+                </div>
+                <div class="column oneThird">
+                    <button class="button link fluid">Third</button>
+                </div>
+            </div>
+
+            <h3 class="header">Centered</h3>
+
+            <div class="columns centered">
+                <div class="column oneThird">
+                    <button class="button link fluid">Third</button>
+                </div>
+                <div class="column oneThird">
+                    <button class="button link fluid">Third</button>
+                </div>
+                <div class="column oneFifth">
+                    <button class="button link fluid">Fifth</button>
+                </div>
+            </div>
+
+
+            <h2 class="header">Forms</h2>
+
+            <form>
+
+                <div class="columns">
+                    <div class="column half">
+                        <div class="field required">
+                            <label class="label">Name</label>
+                            <div class="control">
+                                <input class="input" type="text" value="Test">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column half">
+                        <div class="field required">
+                            <label class="label">Last Name</label>
+                            <div class="control">
+                                <input class="input" type="text" value="Name">
+                            </div>
+                            <p class="help">Some help text for the Last Name</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field required">
+                    <label for="" class="label">E-Mail</label>
+                    <div class="control hasIcon">
+                        <input type="email" class="input">
+                        <span class="icon">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                    </div>
+                    <p class="help">Some help text for the email</p>
+                </div>
+
+                <div class="field required">
+                    <label for="" class="label">About</label>
+                    <div class="control">
+                        <textarea type="email" class="textarea" placeholder="This is a test..."></textarea>
+                    </div>
+                </div>
+
+                <div class="field required file">
+                    <div class="fileUploadLabel">
+                        <span class="icon">
+                            <i class="fas fa-upload"></i>
+                        </span>
+                        <label class="label">Select File</label>
+                    </div>
+                    <input type="text" readonly class="input fileUploadName">
+                    <input type="file" multiple>
+                </div>
+
+            </form>
+
+            <h2 class="header">Messages</h2>
+
+            <div class="message">
+                <div class="messageHeader">
+                    Default
+                    <span class="close">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="messageBody">
+                    <p>This is a default message</p>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt impedit accusamus dolor nemo, magnam recusandae repudiandae, fugit quo atque voluptas autem minus dolores voluptate? Dolor, deserunt! Harum consectetur vel quos!</p>
+                </div>
+            </div>
+
+            <div class="message info">
+                <div class="messageHeader">
+                    Info
+                    <span class="close">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="messageBody">
+                    <p>This is an info message</p>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt impedit accusamus dolor nemo, magnam recusandae repudiandae, fugit quo atque voluptas autem minus dolores voluptate? Dolor, deserunt! Harum consectetur vel quos!</p>
+                </div>
+            </div>
+
+            <div class="message danger">
+                <div class="messageHeader">
+                    Danger
+                    <span class="close">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="messageBody">
+                    <p>This is a danger message</p>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt impedit accusamus dolor nemo, magnam recusandae repudiandae, fugit quo atque voluptas autem minus dolores voluptate? Dolor, deserunt! Harum consectetur vel quos!</p>
+                </div>
+            </div>
+
+            <div class="message warning">
+                <div class="messageHeader">
+                    Warning
+                    <span class="close">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="messageBody">
+                    <p>This is a warning message</p>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt impedit accusamus dolor nemo, magnam recusandae repudiandae, fugit quo atque voluptas autem minus dolores voluptate? Dolor, deserunt! Harum consectetur vel quos!</p>
+                </div>
+            </div>
+
+            <div class="message link">
+                <div class="messageHeader">
+                    Link
+                    <span class="close">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="messageBody">
+                    <p>This is a link message</p>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt impedit accusamus dolor nemo, magnam recusandae repudiandae, fugit quo atque voluptas autem minus dolores voluptate? Dolor, deserunt! Harum consectetur vel quos!</p>
+                </div>
+            </div>
+
+            <div class="message success">
+                <div class="messageHeader">
+                    Success
+                    <span class="close">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="messageBody">
+                    <p>This is a success message</p>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt impedit accusamus dolor nemo, magnam recusandae repudiandae, fugit quo atque voluptas autem minus dolores voluptate? Dolor, deserunt! Harum consectetur vel quos!</p>
+                </div>
+            </div>
+
+            <h2 class="header">Notifications</h2>
+
+            <div class="notification">Default Notification</div>
+
+            <div class="notification info">Info Notification</div>
+
+            <div class="notification danger">Danger Notification</div>
+
+            <div class="notification warning">Warning Notification</div>
+
+            <div class="notification link">Link Notification</div>
+
+            <div class="notification success">Success Notification</div>
+
+            <h2 class="header">Blocks</h2>
+            <div class="block">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit assumenda iusto modi harum, iure saepe ipsa ducimus ipsum aspernatur facere sunt necessitatibus officia atque, minima et aut laudantium repudiandae possimus.</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas neque sed voluptas amet velit, culpa error libero asperiores ipsam animi! Facere perferendis beatae itaque ipsum tenetur aut fuga laboriosam consequuntur!</p>
+            </div>
+            <div class="block">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit assumenda iusto modi harum, iure saepe ipsa ducimus ipsum aspernatur facere sunt necessitatibus officia atque, minima et aut laudantium repudiandae possimus.</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas neque sed voluptas amet velit, culpa error libero asperiores ipsam animi! Facere perferendis beatae itaque ipsum tenetur aut fuga laboriosam consequuntur!</p>
+            </div>
+
+            <h2 class="header">Blockquotes</h2>
+
+            <blockquote>
+                Words can be like X-rays, if you use them properly—they’ll go through anything. You read and you’re pierced.
+                <figcaption>Aldous Huxley, <cite>Brave New World</cite></figcaption>
+            </blockquote>
+
+            <blockquote cite="https://datatracker.ietf.org/doc/html/rfc1149">
+                <p>Avian carriers can provide high delay, low
+                throughput, and low altitude service. The
+                connection topology is limited to a single
+                point-to-point path for each carrier, used with
+                standard carriers, but many carriers can be used
+                without significant interference with each other,
+                outside of early spring. This is because of the 3D
+                ether space available to the carriers, in contrast
+                to the 1D ether used by IEEE802.3. The carriers
+                have an intrinsic collision avoidance system, which
+                increases availability.</p>
+            </blockquote>
+
+            <h2 class="header">Tags</h2>
+
+            <div class="tags">
+                <span class="tag">Default Tag</span>
+                <span class="tag info">Info Tag</span>
+                <span class="tag danger">Danger Tag</span>
+                <span class="tag warning">Warning Tag</span>
+                <span class="tag link">Link Tag</span>
+                <span class="tag success">Success Tag</span>
+            </div>
+
+            <h2 class="header">Cards</h2>
+            <div class="columns multiline">
+                <div class="column oneThird">
+                    <div class="card hoverable" href="/">
+                        <div class="cardImage">
+                            <img src="https://picsum.photos/seed/picsum/1920/1080.webp" alt="">
+                        </div>
+                        <div class="cardBody">
+                            <h1 class="header">Some Image</h1>
+                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt possimus amet omnis adipisci, suscipit debitis distinctio laboriosam quam ipsam facilis nam laborum delectus quibusdam excepturi architecto earum nostrum laudantium ab?</p>
+                            <div class="meta">
+                                <p>Uploaded 22nd of June 2022</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column oneThird">
+                    <div class="card hoverable" href="/">
+                        <div class="cardImage">
+                            <img src="https://picsum.photos/seed/picsum/500/500.webp" alt="">
+                        </div>
+                        <div class="cardBody">
+                            <h1 class="header">Some Image</h1>
+                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt possimus amet omnis adipisci, suscipit debitis distinctio laboriosam quam ipsam facilis nam laborum delectus quibusdam excepturi architecto earum nostrum laudantium ab?</p>
+                            <div class="meta">
+                                <p>Uploaded 22nd of June 2022</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column oneThird">
+                    <div class="card hoverable" href="/">
+                        <div class="cardImage">
+                            <img src="https://picsum.photos/seed/picsum/1920/1080.webp?seed=2" alt="">
+                        </div>
+                        <div class="cardBody">
+                            <h1 class="header">Tags</h1>
+                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt possimus amet omnis adipisci, suscipit debitis distinctio laboriosam quam ipsam facilis nam laborum delectus quibusdam excepturi architecto earum nostrum laudantium ab?</p>
+                            <div class="meta">
+                                <p>Uploaded 22nd of June 2022</p>
+                            </div>
+                            <div class="tags">
+                                <span class="tag">1.12</span>
+                                <span class="tag">1.12.1</span>
+                                <span class="tag success">1.12.2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column oneThird">
+                    <div class="card hoverable" href="/">
+                        <div class="cardBody">
+                            <h1 class="header">No Image</h1>
+                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt possimus amet omnis adipisci, suscipit debitis distinctio laboriosam quam ipsam facilis nam laborum delectus quibusdam excepturi architecto earum nostrum laudantium ab?</p>
+                            <div class="meta">
+                                <p>Uploaded 22nd of June 2022</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column oneThird">
+                    <div class="card hoverable" href="/">
+                        <div class="cardBody">
+                            <h1 class="header">Buttons</h1>
+                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt possimus amet omnis adipisci, suscipit debitis distinctio laboriosam quam ipsam facilis nam laborum delectus quibusdam excepturi architecto earum nostrum laudantium ab?</p>
+                            <div class="meta">
+                                <p>Uploaded 22nd of June 2022</p>
+                            </div>
+                            <div class="buttons">
+                                <a href="#" class="button">
+                                    <span class="icon">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                    <span>View</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <h2 class="header">Circular Image Card</h2>
+
+            <div class="columns centered">
+                <div class="column oneThird">
+                    <div class="card circular hoverable" href="/">
+                        <div class="cardImage">
+                            <img src="https://picsum.photos/seed/picsum/500/500.webp" alt="">
+                        </div>
+                        <div class="cardBody">
+                            <h1 class="header centerText">Some Name</h1>
+                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt possimus amet omnis adipisci, suscipit debitis distinctio laboriosam quam ipsam facilis nam laborum delectus quibusdam excepturi architecto earum nostrum laudantium ab?</p>
+                            <div class="meta">
+                                <p>Uploaded 22nd of June 2022</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="header">Side Menu</h2>
+
+            <div class="segment noBackground">
+
+                <div class="columns">
+                    <div class="column oneQuarter">
+                        <nav class="sideMenu">
+                            <h1 class="menuHeader">General</h1>
+                            <ul>
+                                <li class="active">
+                                    <span class="icon">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <a href="#">Profile</a>
+                                </li>
+                                <li>
+                                    <span class="icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    <a href="#">E-Mail</a>
+                                </li>
+                            </ul>
+                            <h1 class="menuHeader">Privacy</h1>
+                            <ul>
+                                <li>
+                                    <a href="#">Notifications</a>
+                                </li>
+                                <li>
+                                    <a href="#">Adverts</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="column">
+                        <h3>Demo Content</h3>
+                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur delectus sit nihil excepturi at provident totam consequuntur aliquid, ducimus, praesentium error necessitatibus qui mollitia odit, id aperiam quam. Perspiciatis, iure?</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <script> </script>
+
+    <script src="/demo/musicPlayer.js"></script>
+    <script src="/demo/hover.js"></script>
+    <script src="/demo/modal.js"></script>
+    <script src="/demo/fileInputs.js"></script>
+    <script src="/demo/navbar.js"></script>
+
+</body>
+</html>

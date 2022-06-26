@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    .container
+        .message.info
+            .messageHeader
+                h1 404
+            .messageBody
+                p The requested page at "
+                    strong #{url}
+                    | " was not found. Either it moved or it never existed.
+        .buttons
+            a.button(href="/")
+                span.icon
+                    i.fas.fa-home
+                span Back Home

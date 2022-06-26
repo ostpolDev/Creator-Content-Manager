@@ -1,0 +1,55 @@
+extends ../layout
+
+block content
+    .container
+        h1.header Register
+
+        .segment
+            form(action="/users/register", method="post") 
+
+                .field.required
+                    label.label(for="name") Name
+                    .control.hasIcon
+                        input.input(type="text", name="name", placeholder="Name", required, id="name", autocomplete="given-name", maxlength="128")
+                        span.icon
+                            i.fas.fa-user
+                
+                .field.required
+                    label.label(for="username") Username
+                    .control.hasIcon
+                        input.input(type="text", name="username", placeholder="Username", required, id="username", autocomplete="username", maxlength="128")
+                        span.icon
+                            i.fas.fa-user
+
+                .field.required
+                    label.label(for="email") E-Mail
+                    .control.hasIcon
+                        input.input(type="email", name="email", placeholder="text@example.com", required, id="email", autocomplete="email", maxlength="256")
+                        span.icon
+                            i.fas.fa-envelope
+
+                .field.required
+                    label.label(for="password") Password
+                    .control.hasIcon
+                        input.input(type="password", name="password", required, minlength="4", maxlength="256", autocomplete="new-password", id="password", placeholder="***")
+                        span.icon
+                            i.fas.fa-key
+                    p.help Must be between 4 and 256 characters
+
+                .field
+                    label.label(for="about") About
+                    .control
+                        textarea.textarea(name="about", id="about", placeholder="Write about yourself... \n(optional)", maxlength="4096")
+
+                .field
+                    button.button   
+                        span.icon
+                            i.fas.fa-user-plus
+                        span Register
+
+                .field
+                    label.label
+
+            .divider
+            p
+                small * Required

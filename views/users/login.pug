@@ -1,0 +1,31 @@
+extends ../layout
+
+block content
+    .container 
+        h1.header Login
+        .segment
+            form(action="/users/login", method="post") 
+
+                .field.required
+                    label.label(for="username") Username / E-Mail
+                    .control.hasIcon
+                        input.input(type="text", id="username", name="username", required)
+                        span.icon
+                            i.fas.fa-user
+                
+                .field.required(for="password")
+                    label.label Password
+                    .control.hasIcon
+                        input.input(type="password", id="password", name="password", autocomplete="current-password", required)
+                        span.icon
+                            i.fas.fa-key
+
+                .field
+                    button.button
+                        span.icon
+                            i.fas.fa-check
+                        span Login
+
+            .divider
+            p
+                small * Required

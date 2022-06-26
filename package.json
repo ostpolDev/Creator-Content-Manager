@@ -1,0 +1,50 @@
+{
+  "name": "creatorusermanager",
+  "version": "1.0.0",
+  "description": "A tool to help manage usable assets for content creators",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ostpol",
+  "license": "ISC",
+  "dependencies": {
+    "adm-zip": "^0.5.9",
+    "axios": "^0.27.2",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.0",
+    "calipers": "^2.0.1",
+    "calipers-gif": "^2.0.0",
+    "calipers-jpeg": "^2.0.0",
+    "calipers-png": "^2.0.0",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.6",
+    "cookie-session": "^2.0.0",
+    "csurf": "^1.11.0",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-fileupload": "^1.4.0",
+    "express-messages": "^1.0.1",
+    "express-recaptcha": "^5.1.0",
+    "express-session": "^1.17.3",
+    "express-validator": "^6.14.2",
+    "helmet": "^5.1.0",
+    "highlight.js": "^11.5.1",
+    "marked": "^4.0.17",
+    "md5": "^2.3.0",
+    "memorystore": "^1.6.7",
+    "mongoose": "^6.4.0",
+    "morgan": "^1.10.0",
+    "passport": "^0.5.3",
+    "passport-local": "^1.0.0",
+    "pug": "^3.0.2",
+    "rate-limiter-flexible": "^2.3.7",
+    "sanitize-html": "^2.7.0",
+    "uuid": "^8.3.2",
+    "winston": "^3.8.0"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.3.0"
+  }
+}

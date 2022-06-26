@@ -1,0 +1,48 @@
+extends ../layout
+
+block head
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css")
+    script(src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js") 
+
+block content
+    .container
+        h1.header #{user.username}
+        p.subtitle 
+            span.capitalized #{setting}
+            |  Settings
+
+        .columns
+            .column.oneQuarter
+                nav.sideMenu
+                    h1.menuHeader Categories
+                    ul
+                        each s, i in settings
+                            li(class=(s == setting ? "active" : ""))
+                                a.capitalized(href="/users/settings/"+encodeURIComponent(s))=s 
+                .buttons.fluid
+                    a.button(href="/users/v/"+encodeURIComponent(user.safeName))
+                        span.icon
+                            i.fas.fa-arrow-left
+                        span Back 
+            .column
+                if setting == "general"
+                    include settings/general.pug
+                else if setting == "email"
+                    include settings/email.pug
+                else if setting == "password"
+                    include settings/password.pug
+                else if setting == "preferences"
+                    include settings/preferences.pug
+                else
+                    .message.danger
+                        .messageHeader You shouldn't be able to see this.
+                        .messageBody
+                            p If you can see this, something went wrong. Please tell someone about this.
+                            .segment.noBackground
+                                pre=JSON.stringify(settings, null, "\t")
+                                p=setting
+
+block scripts
+    if setting == "general" && (user && !user.meta.preferences.disableMarkdown)
+        script.
+            const easyMDE = new EasyMDE();

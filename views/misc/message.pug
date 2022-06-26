@@ -1,0 +1,10 @@
+.messages
+    if Object.keys(messages).length > 0
+        -let type = Object.keys(messages)[0];
+        .message(class=(type == "error" ? "danger" : type))
+            .messageHeader.capitalized #{type == "error" ? "danger" : type}
+            .messageBody
+                ul
+                    each type in Object.keys(messages)
+                        each message in messages[type]
+                            li #{message}

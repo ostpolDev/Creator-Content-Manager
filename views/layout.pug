@@ -1,0 +1,39 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0, user-scalable=no")
+
+        link(rel="stylesheet", href="/css/styles.css")
+        link(rel="stylesheet", href="/css/styles.auto.css")
+        link(rel="stylesheet", href="/css/normalize.css")
+
+        link(rel="stylesheet", href="/fontawesome/css/all.min.css")
+        script(src="/fontawesome/js/all.min.js") 
+
+        title Creator Content Manager #{title? " | " + title:""}
+
+        block head
+    body 
+
+        .hoverTag#hoverTag
+            span#hoverTagText
+
+
+        include misc/functions.pug
+
+        section
+            include nav.pug
+
+        section
+            .container
+                != messages('misc/message', locals)
+            block content
+
+        script(src="/js/navbar.js")
+        script(src="/js/fileInputs.js")
+        script(src="/js/modal.js")
+        script(src="/js/hover.js")  
+
+        block scripts

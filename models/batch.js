@@ -1,0 +1,53 @@
+const mongoose = require('mongoose');
+
+const BatchSchema = mongoose.Schema({
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    skippedCount: {
+        type: Number,
+        default: 0
+    },
+    skipped: [{
+        name: String,
+        reason: String,
+        size: Number,
+        mimetype: String,
+        extention: String,
+        admin: {
+            error_message: String,
+            error_stack: String,
+            error_name: String
+        }
+    }],
+    length: Number,
+    attemptedLength: Number,
+    fileSize: Number,
+    attemptedFileSize: Number,
+    missedFileSize: Number,
+    uploadTime: Number,
+    isAlbum: Boolean,
+    cover: {
+        hasCover: Boolean,
+        createdBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        updatedAt: Date,
+        size: Number,
+        extention: String,
+        mimetype: String
+    },
+    customInfo: {
+        hasCustomInfo: Boolean,
+        description: {
+            raw: String,
+            rendered: String
+        }
+    }
+}, {timestamps: true});
+
+module.exports = mongoose.model("Batch", BatchSchema);

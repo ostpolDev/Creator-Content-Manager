@@ -1,0 +1,20 @@
+extends ../layout
+
+block content
+    .container
+        h1.header Add Channel
+
+        .segment
+            form(action="/channels/add", method="post") 
+                .field
+                    label.label(for="id") Channel ID
+                    .control.hasIcon
+                        input.input(type="text", id="id", placeholder="UCxrvrfiwYag3K_PecnKVMGA", name="id")
+                        span.icon
+                            i.fab.fa-youtube
+                
+                .field
+                    button.button 
+                        span.icon
+                            i.fas.fa-plus
+                        span Register Channel

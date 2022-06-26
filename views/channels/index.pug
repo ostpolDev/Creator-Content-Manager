@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+    .container
+        h1.header Channels
+        p.subtitle #{channels.length || 0} found
+
+        .columns.multiline
+            each c, i in channels
+                .column.oneQuarter
+                    a.card.hoverable.circular(href="/channels/v/"+c.id)
+                        .cardImage
+                            img(src=c.thumbnails.default.url, alt=c.name, class=(c.id == channel.id?"":"grayscale"))
+                        .cardBody.centerText
+                            h1.header 
+                                if c.id == channel.id
+                                    span.icon
+                                        i.fas.fa-star
+                                | #{c.name}
+                            p.subtitle #{c.statistics.subscriberCount} subscribers
+                            .meta
+                                p Added by #{c.createdBy.username}

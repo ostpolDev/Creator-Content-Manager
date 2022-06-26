@@ -1,0 +1,32 @@
+form(action="/users/settings/save/general", method="post") 
+
+    .field
+        label.label Username
+        .control.hasIcon
+            input.input(type="text" readonly value=user.username disabled)
+            span.icon
+                i.fas.fa-user
+        p.help To change your username, please contact support. 
+
+    .field.required
+        label.label(for="name") Name
+        .control.hasIcon
+            input.input(type="text", name="name", placeholder="Name", required, id="name", autocomplete="given-name", maxlength="128", value=user.name)
+            span.icon
+                i.fas.fa-user
+
+    .field
+        label.label(for="about") About
+        .control
+            textarea.textarea(name="about", id="about", placeholder="Write about yourself... \n(optional)", maxlength="4096")
+                | #{user.description.raw}
+
+    .field
+        button.button
+            span.icon
+                i.fas.fa-save
+            span Save
+
+    .divider
+    p
+        small * Required

@@ -1,0 +1,46 @@
+nav.navbar
+    .navContainer 
+        .section
+            .navButtons
+                a.navItem(href="/")
+                    span.icon 
+                        i.fas.fa-home 
+                    span Home
+
+                .navItem.dropdown
+                    a.navItem.chevron(href="/videos") Videos
+
+                    .dropdown
+                        a.navItem(href="/videos/add") Add
+                        a.navItem(href="/videos/search") Search
+
+                .navItem.dropdown
+                    a.navItem.chevron(href="/assets") Assets
+
+                    .dropdown
+                        a.navItem(href="/assets/upload") Upload
+                        a.navItem(href="/assets/search") Search
+                        a.navItem(href="/assets/batches") Batches
+
+                .navItem.dropdown
+                    a.navItem.chevron(href="/channels") Channels
+
+                    .dropdown
+                        a.navItem(href="/channels/add") Add
+        .section
+            .navButtons
+                if !user
+                    a.navItem.button(href="/users/login") Login 
+                    a.navItem.button(href="/users/register")
+                        span.icon
+                            i.fas.fa-user-plus
+                        span Register
+                else
+                    a.navItem(href="/users/v/"+user.safeName)
+                        span.icon
+                            i.fas.fa-user
+                        span #{user.username} 
+                    a.navItem.button(href="/users/logout")
+                        span.icon
+                            i.fas.fa-sign-out-alt
+                        span Log out
