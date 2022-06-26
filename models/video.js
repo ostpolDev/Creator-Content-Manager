@@ -65,6 +65,7 @@ const VideoSchema = mongoose.Schema({
         commentCount: String
     },
     isEmpty: Boolean,
+    categoryId: String,
     category: String,
     tags: [String],
     youtubeTags: [String],

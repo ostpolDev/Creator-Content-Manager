@@ -14,6 +14,7 @@ const User = require('../models/user');
 const rateLimiter = require('../modules/rateLimiter');
 const youtube = require('../modules/youtube');
 const channelFunctions = require('../modules/channelFunctions');
+const videoFunctions = require('../modules/videoFunctions');
 const { isValidObjectId } = require('mongoose');
 
 router.get("/", validation.ensureAuthenticated, (req, res) => {
@@ -75,70 +76,16 @@ router.post('/add', rateLimiter.apiRequestRateLimiterMiddleware, [
         return;
     }
 
-    let newVideo = new Video({
-        createdBy: req.user.id,
-        channel: channelAccessResponse.channel.id,
-        title: title || uuid(),
-        editor,
-        starring: starring
-    })
-
-    if (!id) {
-        newVideo.isEmpty = true;
-        newVideo.save((err, video) => {
-            if (err) {
-                logger.error(err);
-                req.flash('danger', "Something went wrong");
-                res.redirect("/videos/add");
-                return;
-            }
-            req.flash('success', "Successfully created a placeholder video");
-            res.redirect(`/videos/v/${video.id}`);
-            return;
-        })
-    } else {
-        let videoInfo = await youtube.getVideoInfo(id);
-        if (!videoInfo || !videoInfo.items) {
-            req.flash('danger', "The video was not found");
-            res.redirect("/videos/add");
-            return;
-        }
-    
-        let item = videoInfo.items[0];
-        if (!item) {
-            req.flash('danger', "The video was not found");
-            res.redirect("/videos/add");
-            return;
-        }
-
-        let snippet = item.snippet;
-        let stats = item.statistics;
-        let status = item.status;
-
-        newVideo.isEmpty = false;
-        newVideo.youtubeId = item.id;
-        newVideo.title = snippet.title;
-        newVideo.description = snippet.description;
-        newVideo.thumbnails = snippet.thumbnails;
-        newVideo.youtubeTags = snippet.tags;
-        newVideo.category = snippet.categoryId;
-        newVideo.status = status;
-        newVideo.statistics = stats;
-        newVideo.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
-        newVideo.youtubeChannelId = snippet.channelId;
-
-        newVideo.save((err, video) => {
-            if (err) {
-                logger.error(err);
-                req.flash('danger', "Something went wrong");
-                res.redirect("/videos/add");
-                return;
-            }
-            req.flash('success', `Successfully added "${newVideo.title}"`);
-            res.redirect(`/videos/v/${video.id}`);
-            return;
-        })
+    let videoCreationResponse = await videoFunctions.createVideo(id, channelAccessResponse.channel);
+    if (videoCreationResponse.success === false) {
+        req.flash('danger', videoCreationResponse.msg);
+        res.redirect('/videos/add');
+        return;
     }
+
+    req.flash("success", videoCreationResponse.msg);
+    res.redirect('/videos/v/'+videoCreationResponse.video.id);
+
 })
 
 module.exports = router;
