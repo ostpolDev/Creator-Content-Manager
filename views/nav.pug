@@ -7,12 +7,13 @@ nav.navbar
                         i.fas.fa-home 
                     span Home
 
-                .navItem.dropdown
-                    a.navItem.chevron(href="/videos") Videos
+                if user
+                    .navItem.dropdown
+                        a.navItem.chevron(href="/videos") Videos
 
-                    .dropdown
-                        a.navItem(href="/videos/add") Add
-                        a.navItem(href="/videos/search") Search
+                        .dropdown
+                            a.navItem(href="/videos/add") Add
+                            a.navItem(href="/videos/search") Search
 
                 .navItem.dropdown
                     a.navItem.chevron(href="/assets") Assets
@@ -21,12 +22,12 @@ nav.navbar
                         a.navItem(href="/assets/upload") Upload
                         a.navItem(href="/assets/search") Search
                         a.navItem(href="/assets/batches") Batches
+                if user
+                    .navItem.dropdown
+                        a.navItem.chevron(href="/channels") Channels
 
-                .navItem.dropdown
-                    a.navItem.chevron(href="/channels") Channels
-
-                    .dropdown
-                        a.navItem(href="/channels/add") Add
+                        .dropdown
+                            a.navItem(href="/channels/add") Add
         .section
             .navButtons
                 if !user
