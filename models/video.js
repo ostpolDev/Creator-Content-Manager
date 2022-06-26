@@ -59,6 +59,7 @@ const VideoSchema = mongoose.Schema({
         favoriteCount: String,
         commentCount: String
     },
+    isEmpty: Boolean,
     category: String,
     tags: [String],
     youtubeTags: [String],
