@@ -115,14 +115,6 @@
         return Math.floor(seconds) + " seconds";
     }
 
-    function hasAccessTo(levelIn) {
-        if (!user) {
-            return false;
-        }
-        let level = user.meta.level;
-        return level === -1 || level === levelIn || (level === 1 && levelIn === 0)
-    }
-
     function bytesToSize(bytes) {
         if (!bytes) {
             return "--"
@@ -140,4 +132,8 @@
     function formatString(text) {
         const result = text.replace(/([A-Z])/g, " $1");
         return result.charAt(0).toUpperCase() + result.slice(1);
+    }
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }

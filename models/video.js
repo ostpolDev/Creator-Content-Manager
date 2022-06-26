@@ -30,11 +30,13 @@ const VideoSchema = mongoose.Schema({
     },
     editor: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: false
     },
     starring: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: false
     }],
     meta: {
         editorsString: String,

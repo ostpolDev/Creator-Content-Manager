@@ -13,5 +13,25 @@ block content
                     each c, i in channels
                         option(value=c.id,selected=(c.id == channel.id))=c.name
 
+        .columns.multiline
+            each video, i in videos
+                .column.oneQuarter
+                    a.card.hoverable(href="/videos/v/"+video.id)
+                        if !video.isEmpty
+                            .cardImage
+                                img(src=video.thumbnails.medium.url, alt=video.title) 
+                        .cardBody
+                            h1.header #{video.title}
+                            if !video.isEmpty
+                                p #{numberWithCommas(video.statistics.viewCount)} views
+                            .meta
+                                if video.isEmpty
+                                    p(title=video.createdAt.toLocaleString()) Added #{formatDate(video.createdAt)}
+                                else
+                                    p(title=video.meta.publishedAt.toLocaleString()) Uploaded #{formatDate(video.meta.publishedAt)}
+            
+            if !videos || videos.length <= 0
+                h3.header No videos found for this channel
+
 block scripts
     script(src="/js/channelSwitcher.js") 

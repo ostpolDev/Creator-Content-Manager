@@ -24,10 +24,14 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, 
         if (err) {
             logger.error(err)
         }
-        Video.find({channel: res.locals.channel.id}).select("title createdAt thumbnails").limit(40).sort({createdAt: -1}).exec((err, videos) => {
+        Video.find({channel: res.locals.channel.id}).select("title statistics isEmpty createdAt thumbnails meta").limit(40).sort({createdAt: -1}).exec((_err, videos) => {
+            if (_err) {
+                logger.error(_err)
+            }
             res.render('videos/index', {
                 title: "Videos",
-                channels
+                channels,
+                videos
             })
         })
     })
