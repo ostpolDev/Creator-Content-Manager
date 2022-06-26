@@ -16,6 +16,13 @@ block content
                 |  | Uploaded #{formatDate(video.meta.publishedAt)}
             else
                 |  | Added #{formatDate(video.createdAt)}
+        if !video.isEmpty
+            .block
+                p
+                if video.meta.starringString
+                    span Starring #{video.meta.starringString} | 
+                if video.meta.editorsString
+                    span Edited by #{video.meta.editorsString}
 
         .columns
             .column
