@@ -16,17 +16,22 @@ const VideoSchema = mongoose.Schema({
         required: false
     },
     youtubeId: String,
+    youtubeChannelId: String,
     assets: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Asset'
     }],
+    title: {
+        type: String,
+        required: true
+    },
     description: {
         type: String
     },
-    editors: [{
+    editor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
-    }],
+    },
     starring: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

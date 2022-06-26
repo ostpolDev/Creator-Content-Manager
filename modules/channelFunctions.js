@@ -3,6 +3,7 @@ const youtube = require('../modules/youtube');
 const userFunctions = require('../modules/userFunctions');
 
 const Channel = require('../models/channel');
+const User = require('../models/user');
 const { isValidObjectId } = require('mongoose');
 
 const getChannelCount = function(id) {
@@ -75,4 +76,22 @@ const createFromId = function(id, checkExistence) {
     })
 }
 
-module.exports = {getChannelCount, createFromId};
+const hasAccessToChannel = function(channelId, userId) {
+    return new Promise((res) => {
+        Channel.findOne({_id: channelId, $or: [
+            {createdBy: userId},
+            {access: userId}
+        ]}).exec((err, channel) => {
+            if (err) {
+                logger.error(err);
+                return res({success: false, error: err});
+            }
+            if (!channel) {
+                return res({success: true, hasAccess: false});
+            }
+            return res({success: true, hasAccess: true});
+        })
+    })
+}
+
+module.exports = {getChannelCount, createFromId, hasAccessToChannel};

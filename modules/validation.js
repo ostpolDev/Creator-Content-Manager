@@ -41,6 +41,15 @@ const hasAccess = (level) => {
     }
 }
 
+const ensureChannel = (req, res, next) => {
+    if (res.locals.channel !== undefined && res.locals.channel._id !== undefined) {
+        return next();
+    } else {
+        req.flash('error', "Channel required");
+        res.redirect('/');
+    }
+}
+
 const isValidObjectId = (id) => {
     if (!id) {
         return false;
@@ -48,4 +57,4 @@ const isValidObjectId = (id) => {
     return ObjectId.isValid(id);
 }
 
-module.exports = {ensureAuthenticated, ensureNotAuthenticated, isAuthorized, isValidObjectId, hasAccess, ensureAuthorized}
+module.exports = {ensureChannel, ensureAuthenticated, ensureNotAuthenticated, isAuthorized, isValidObjectId, hasAccess, ensureAuthorized}

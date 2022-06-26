@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const uuid = require('uuid').v4;
 
 const validation = require('../modules/validation');
 
@@ -10,7 +11,9 @@ const {body, validationResult} = require('express-validator');
 
 const logger = require('../modules/logger');
 const User = require('../models/user');
-const { rateLimiterMiddleware } = require('../modules/rateLimiter');
+const rateLimiter = require('../modules/rateLimiter');
+const youtube = require('../modules/youtube');
+const channelFunctions = require('../modules/channelFunctions');
 
 router.get("/", validation.ensureAuthenticated, (req, res) => {
     Channel.find({$or: [
@@ -27,7 +30,7 @@ router.get("/", validation.ensureAuthenticated, (req, res) => {
     })
 })
 
-router.get('/add', validation.ensureAuthenticated, (req, res) => {
+router.get('/add', validation.ensureAuthenticated, validation.ensureChannel, (req, res) => {
     User.find({}).select("username").exec((err, users) => {
         res.render('videos/add', {
             title: "Add Video",
@@ -36,12 +39,12 @@ router.get('/add', validation.ensureAuthenticated, (req, res) => {
     })
 })
 
-router.post('/add', rateLimiterMiddleware, [
+router.post('/add', rateLimiter.apiRequestRateLimiterMiddleware, [
     body("id", "ID has to be 11 characters long").isLength({min: 11, max: 11}).optional(),
     body("editor", "Editor cannot be longer than 256 characters").isLength({max: 256}).optional(),
     body("starring", "Starring members cannot be longer than 1024 characters").isLength({max: 1024}).optional(),
     body("title", "Title cannot be longer than 70 characters").isLength({max: 70}).optional()
-], validation.ensureAuthenticated, (req, res) => {
+], validation.ensureAuthenticated, validation.ensureChannel, async (req, res) => {
     let errors = validationResult(req);
     if (!errors.isEmpty()) {
         errors.array().forEach(e => {
@@ -49,6 +52,76 @@ router.post('/add', rateLimiterMiddleware, [
         })
         res.redirect('/videos/add');
         return;
+    }
+
+    let id = req.body.id;
+    let editor = req.body.editor;
+    let starring = req.body.starring;
+    let title = req.body.title;
+
+    let newVideo = new Video({
+        createdBy: req.user.id,
+        channel: res.locals.channel._id,
+        title: title || uuid(),
+        editor,
+        starring: starring
+    })
+
+    if (!id) {
+        newVideo.isEmpty = true;
+        newVideo.save((err, video) => {
+            if (err) {
+                logger.error(err);
+                req.flash('danger', "Something went wrong");
+                res.redirect("/videos/add");
+                return;
+            }
+            req.flash('success', "Successfully created a placeholder video");
+            res.redirect(`/videos/v/${video.id}`);
+            return;
+        })
+    } else {
+        let videoInfo = youtube.getVideoInfo(id);
+        if (!videoInfo || !videoInfo.items) {
+            req.flash('danger', "The video was not found");
+            res.redirect("/videos/add");
+            return;
+        }
+    
+        let item = videoInfo.items[0];
+        if (!item) {
+            req.flash('danger', "The video was not found");
+            res.redirect("/videos/add");
+            return;
+        }
+
+        let snippet = item.snippet;
+        let stats = item.statistics;
+        let status = item.status;
+
+        newVideo.isEmpty = false;
+        newVideo.youtubeId = item.id;
+        newVideo.title = snippet.title;
+        newVideo.description = snippet.description;
+        newVideo.thumbnails = snippet.thumbnails;
+        newVideo.youtubeTags = snippet.tags;
+        newVideo.category = snipped.categoryId;
+        newVideo.status = status;
+        newVideo.statistics = stats;
+        newVideo.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
+        newVideo.youtubeChannelId = snippet.channelId;
+
+        newVideo.save((err, video) => {
+            if (err) {
+                logger.error(err);
+                req.flash('danger', "Something went wrong");
+                res.redirect("/videos/add");
+                return;
+            }
+            req.flash('success', `Successfully added "${newVideo.title}"`);
+            res.redirect(`/videos/v/${video.id}`);
+            return;
+        })
     }
 })
 

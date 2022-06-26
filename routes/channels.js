@@ -92,7 +92,13 @@ router.post("/switch/:id", validation.ensureAuthenticated, (req, res) => {
         return;
     }
 
-    Channel.findById(id).select("name id").exec((err, channel) => {
+    Channel.findOne({
+        _id: id,
+        $or: [
+            {createdBy: req.user.id},
+            {access: req.user.id}
+        ]
+    }).select("name id").exec((err, channel) => {
         if (err) {
             logger.error(err);
             res.status(500).json({success: false});
