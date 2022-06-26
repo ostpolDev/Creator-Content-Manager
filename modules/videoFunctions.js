@@ -39,7 +39,7 @@ const createVideo = function(youtubeId, channel, req) {
         }
 
         if (starring) {
-            let starringResponse = await userFunctions.getUsers(editor, "username");
+            let starringResponse = await userFunctions.getUsers(starring, "username");
             if (starringResponse.users) {
                 let starringNameArray = starringResponse.users.map(x => x.username);
                 starringString = starringNameArray.join(", ");
