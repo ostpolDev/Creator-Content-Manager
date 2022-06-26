@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+    .container
+        h1.header Videos
+        p.subtitle For channel 
+            b "#{channel.name}"
+
+        .field 
+            label.label(for="channelSelect") Channel Switcher
+            .control
+                select#channelSelect
+                    option A
+                    option B 
