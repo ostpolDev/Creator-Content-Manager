@@ -10,5 +10,8 @@ block content
             label.label(for="channelSelect") Channel Switcher
             .control
                 select.input#channelSelect
-                    option A
-                    option B 
+                    each c, i in channels
+                        option(value=c.id,selected=(c.id == channel.id))=c.name
+
+block scripts
+    script(src="/js/channelSwitcher.js") 
