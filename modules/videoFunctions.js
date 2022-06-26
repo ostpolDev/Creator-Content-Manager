@@ -70,6 +70,7 @@ const createVideo = function(youtubeId, channel, req) {
             newVideo.statistics = stats;
             newVideo.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
             newVideo.youtubeChannelId = snippet.channelId;
+            newVideo.meta.publishedAt = new Date(snippet.publishedAt);
     
             newVideo.save((err, video) => {
                 if (err) {
@@ -119,6 +120,7 @@ const updateVideoData = function(video) {
         video.statistics = stats;
         video.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
         video.youtubeChannelId = snippet.channelId;
+        video.meta.publishedAt = new Date(snippet.publishedAt);
 
         video.save((err, video) => {
             if (err) {

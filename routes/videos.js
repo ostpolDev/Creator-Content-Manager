@@ -16,7 +16,7 @@ const channelFunctions = require('../modules/channelFunctions');
 const videoFunctions = require('../modules/videoFunctions');
 const { isValidObjectId } = require('mongoose');
 
-router.get("/", validation.ensureAuthenticated, (req, res) => {
+router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, res) => {
     Channel.find({$or: [
         {createdBy: req.user.id},
         {access: req.user.id}
@@ -24,9 +24,11 @@ router.get("/", validation.ensureAuthenticated, (req, res) => {
         if (err) {
             logger.error(err)
         }
-        res.render('videos/index', {
-            title: "Videos",
-            channels
+        Video.find({channel: res.locals.channel.id}).select("title createdAt ").limit(40).sort({createdAt: -1}).exec((err, videos) => {
+            res.render('videos/index', {
+                title: "Videos",
+                channels
+            })
         })
     })
 })
