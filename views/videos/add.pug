@@ -3,13 +3,14 @@ extends ../layout
 block content
     .container
         h1.header Add new video
+        p.subtitle to #{channel.name}
         .segment
             form(action="/videos/add", method="post") 
                 
                 .field
                     label.label(for="youtube") YouTube ID
                     .control.hasIcon
-                        input.input(type="text", name="youtube", placeholder="EOTyLqJWhZQ", id="youtube", maxlength="128")
+                        input.input(type="text", name="id", placeholder="EOTyLqJWhZQ", id="youtube", maxlength="128")
                         span.icon
                             i.fab.fa-youtube
                     p.help This is optional for now. If no id is given, an empty placeholder will be created.
@@ -39,6 +40,8 @@ block content
                         span.icon
                             i.fas.fa-heading
                     p.help This optional title will be replaced with the actual YouTube title if an ID is given.
+
+                input(type="hidden" name="channel" value=channel._id)
 
                 .field
                     button.button   

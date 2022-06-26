@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie: true });
 
 const {body, validationResult} = require('express-validator');
 
@@ -14,13 +16,14 @@ const logger = require('../modules/logger');
 const userFunctions = require('../modules/userFunctions');
 const validation = require('../modules/validation');
 
-router.get('/login', validation.ensureNotAuthenticated, (req, res) => {
+router.get('/login', csrfProtection, validation.ensureNotAuthenticated, (req, res) => {
     res.render('users/login', {
-        title: "Login"
+        title: "Login",
+        csrfToken: req.csrfToken()
     })
 })
 
-router.post('/login', validation.ensureNotAuthenticated, (req, res, next) => {
+router.post('/login', csrfProtection, validation.ensureNotAuthenticated, (req, res, next) => {
     passport.authenticate('local', {
         successRedirect:'/',
         failureRedirect:'/users/login',

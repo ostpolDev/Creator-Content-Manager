@@ -89,7 +89,7 @@ const hasAccessToChannel = function(channelId, userId) {
             if (!channel) {
                 return res({success: true, hasAccess: false});
             }
-            return res({success: true, hasAccess: true});
+            return res({success: true, hasAccess: true, channel});
         })
     })
 }

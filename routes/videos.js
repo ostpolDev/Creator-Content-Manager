@@ -14,6 +14,7 @@ const User = require('../models/user');
 const rateLimiter = require('../modules/rateLimiter');
 const youtube = require('../modules/youtube');
 const channelFunctions = require('../modules/channelFunctions');
+const { isValidObjectId } = require('mongoose');
 
 router.get("/", validation.ensureAuthenticated, (req, res) => {
     Channel.find({$or: [
@@ -43,8 +44,9 @@ router.post('/add', rateLimiter.apiRequestRateLimiterMiddleware, [
     body("id", "ID has to be 11 characters long").isLength({min: 11, max: 11}).optional(),
     body("editor", "Editor cannot be longer than 256 characters").isLength({max: 256}).optional(),
     body("starring", "Starring members cannot be longer than 1024 characters").isLength({max: 1024}).optional(),
-    body("title", "Title cannot be longer than 70 characters").isLength({max: 70}).optional()
-], validation.ensureAuthenticated, validation.ensureChannel, async (req, res) => {
+    body("title", "Title cannot be longer than 70 characters").isLength({max: 70}).optional(),
+    body("channel", "Channel is required").notEmpty()
+], validation.ensureAuthenticated, async (req, res) => {
     let errors = validationResult(req);
     if (!errors.isEmpty()) {
         errors.array().forEach(e => {
@@ -58,10 +60,24 @@ router.post('/add', rateLimiter.apiRequestRateLimiterMiddleware, [
     let editor = req.body.editor;
     let starring = req.body.starring;
     let title = req.body.title;
+    let channel = req.body.channel;
+
+    if (!isValidObjectId(channel)) {
+        req.flash('danger', "Invalid channel");
+        res.redirect('/');
+        return;
+    }
+
+    let channelAccessResponse = await channelFunctions.hasAccessToChannel(channel, req.user.id);
+    if (channelAccessResponse.success === false || channelAccessResponse.hasAccess === false) {
+        req.flash('danger', "Invalid channel");
+        res.redirect('/');
+        return;
+    }
 
     let newVideo = new Video({
         createdBy: req.user.id,
-        channel: res.locals.channel._id,
+        channel: channelAccessResponse.channel.id,
         title: title || uuid(),
         editor,
         starring: starring
@@ -81,7 +97,7 @@ router.post('/add', rateLimiter.apiRequestRateLimiterMiddleware, [
             return;
         })
     } else {
-        let videoInfo = youtube.getVideoInfo(id);
+        let videoInfo = await youtube.getVideoInfo(id);
         if (!videoInfo || !videoInfo.items) {
             req.flash('danger', "The video was not found");
             res.redirect("/videos/add");
@@ -105,7 +121,7 @@ router.post('/add', rateLimiter.apiRequestRateLimiterMiddleware, [
         newVideo.description = snippet.description;
         newVideo.thumbnails = snippet.thumbnails;
         newVideo.youtubeTags = snippet.tags;
-        newVideo.category = snipped.categoryId;
+        newVideo.category = snippet.categoryId;
         newVideo.status = status;
         newVideo.statistics = stats;
         newVideo.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
