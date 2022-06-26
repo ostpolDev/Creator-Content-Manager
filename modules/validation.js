@@ -16,7 +16,7 @@ const ensureAuthenticated = (req, res, next) => {
     if (req.isAuthenticated() && req.user) {
         return next();
     } else {
-        req.flash('negative', "err.not_logged_in");
+        req.flash('error', "You need to be logged in to view this page");
         res.redirect('/');
     }
 }
@@ -25,7 +25,7 @@ const ensureNotAuthenticated = (req, res, next) => {
     if (!req.isAuthenticated()) {
         return next();
     } else {
-        req.flash('negative', "err.already_logged_in");
+        req.flash('error', "This cannot be done while logged in");
         res.redirect('/');
     }
 }
@@ -35,7 +35,7 @@ const hasAccess = (level) => {
         if (req.user && req.user.meta.level.includes(level) || req.user.meta.level.includes(-1)) {
             return next();
         } else {
-            req.flash('negative', "err.access_denied")
+            req.flash('error', "Access denied")
             res.redirect('/');
         }
     }
