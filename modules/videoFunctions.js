@@ -1,4 +1,5 @@
 const logger = require("./logger");
+const uuid = require('uuid').v4;
 
 const categories = ['', 'Film & Animation', 'Autos & Vehicles', '', '', '', '', '', '', '', 'Music', '', '', '', '', 'Pets & Animals', '', 'Sports', 'Short Movies', 'Travel & Events', 'Gaming', 'Videoblogging', 'People & Blogs', 'Comedy', 'Entertainment', 'News & Politics', 'Howto & Style', 'Education', 'Science & Technology', 'Nonprofits & Activism', 'Movies', 'Anime/Animation', 'Action/Adventure', 'Classics', 'Comedy', 'Documentary', 'Drama', 'Family', 'Foreign', 'Horror', 'Sci-Fi/Fantasy', 'Thriller', 'Shorts', 'Shows', 'Trailers']
 
@@ -80,6 +81,15 @@ const createVideo = function(youtubeId, channel, req) {
 
 const updateVideoData = function(video) {
     return new Promise((res) => {
+
+        if (video.meta.requestInfo.lastRequest) {
+            let diff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime();
+            let diffHours = diff / 3.6e+6;
+            if (diffHours < 12) {
+                return res({success: false, msg: "The previous update request was less than 12 hours ago. Please try again later."});
+            }
+        }
+
         let videoInfo = await youtube.getVideoInfo(youtubeId);
         if (!videoInfo || !videoInfo.items) {
             return res({success: false, msg: "The video was not found"});
