@@ -24,6 +24,9 @@ block content
                             h1.header #{video.title}
                             if !video.isEmpty
                                 p #{numberWithCommas(video.statistics.viewCount)} views
+                                p Edited by #{video.meta.editorsString}
+                                    br
+                                    | Starring #{video.meta.starringString}
                             .meta
                                 if video.isEmpty
                                     p(title=video.createdAt.toLocaleString()) Added #{formatDate(video.createdAt)}
