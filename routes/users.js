@@ -44,7 +44,7 @@ router.get('/register', validation.ensureNotAuthenticated, (req, res) => {
 
 router.post('/register', validation.ensureNotAuthenticated, [
     body("name", "Name has to be between 1 and 128 characters").isLength({min: 1, max: 128}),
-    body("username", "Username has to be between 4 and 128 characters").isLength({min: 4, max: 128}),
+    body("username", "Username has to be between 3 and 128 characters").isLength({min: 3, max: 128}),
     body("email", "E-Mail address is invalid").isEmail(),
     body("password", "A valid password containing 4 to 256 characters is rqeuired").notEmpty().isLength({min: 4, max: 256}),
     body("about", "Your about text cannot be longer than 4096 characters").optional().isLength({max: 4096})
