@@ -32,7 +32,7 @@ block content
                         .messageBody
                             p This video is empty, meaning it does not contain any YouTube information. To change this, go into the video settings and add a YouTube Video ID.
                 else
-                    iframe(style="width:100%;max-height:480px;" height="800" src="https://www.youtube-nocookie.com/embed/"+video.youtubeId title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
+                    iframe(style="width:100%; aspect-ratio: 16 / 9;" src="https://www.youtube-nocookie.com/embed/"+video.youtubeId title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
                     p
                         span.icon
                             i.fas.fa-eye
