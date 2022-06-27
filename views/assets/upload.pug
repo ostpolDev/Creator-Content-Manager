@@ -1,5 +1,9 @@
 extends ../layout
 
+block head
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css")
+    script(src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js") 
+
 block content
 
     .modal#uploadHelpModal
@@ -58,6 +62,11 @@ block content
                     i.fas.fa-info
                 span Help & Information
 
+        .message.info
+            .messageHeader Quick Info
+            .messageBody
+                p Please make sure that the asset is freely useable on video or live-streaming platforms, and that if there are special permissons that need to be given, that you add them accordingly.
+
         .segment
             form(action="/assets/upload", method="post", enctype="multipart/form-data")
                 .field.required.file
@@ -66,15 +75,85 @@ block content
                             i.fas.fa-upload
                         label.label Select Files
                     input.input.fileUploadName(type="text" readonly)
-                    input(type="file" multiple)
+                    //- "audio/*,video/*,image/*"
+                    input(type="file" multiple name="assets" accept=fileTypes.join(","))
                 p.help Accepted file types are #{fileTypes.join(", ")}
 
-                .field
-                    label.label(for="youtube") YouTube ID
-                    .control.hasIcon
-                        input.input(type="text", name="id", placeholder="EOTyLqJWhZQ", id="youtube", maxlength="128")
-                        span.icon
-                            i.fab.fa-youtube
-                    p.help This is optional for now. If no id is given, an empty placeholder will be created.
+                .divider
 
+                .field
+                    label.label(for="name") Name
+                    .control.hasIcon
+                        input.input#name(type="text", name="name", placeholder="Super cool asset name", maxlength="256", autocomplete="off")
+                        span.icon
+                            i.fas.fa-heading
+
+                .field
+                    label.label(for="batchName") Batch Name
+                    .control.hasIcon
+                        input.input#batchName(type="text", name="batchName", placeholder="Album by Person", maxlength="256", autocomplete="off")
+                        span.icon
+                            i.fas.fa-folder
+
+                .field
+                    label.label(for="aboutText") About
+                    .control
+                        textarea.textarea#aboutText(type="text", name="about", placeholder="About the asset...", autocomplete="off")
+
+                .field
+                    label.label(for="legalInfo") Legal Information
+                    .control
+                        textarea.textarea#legalInfo(type="text", name="legalInfo", placeholder="Required legal information about the asset", autocomplete="off")
+
+                .field 
+                    label.label(for="assetType") Select an asset type
+                    .control
+                        select.input#assetType
+                            each type, i in assetTypes
+                                option(value=type) #{formatString(type)}
+
+                .field
+                    label.label(for="tags") Tags
+                    .control.hasIcon
+                        input.input#tags(type="text" name="tags" placeholder="super, cool, assets")
+                        span.icon
+                            i.fas.fa-tag
+                    p.help Enter tags seperated with 
+                        strong ,
+
+
+                .field
+                    label.label(for="source") Source
+                    .control.hasIcon
+                        input.input#source(type="url" name="source" placeholder="https://www.youtube.com/watch?v=94vIKBfX9hI") 
+                        span.icon
+                            i.fas.fa-globe
+
+                .field
+                    label.label(for="price") Price
+                    .control.hasIcon
+                        input.input#price(type="number" name="price" min=0 step=0.01 placeholder="7.99")
+                        span.icon
+                            i.fas.fa-money-bill-alt
+
+                .field 
+                    label.label(for="assetType") Licence
+                    .control
+                        select.input#assetType
+                            each type, i in assetTypes
+                                option(value=type) #{formatString(type)}
+                        p.help This is completely optional. Please only choose a licence if you know that it is the correct one.
+
+                .field
+                    button.button.success.fluid
+                        span.icon
+                            i.fas.fa-upload
+                        span Upload
+
+        .divider.light
+        p
+            small * Required
                 
+block scripts
+    script.
+        const easyMDE = new EasyMDE({element: document.getElementById("aboutText")});
