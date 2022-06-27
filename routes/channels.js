@@ -53,8 +53,13 @@ router.post('/add', validation.ensureAuthenticated, [
         return;
     }
 
-    req.flash('success', "Successfully added the channel \"" + channel.name + "\"");
-    res.redirect("/channels/v/"+channel.id);
+    let channelCookie = req.cookies.channel;
+    if (!channelCookie) {
+        res.cookie("channel", channelCreationResult.channel.id, {maxAge: 1000 * 60 * 60 * 24 * 30, httpOnly: true});
+    }
+
+    req.flash('success', "Successfully added the channel \"" + channelCreationResult.channel.name + "\"");
+    res.redirect("/channels/v/"+channelCreationResult.channel.id);
 
 })
 

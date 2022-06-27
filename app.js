@@ -116,7 +116,7 @@ app.get('*', (req, res, next) => {
             }
         })
 
-    } else if (req.user && !req.cookies.channel) {
+    } else if (req.user && !req.cookies.channel || req.cookies.channel == "undefined") {
         Channel.find(channelQuery).select("name id").exec((err, channels) => {
             if (channels && channels.length > 0) {
                 res.cookie("channel", channels[0].id, {maxAge: 1000 * 60 * 60 * 24 * 30, httpOnly: true})
