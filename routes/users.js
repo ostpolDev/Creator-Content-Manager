@@ -195,4 +195,23 @@ router.post("/settings/save/general", validation.ensureAuthenticated, [
     })
 })
 
+router.get("/search", validation.ensureAuthenticated, (req, res) => {
+    let query = req.query.q;
+    if (!query) {
+        return res.status(400).json({success: false});
+    }
+
+    User.find({$or: [
+        {username: {$regex: query, $options: "i"}},
+        {safeName: {$regex: query, $options: "i"}},
+        {name: {$regex: query, $options: "i"}}
+    ]}).limit(10).select("id username safeName").exec((err, users) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        return res.status(200).json({success: true, users});
+    })
+})
+
 module.exports = router;
