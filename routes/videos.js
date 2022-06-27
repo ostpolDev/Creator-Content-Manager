@@ -210,4 +210,42 @@ router.get('/update/:id', validation.ensureAuthenticated, rateLimiter.apiRequest
     res.redirect('/videos/v/'+id);
 })
 
+let settings = ["General", "Change Channel"];
+
+router.get('/settings/:id', validation.ensureAuthenticated, validation.ensureChannel, (req, res, next) => {
+    res.redirect('/videos/settings/'+encodeURIComponent(req.params.id)+"/"+encodeURIComponent(settings[0]));
+})
+
+router.get("/settings/:id/:setting", (req, res, next) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return next({status: 404});
+    }
+
+    let setting = req.params.setting;
+    if (!settings.includes(setting)) {
+        return next({status: 404});
+    }
+
+    Video.findById(id).exec(async (err, video) => {
+        if (err) {
+            return next(err);
+        }
+
+        let accessResponse = await channelFunctions.hasAccessToChannel(video.channel, req.user.id);
+        if (!accessResponse.success || !accessResponse.hasAccess) {
+            return next({status: 404});
+        }
+        if (!video) {
+            return next({status: 404});
+        }
+        res.render('videos/settings', {
+            title: "Video settings",
+            video,
+            setting,
+            settings
+        })
+    })
+})
+
 module.exports = router;

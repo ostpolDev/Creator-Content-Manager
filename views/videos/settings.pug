@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+    .container 
+        h1.header #{video.title}
+        p.subtitle 
+            span.capitalized #{setting}
+            |  Settings
+
+        .columns
+            .column.oneQuarter
+                nav.sideMenu
+                    h1.menuHeader Categories
+                    ul
+                        each s, i in settings
+                            li(class=(s == setting ? "active" : ""))
+                                a.capitalized(href="/videos/settings/"+ video.id +"/"+encodeURIComponent(s))=s 
+                .buttons.fluid
+                    a.button(href="/videos/v/"+encodeURIComponent(video.id))
+                        span.icon
+                            i.fas.fa-arrow-left
+                        span Back 
