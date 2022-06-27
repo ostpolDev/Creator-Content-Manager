@@ -127,7 +127,8 @@ router.post("/switch/:id", validation.ensureAuthenticated, (req, res, next) => {
         ]
     }).select("name id").exec((err, channel) => {
         if (err) {
-            return next(err);
+            res.status(500).json({success: false, msg: "Something went wrong"});
+            return;
         }
         if (!channel) {
             res.status(404).json({success: false, msg: "Channel not found"});
@@ -141,16 +142,40 @@ router.post("/switch/:id", validation.ensureAuthenticated, (req, res, next) => {
 router.get('/access/:id', validation.ensureAuthenticated, (req, res, next) => {
     let id = req.params.id;
     if (!isValidObjectId(id)) {
-        next({status: 404});
+        return next({status: 404});
     }
 
     Channel.findOne({
         _id: id,
         createdBy: req.user.id
-    }).exec((err, channel) => {
+    }).populate("createdBy").exec((err, channel) => {
         if (err) {
-            next(err);
+            return next(err);
         }
+        res.render('channels/access', {
+            channelToView: channel
+        })
+
+    })
+})
+
+router.get('/getAccessUsers/:id', validation.ensureAuthenticated, (req, res) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return res.status(400).json({success: false});
+    }
+
+    Channel.findOne({_id: id, createdBy: req.user.id}).populate("access").exec((err, channel) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        if (!channel) {
+            return res.status(404).json({success: false});
+        }
+
+        let channelAccess = channel.access.map(x => ({id: x._id, username: x.username, safeName: x.safeName}));
+        return res.status(200).json({success: true, users: channelAccess});
     })
 })
 

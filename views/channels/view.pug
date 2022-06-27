@@ -36,10 +36,11 @@ block content
                             span.icon
                                 i.fas.fa-toggle-on
                             span Switch to channel
-                    a.button(href="/channels/access/"+channelToView.id)
-                        span.icon
-                            i.fas.fa-users
-                        span Manage Access 
+                    if user && channelToView.createdBy.id == user.id
+                        a.button(href="/channels/access/"+channelToView.id)
+                            span.icon
+                                i.fas.fa-users
+                            span Manage Access 
                 .segment
                     p
                             b Created by:

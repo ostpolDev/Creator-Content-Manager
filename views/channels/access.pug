@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+    .container
+
+        .buttons
+            a.button(href="/channels/v/"+channelToView.id)
+                span.icon
+                    i.fas.fa-arrow-left 
+                span Back 
+
+        h1.title #{channelToView.name}
+        p.subtitle Access Settings
+
+        .field
+            label.label Search
+            .control.hasIcon
+                input.input#searchInput(type="text" placeholder="Name, username, ...")
+                span.icon
+                    i.fas.fa-search
+            p.help Type to search for new users. Click on a name to add them to the channel. Click on one of the existing names to remove them from the channel.
+
+        .columns
+            .column.half
+                h3.header Current users
+                .buttons.fluid#currentAccessContainer
+            .column.half
+                h3.header New users
+                .buttons.fluid#newAccessContainer
+
+block scripts
+    script.
+        let currentChannel = "#{channelToView.id}"
+    script(src="/js/channelAccess.js") 
