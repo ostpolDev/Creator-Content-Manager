@@ -21,7 +21,8 @@ nav.navbar
                     a.navItem.chevron(href="/assets") Assets
 
                     .dropdown
-                        a.navItem(href="/assets/upload") Upload
+                        if user
+                            a.navItem(href="/assets/upload") Upload
                         a.navItem(href="/assets/search") Search
                         a.navItem(href="/assets/batches") Batches
                 if user

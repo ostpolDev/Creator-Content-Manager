@@ -36,10 +36,11 @@ block content
                 span.icon
                     i.fas.fa-search
                 span Search all assets 
-            a.button.success(href="/assets/upload")
-                span.icon
-                    i.fas.fa-upload
-                span Upload assets 
+            if user
+                a.button.success(href="/assets/upload")
+                    span.icon
+                        i.fas.fa-upload
+                    span Upload assets 
 
         .emptySpace
 
