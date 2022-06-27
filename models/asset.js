@@ -35,6 +35,10 @@ const AssetSchema = mongoose.Schema({
         ref: 'Batch',
         required: true
     },
+    batchSize: {
+        type: Number,
+        required: true
+    },
     assetType: {
         type: String,
         required: true
