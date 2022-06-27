@@ -6,7 +6,10 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0, user-scalable=no")
 
         link(rel="stylesheet", href="/css/styles.css")
-        link(rel="stylesheet", href="/css/styles.auto.css")
+        if colorMode == "Auto"
+            link(rel="stylesheet", href="/css/styles.auto.css")
+        else if colorMode == "Dark"
+            link(rel="stylesheet", href="/css/styles.dark.css")
         link(rel="stylesheet", href="/css/normalize.css")
 
         link(rel="stylesheet", href="/fontawesome/css/all.min.css")
@@ -15,7 +18,24 @@ html(lang="en")
         title Creator Content Manager #{title? " | " + title:""}
 
         block head
-    body 
+    body
+
+        .modal#lightModeModal
+            .modalBackground(data-modal="close")
+            .modalContainer
+                .modalHeader 
+                    h2 Change Site Display
+                    span.close(data-modal="close")
+                        i.fas.fa-times
+                .modalContent
+                    .buttons.fluid
+                        each mode, i in colorModes
+                            a.button(onclick="setTheme('"+mode+"')") #{mode} 
+                .modalFooter
+                    button.button.has-icon(data-modal="close")
+                        span.icon
+                            i.fas.fa-times
+                        span Close
 
         .hoverTag#hoverTag
             span#hoverTagText
@@ -35,5 +55,6 @@ html(lang="en")
         script(src="/js/fileInputs.js")
         script(src="/js/modal.js")
         script(src="/js/hover.js")  
+        script(src="/js/themeSwitcher.js") 
 
         block scripts

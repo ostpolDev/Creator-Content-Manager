@@ -8,12 +8,10 @@ nav.navbar
                     span Home
 
                 if user
-                    .navItem.dropdown
-                        a.navItem.chevron(href="/videos") Videos
-
-                        .dropdown
-                            a.navItem(href="/videos/add") Add
-                            a.navItem(href="/videos/search") Search
+                    a.navItem(href="/videos")
+                        span.icon
+                            i.fas.fa-video
+                        span Videos
 
                 .navItem.dropdown
                     a.navItem.chevron(href="/assets") Assets
@@ -30,6 +28,9 @@ nav.navbar
                             a.navItem(href="/channels/add") Add
         .section
             .navButtons
+                .navItem#changeLightModeButton(style="cursor: pointer;" data-modal="#lightModeModal")
+                    span.icon
+                        i.fas.fa-sun
                 if !user
                     a.navItem.button(href="/users/login") Login 
                     a.navItem.button(href="/users/register")
