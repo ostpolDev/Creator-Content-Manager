@@ -32,6 +32,9 @@ block content
                 h2.header Price
                 p If you bought your asset / assets, you can add how much you paid for them. Not required, but it provides useful information. The total price you've spent on assets will be viewable on your Profile page.
             
+                h2.header Source
+                p If you got your asset from a website, like YouTube, please provide the source link. This will also allow for speical previews inside the asset page, like embedded YouTube videos, or song lyrics.
+                
                 h2.header Changes
                 p You can change the information of assets and batches at any time once you've uploaded them, granted that you are the original uploaded of those files.
             .modalFooter
@@ -65,5 +68,13 @@ block content
                     input.input.fileUploadName(type="text" readonly)
                     input(type="file" multiple)
                 p.help Accepted file types are #{fileTypes.join(", ")}
+
+                .field
+                    label.label(for="youtube") YouTube ID
+                    .control.hasIcon
+                        input.input(type="text", name="id", placeholder="EOTyLqJWhZQ", id="youtube", maxlength="128")
+                        span.icon
+                            i.fab.fa-youtube
+                    p.help This is optional for now. If no id is given, an empty placeholder will be created.
 
                 
