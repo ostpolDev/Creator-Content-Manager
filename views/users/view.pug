@@ -37,6 +37,9 @@ block content
                                 i.fas.fa-star
                             span View favorites
             .column
-                if toView.description.rendered
-                    .segment
-                        pre!=toView.description.rendered
+                    if toView.description.rendered
+                        .segment
+                            pre!=toView.description.rendered
+                    else
+                        p
+                            i This user doesn't have an about section yet..
