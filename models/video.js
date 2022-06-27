@@ -70,7 +70,11 @@ const VideoSchema = mongoose.Schema({
         favoriteCount: Number,
         commentCount: Number
     },
-    isEmpty: Boolean,
+    isEmpty: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
     categoryId: String,
     category: String,
     tags: [String],

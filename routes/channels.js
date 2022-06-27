@@ -8,7 +8,7 @@ const channelFunctions = require('../modules/channelFunctions');
 
 const {body, validationResult} = require('express-validator');
 
-const User = require('../models/user');
+const Video = require('../models/video');
 const Channel = require('../models/channel');
 const { isValidObjectId } = require('mongoose');
 
@@ -102,9 +102,15 @@ router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
             next({status: 404});
             return;
         }
-        res.render("channels/view", {
-            title: channel.name,
-            channelToView: channel
+        Video.find({channel: channel.id, isEmpty: false}).sort({createdAt: -1}).limit(3).exec((err, videos) => {
+            if (err) {
+                logger.error(err);
+            }
+            res.render("channels/view", {
+                title: channel.name,
+                channelToView: channel,
+                videos
+            })
         })
     })
 })

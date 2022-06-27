@@ -43,33 +43,7 @@ block content
         .divider
 
         .columns.multiline
-            each video, i in videos
-                .column.oneQuarter
-                    a.card.hoverable(href="/videos/v/"+video.id)
-                        if !video.isEmpty
-                            .cardImage
-                                img(src=video.thumbnails.medium.url, alt=video.title) 
-                        .cardBody
-                            h1.header #{video.title}
-                            -let fieldValue = getObjectByString(video, field);
-                            p
-                                if fieldValue && (field != "title" && field != "createdAt" && field != "meta.publishedAt" && field != "statistics.viewCount")
-                                    | #{currentSort}: #{fieldValue}
-                                    br
-                                if !video.isEmpty
-                                    | #{numberWithCommas(video.statistics.viewCount)} views
-                                    br
-                                    | Edited by #{video.meta.editorsString}
-                                    br
-                                    | Starring #{video.meta.starringString}
-                            .meta
-                                if video.isEmpty
-                                    p(title=video.createdAt.toLocaleString()) Added #{formatDate(video.createdAt)}
-                                else
-                                    p(title=video.meta.publishedAt.toLocaleString()) Uploaded #{formatDate(video.meta.publishedAt)}
-            
-            if !videos || videos.length <= 0
-                h3.header No videos found for this channel
+            include videoGrid.pug
 
 block scripts
     script(src="/js/channelSwitcher.js") 

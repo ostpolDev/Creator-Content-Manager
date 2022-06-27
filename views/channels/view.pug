@@ -19,6 +19,11 @@ block content
                 if channelToView.description
                     .segment
                         pre=channelToView.description
+                if videos && videos.length > 0
+                    h3.header Lastest videos
+                    -let videoGridSize = "oneThird";
+                    .columns.multiline
+                        include ../videos/videoGrid.pug
             .column.oneQuarter
                 .buttons.fluid
                     if channel.id != channelToView.id
