@@ -80,7 +80,13 @@ router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
         return;
     }
 
-    Channel.findById(id).populate("createdBy meta.requestInfo.by").exec((err, channel) => {
+    Channel.findOne({
+        _id: id,
+        $or: [
+            {createdBy: req.user.id},
+            {access: req.user.id}
+        ]
+    }).populate("createdBy meta.requestInfo.by").exec((err, channel) => {
         if (err) {
             logger.error(err);
             req.flash('danger', "Something went wrong");
