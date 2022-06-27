@@ -94,7 +94,7 @@ const createVideo = function(youtubeId, channel, req) {
             newVideo.categoryId = snippet.categoryId;
             newVideo.category = getCategory(snippet.categoryId);
             newVideo.status = status;
-            newVideo.statistics = stats;
+            newVideo.statistics = replaceWithNumbers(stats);
             newVideo.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
             newVideo.youtubeChannelId = snippet.channelId;
             newVideo.meta.publishedAt = new Date(snippet.publishedAt);
@@ -155,7 +155,7 @@ const updateVideoData = function(video) {
         video.categoryId = snippet.categoryId;
         video.category = getCategory(snippet.categoryId);
         video.status = status;
-        video.statistics = stats;
+        video.statistics = replaceWithNumbers(stats);
         video.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
         video.youtubeChannelId = snippet.channelId;
         video.meta.publishedAt = new Date(snippet.publishedAt);
@@ -176,4 +176,11 @@ const updateVideoData = function(video) {
     })
 }
 
-module.exports = {categories, getCategory, createVideo, updateVideoData}
+const replaceWithNumbers = function(obj) {
+    Object.keys(obj).forEach(k => {
+        obj[k] = parseInt(obj[k]);
+    })
+    return obj;
+}
+
+module.exports = {categories, getCategory, createVideo, updateVideoData, replaceWithNumbers}

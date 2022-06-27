@@ -11,7 +11,6 @@ const {body, validationResult} = require('express-validator');
 const logger = require('../modules/logger');
 const User = require('../models/user');
 const rateLimiter = require('../modules/rateLimiter');
-const youtube = require('../modules/youtube');
 const channelFunctions = require('../modules/channelFunctions');
 const videoFunctions = require('../modules/videoFunctions');
 const { isValidObjectId } = require('mongoose');
@@ -56,7 +55,7 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, 
     videoSort[field] = currentOrder;
 
     let selects = ["title", "statistics", "isEmpty", "createdAt", "thumbnails", "meta"];
-    if (!selects.includes(field)) {
+    if (!field.startsWith("statistics") && !field.startsWith("meta") && !selects.includes(field)) {
         selects.push(field);
     }
 

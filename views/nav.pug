@@ -29,6 +29,8 @@ nav.navbar
                         a.navItem.chevron(href="/channels") Channels
 
                         .dropdown
+                            if channel
+                                a.navItem(href="/channels/v/"+channel.id) #{channel.name}
                             a.navItem(href="/channels/add") Add
         .section
             .navButtons

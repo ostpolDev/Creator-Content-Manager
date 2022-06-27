@@ -1,10 +1,6 @@
 extends ../layout
 
 block content
-    if !video.isEmpty
-        -let lastUpdateDiff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime()
-        -let diffHours = lastUpdateDiff / 3.6e+6;
-        -let canUpdate = diffHours >= 2;
     .container 
         .buttons
             a.button(href="/videos") 
@@ -98,6 +94,9 @@ block content
                                     else if type == "boolean"
                                         | #{formatBoolean(_thing)}
                     if !video.isEmpty
+                        -let lastUpdateDiff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime()
+                        -let diffHours = lastUpdateDiff / 3.6e+6;
+                        -let canUpdate = diffHours >= 2;
                         .divider
                         p
                             b Last Update:

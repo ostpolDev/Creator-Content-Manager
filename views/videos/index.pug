@@ -30,10 +30,15 @@ block content
                     option(value=-1 selected=(currentOrder == "-1")) Decending
 
         .field
-            button.button.fluid#searchButton
-                span.icon
-                    i.fas.fa-search
-                span Search
+            .buttons.equal
+                a.button.fluid(href="/videos")
+                    span.icon
+                        i.fas.fa-trash
+                    span Clear Filter
+                button.button.fluid#searchButton
+                    span.icon
+                        i.fas.fa-search
+                    span Search
 
         .divider
 
@@ -46,16 +51,17 @@ block content
                                 img(src=video.thumbnails.medium.url, alt=video.title) 
                         .cardBody
                             h1.header #{video.title}
+                            -let fieldValue = getObjectByString(video, field);
                             p
+                                if fieldValue && (field != "title" && field != "createdAt" && field != "meta.publishedAt" && field != "statistics.viewCount")
+                                    | #{currentSort}: #{fieldValue}
+                                    br
                                 if !video.isEmpty
                                     | #{numberWithCommas(video.statistics.viewCount)} views
                                     br
                                     | Edited by #{video.meta.editorsString}
                                     br
                                     | Starring #{video.meta.starringString}
-                                if video[field] && (field != "title" && field != "createdAt" && field != "meta.publishedAt" && field != "statistics.viewCount")
-                                    br
-                                    | #{currentSort}: #{video[field]}
                             .meta
                                 if video.isEmpty
                                     p(title=video.createdAt.toLocaleString()) Added #{formatDate(video.createdAt)}
