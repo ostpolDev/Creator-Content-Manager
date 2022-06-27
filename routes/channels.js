@@ -10,6 +10,7 @@ const {body, validationResult} = require('express-validator');
 
 const Video = require('../models/video');
 const Channel = require('../models/channel');
+const User = require('../models/user');
 const { isValidObjectId } = require('mongoose');
 
 router.get('/', validation.ensureAuthenticated, (req, res) => {
@@ -176,6 +177,41 @@ router.get('/getAccessUsers/:id', validation.ensureAuthenticated, (req, res) => 
 
         let channelAccess = channel.access.map(x => ({id: x._id, username: x.username, safeName: x.safeName}));
         return res.status(200).json({success: true, users: channelAccess});
+    })
+})
+
+router.get("/searchNewUsers/:storageId", validation.ensureAuthenticated, (req, res) => {
+    let storageId = req.params.storageId;
+    if (!isValidObjectId(storageId)) {
+        return res.status(400).json({success: false});
+    }
+    let query = req.query.q;
+    if (!query) {
+        return res.status(400).json({success: false});
+    }
+
+    Channel.findOne({_id: storageId, createdBy: req.user.id}).select("createdBy access").exec((err, channel) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        if (!channel) {
+            return res.status(404).json({success: false});
+        }
+
+        User.find({
+            _id: {$not: {$in: channel.access}, $ne: channel.createdBy},
+            $or: [
+            {username: {$regex: query, $options: "i"}},
+            {safeName: {$regex: query, $options: "i"}},
+            {name: {$regex: query, $options: "i"}}
+        ]}).limit(10).select("id username safeName").exec((err, users) => {
+            if (err) {
+                logger.error(err);
+                return res.status(500).json({success: false});
+            }
+            return res.status(200).json({success: true, users});
+        })
     })
 })
 
