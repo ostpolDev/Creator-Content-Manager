@@ -16,6 +16,18 @@ const logger = require('../modules/logger');
 const userFunctions = require('../modules/userFunctions');
 const validation = require('../modules/validation');
 
+router.get('/', validation.ensureAuthenticated, (req, res, next) => {
+    User.find({}).select("meta name safeName username mailHash createdAt").sort({username: 1}).exec((err, users) => {
+        if (err) {
+            return next(err);
+        }
+        res.render('users/index', {
+            title: "Users",
+            users
+        })
+    })
+})
+
 router.get('/login', csrfProtection, validation.ensureNotAuthenticated, (req, res) => {
     res.render('users/login', {
         title: "Login",

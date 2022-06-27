@@ -1,0 +1,17 @@
+extends ../layout
+
+block content
+    .container
+        h1.header #{users.length} users
+
+        .columns.multiline
+            each u, i in users
+                .column.oneQuarter
+                    a.card.hoverable.circular(href="/users/v/"+u.safeName)
+                        .cardImage
+                            img(src="https://www.gravatar.com/avatar/"+u.mailHash, alt=u.username)
+                        .cardBody.centerText
+                            h1.header #{u.username}
+                            .meta
+                                p Member since 
+                                    span(title=u.createdAt.toLocaleString()) #{formatDate(u.createdAt)}

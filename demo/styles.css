@@ -255,7 +255,8 @@ a.hiddenLink {
 }
 
 *.button {
-    height: 50px;
+    min-height: 50px;
+    height: fit-content;
     border-radius: var(--default-border-radius);
     border: 1px solid var(--default-dark-border-color);
     background: none;
@@ -1074,7 +1075,7 @@ a.card {
     cursor: pointer;
 }
 
-div.hoverable {
+div.hoverable, a.card.hoverable {
     transition: transform var(--default-transition-time) ease-out;
     cursor: pointer;
 }
@@ -1083,7 +1084,7 @@ div.hoverable {
     display: block;
 } */
 
-div.hoverable:hover {
+div.hoverable:hover, a.card.hoverable:hover {
     transform: translateY(-5px);
 }
 

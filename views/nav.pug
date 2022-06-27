@@ -32,6 +32,11 @@ nav.navbar
                             if channel
                                 a.navItem(href="/channels/v/"+channel.id) #{channel.name}
                             a.navItem(href="/channels/add") Add
+                    
+                    a.navItem(href="/users")
+                        span.icon 
+                            i.fas.fa-users
+                        span Users 
         .section
             .navButtons
                 .navItem#changeLightModeButton(style="cursor: pointer;" data-modal="#lightModeModal")
