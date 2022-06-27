@@ -1217,7 +1217,7 @@ a.user {
     gap: var(--default-spacing);
 }
 
-.user h2 {
+.user h1 {
     font-size: 26px;
     line-height: 14px;
 }
@@ -1227,7 +1227,7 @@ a.user {
     line-height: 14px;
 }
 
-.user.small h2 {
+.user.small h1 {
     font-size: 20px;
     line-height: 10px;
 }
