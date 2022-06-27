@@ -39,9 +39,14 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, async 
     let editor = req.query.editor;
 
     let user;
+    let disableChannel = starring || editor;
 
-    if (starring || editor) {
+    if (disableChannel) {
         user = await userFunctions.getInfoForUser(starring || editor, "_id name safeName username");
+    }
+
+    if (!user) {
+        disableChannel = false;
     }
 
     if (!currentSort || !Object.keys(sorts).includes(currentSort)) {
@@ -56,13 +61,16 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, async 
 
     let videoQuery = {};
 
-    if (starring) {
-        videoQuery.starring = user.id;
-    } else if (editor) {
-        videoQuery.editor = user.id;
+    if (disableChannel) {
+        if (starring) {
+            videoQuery.starring = user.id;
+        } else if (editor) {
+            videoQuery.editor = user.id;
+        }
     } else {
         videoQuery.channel = res.locals.channel.id
     }
+
 
     let videoSort = {}
 
@@ -95,9 +103,10 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, async 
                 currentOrder,
                 currentQuery,
                 field,
-                subtitle: "For channel " + res.locals.channel.name,
+                subtitle: disableChannel ? (starring ? "Starring " : "Edited by ") + user.username : "For channel " + res.locals.channel.name,
                 videoQuery,
-                videoSort
+                videoSort,
+                disableChannel
             })
         })
     })
