@@ -40,6 +40,11 @@ block content
                             b Created at:
                             br
                             span(title=channelToView.createdAt.toLocaleString()) #{formatDate(channelToView.createdAt)} 
+
+                    p
+                        b YouTube ID
+                        br
+                        span=channelToView.youtubeId
                     each thing, i in Object.keys(channelToView.statistics)
                         p
                             b #{formatString(thing)}:
