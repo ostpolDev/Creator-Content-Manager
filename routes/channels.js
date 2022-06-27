@@ -5,6 +5,7 @@ const logger = require('../modules/logger');
 const validation = require('../modules/validation');
 const rateLimiter = require('../modules/rateLimiter');
 const channelFunctions = require('../modules/channelFunctions');
+const userFunctions = require('../modules/userFunctions');
 
 const {body, validationResult} = require('express-validator');
 
@@ -153,6 +154,9 @@ router.get('/access/:id', validation.ensureAuthenticated, (req, res, next) => {
         if (err) {
             return next(err);
         }
+        if (!channel) {
+            return next({status: 404});
+        }
         res.render('channels/access', {
             channelToView: channel
         })
@@ -211,6 +215,77 @@ router.get("/searchNewUsers/:storageId", validation.ensureAuthenticated, (req, r
                 return res.status(500).json({success: false});
             }
             return res.status(200).json({success: true, users});
+        })
+    })
+})
+
+router.post('/addAccess', validation.ensureAuthenticated, async (req, res) => {
+    let channel = req.body.channel;
+    let user = req.body.user;
+
+    if (!isValidObjectId(channel)) {
+        return res.status(400).json({success: false, msg: "Invalid channel id"});
+    }
+
+    let userExists = await userFunctions.userExists(user);
+    if (!userExists) {
+        return res.status(400).json({success: false, msg: "User not found"});
+    }
+
+    Channel.findOne({_id: channel, createdBy: req.user.id}).exec((err, channel) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        if (!channel) {
+            return res.status(404).json({success: false, msg: "Storage not found"});
+        }
+        if (channel.access.includes(user)) {
+            return res.status(200).json({success: true, msg: "User already has access to this channel"});
+        }
+        channel.access.push(user);
+        channel.save((err) => {
+            if (err) {
+                logger.error(err);
+                return res.status(500).json({success: false});
+            }
+            return res.status(200).json({success: true, msg: "User added to channel access list"});
+        })
+    })
+})
+
+router.post('/removeAccess', validation.ensureAuthenticated, async (req, res) => {
+    let channel = req.body.channel;
+    let user = req.body.user;
+
+    if (!isValidObjectId(channel)) {
+        return res.status(400).json({success: false, msg: "Invalid channel id"});
+    }
+
+    let userExists = await userFunctions.userExists(user);
+    if (!userExists) {
+        return res.status(400).json({success: false, msg: "User not found"});
+    }
+
+    Channel.findOne({_id: channel, createdBy: req.user.id}).exec((err, channel) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        if (!channel) {
+            return res.status(404).json({success: false, msg: "Storage not found"});
+        }
+        let index = channel.access.indexOf(user);
+        if (index === -1) {
+            return res.status(200).json({success: true, msg: "User is not in this channel"});
+        }
+        channel.access.splice(index, 1);
+        channel.save((err) => {
+            if (err) {
+                logger.error(err);
+                return res.status(500).json({success: false});
+            }
+            return res.status(200).json({success: true, msg: "User removed from channel access list"});
         })
     })
 })

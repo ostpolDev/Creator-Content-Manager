@@ -38,8 +38,12 @@ function clear(container) {
 }
 
 function addToContainer(container, user, removeOnClick) {
+    let id = user._id;
+    if (id == undefined) {
+        id = user.id;
+    }
     let element = `
-        <button class="button" onclick="${removeOnClick ? "removeUser('" + user._id + "')" : "addUser('" + user._id + "')"}">
+        <button class="button" onclick="${removeOnClick ? "removeUser('" + id + "')" : "addUser('" + id + "')"}">
             <span>${user.username}</span>
         </button>
     `;
@@ -52,7 +56,6 @@ function getExistingAccess() {
     fetch("/channels/getAccessUsers/"+currentChannel).then((res) => {
         return res.json();
     }).then(json => {
-        console.log(json)
         if (json.success === true) {
             json.users.forEach(u => {
                 addToContainer(currentAccessContainer, u, true);
@@ -64,3 +67,47 @@ function getExistingAccess() {
 }
 
 getExistingAccess();
+
+function addUser(id) {
+    if (!id) {
+        return;
+    }
+    fetch("/channels/addAccess", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({channel: currentChannel, user: id})
+    }).then((res) => {return res.json()}).then(json => {
+        if (json.success === true) {
+            clear(currentAccessContainer);
+            clear(newAccessContainer);
+            search();
+            getExistingAccess();
+        }
+    }).catch(err => {
+        console.error(err);
+    })
+}
+
+function removeUser(id) {
+    if (!id) {
+        return;
+    }
+    fetch("/channels/removeAccess", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({channel: currentChannel, user: id})
+    }).then((res) => {return res.json()}).then(json => {
+        if (json.success === true) {
+            clear(currentAccessContainer);
+            clear(newAccessContainer);
+            search();
+            getExistingAccess();
+        }
+    }).catch(err => {
+        console.error(err);
+    })
+}

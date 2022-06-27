@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const logger = require('./logger');
 const Channel = require('../models/channel');
+const { isValidObjectId } = require('mongoose');
 
 const createSafeName = function(/**@type {String} */ name) {
     name = name.replace(/\W/gi, "_");
@@ -37,4 +38,20 @@ const getUsers = function(ids, select) {
     })
 }
 
-module.exports = {createSafeName, getMailCount, getUsers};
+const userExists = function(id) {
+    return new Promise((res) => {
+        if (!isValidObjectId(id)) {
+            return res(false);
+        }
+
+        User.countDocuments({_id: id}).exec((err, count) => {
+            if (err) {
+                logger.error(err);
+                return res(false);
+            }
+            return res(count > 0);
+        })
+    })
+}
+
+module.exports = {createSafeName, getMailCount, getUsers, userExists};
