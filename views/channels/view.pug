@@ -24,6 +24,20 @@ block content
                     -let videoGridSize = "oneThird";
                     .columns.multiline
                         include ../videos/videoGrid.pug
+
+                h2.header Members (#{1 + channelToView.access.length})
+                a.user.small.fluid(href="/users/v/"+channelToView.createdBy.safeName)
+                    .image
+                        img.rounded(src="https://www.gravatar.com/avatar/"+channelToView.createdBy.mailHash, alt=channelToView.createdBy.username)
+                    .content
+                        h1.header #{channelToView.createdBy.username}
+                        p Creator of this channel
+                each u, i in channelToView.access
+                    a.user.small.fluid(href="/users/v/"+u.safeName)
+                        .image
+                            img.rounded(src="https://www.gravatar.com/avatar/"+u.mailHash, alt=u.username)
+                        .content
+                            h1.header #{u.username}
             .column.oneQuarter
                 .buttons.fluid
                     if channel.id != channelToView.id

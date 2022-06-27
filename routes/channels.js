@@ -93,7 +93,7 @@ router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
             {createdBy: req.user.id},
             {access: req.user.id}
         ]
-    }).populate("createdBy meta.requestInfo.by").exec((err, channel) => {
+    }).populate("createdBy access meta.requestInfo.by").exec((err, channel) => {
         if (err) {
             return next(err);
         }
