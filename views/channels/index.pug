@@ -20,6 +20,9 @@ block content
                             p.subtitle #{c.statistics.subscriberCount} subscribers
                             .meta
                                 p Added by #{c.createdBy.username}
+                                    if c.access && c.access.length > 0
+                                        br
+                                        | #{c.access.length} members
 
         .divider.light
         

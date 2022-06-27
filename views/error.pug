@@ -1,0 +1,17 @@
+extends layout
+
+block content
+    .container
+        h1.title Something went wrong
+
+        .message.danger
+            .messageHeader Error #{id}
+            .messageBody
+                p If you see this, something went really wrong. Please take a screenshot, or send a message with the Error ID in the header to a moderator. 
+                | If possible, also include a description of what happend to get to this error.
+        
+        .buttons
+            a.button(href="/")
+                span.icon
+                    i.fas.fa-home
+                span Back Home 

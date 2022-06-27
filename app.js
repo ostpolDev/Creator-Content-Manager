@@ -11,6 +11,7 @@ const session = require('express-session');
 const upload = require('express-fileupload');
 const cookieSession = require('cookie-session');
 const MemoryStore = require('memorystore')(session);
+const uuid = require('uuid').v4;
 
 const Channel = require('./models/channel');
 
@@ -165,9 +166,23 @@ app.use((error, req, res, next) => {
         res.status(404).render('404', { url: req.url, title: "404 - Page not found" });
         return;
     }
-
+    let errorID = uuid();
+    logger.error(errorID);
     logger.error(error);
-    
+
+    res.redirect("/error?i="+encodeURIComponent(errorID));
+
+})
+
+app.get("/error", (req, res) => {
+    let id = req.query.i;
+    if (!id) {
+        res.redirect('/');
+        return;
+    }
+    res.render("error", {
+        id
+    })
 })
 
 app.use(function(req, res){

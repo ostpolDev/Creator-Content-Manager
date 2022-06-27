@@ -93,10 +93,7 @@ router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
         ]
     }).populate("createdBy meta.requestInfo.by").exec((err, channel) => {
         if (err) {
-            logger.error(err);
-            req.flash('danger', "Something went wrong");
-            res.redirect('/channels');
-            return;
+            return next(err);
         }
         if (!channel) {
             next({status: 404});
@@ -115,7 +112,7 @@ router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
     })
 })
 
-router.post("/switch/:id", validation.ensureAuthenticated, (req, res) => {
+router.post("/switch/:id", validation.ensureAuthenticated, (req, res, next) => {
     let id = req.params.id;
     if (!isValidObjectId(id)) {
         res.status(400).json({success: false, msg: "Invalid ID"});
@@ -130,9 +127,7 @@ router.post("/switch/:id", validation.ensureAuthenticated, (req, res) => {
         ]
     }).select("name id").exec((err, channel) => {
         if (err) {
-            logger.error(err);
-            res.status(500).json({success: false});
-            return;
+            return next(err);
         }
         if (!channel) {
             res.status(404).json({success: false, msg: "Channel not found"});
@@ -140,6 +135,22 @@ router.post("/switch/:id", validation.ensureAuthenticated, (req, res) => {
         }
         res.cookie("channel", channel.id, {maxAge: 1000 * 60 * 60 * 24 * 30, httpOnly: true})
         res.status(200).json({success: true});
+    })
+})
+
+router.get('/access/:id', validation.ensureAuthenticated, (req, res, next) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        next({status: 404});
+    }
+
+    Channel.findOne({
+        _id: id,
+        createdBy: req.user.id
+    }).exec((err, channel) => {
+        if (err) {
+            next(err);
+        }
     })
 })
 

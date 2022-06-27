@@ -49,7 +49,7 @@ router.post('/register', validation.ensureNotAuthenticated, [
     body("email", "E-Mail address is invalid").isEmail(),
     body("password", "A valid password containing 4 to 256 characters is rqeuired").notEmpty().isLength({min: 4, max: 256}),
     body("about", "Your about text cannot be longer than 4096 characters").optional().isLength({max: 4096})
-], async (/**@type {Request} */ req, /**@type {Response} */ res) => {
+], async (/**@type {Request} */ req, /**@type {Response} */ res, next) => {
     let errors = validationResult(req);
     if (!errors.isEmpty()) {
         errors.array().forEach(e => {
@@ -97,10 +97,7 @@ router.post('/register', validation.ensureNotAuthenticated, [
 
     newUser.save((err) => {
         if (err) {
-            logger.error(err);
-            req.flash('danger', "Something went wrong. Please try again later. (0x1)");
-            res.redirected('/users/register');
-            return;
+            return next(err);
         }
         req.flash('success', "Successfully created your new account. You can now login.");
         res.redirect('/users/login');
@@ -116,7 +113,7 @@ router.get('/v/:name', (req, res, next) => {
 
     User.findOne(query).select("name username safeName mailHash description createdAt meta").exec((err, user) => {
         if (err) {
-            logger.error(err);
+            return next(err);
         }
         if (user) {
             let channelQuery = {$or: [
@@ -130,7 +127,7 @@ router.get('/v/:name', (req, res, next) => {
 
             Channel.find(channelQuery).select("name thumbnails url meta").exec((err, channels) => {
                 if (err) {
-                    logger.error(err);
+                    return next(err);
                 }
                 res.render('users/view', {
                     toView: user,
@@ -190,8 +187,7 @@ router.post("/settings/save/general", validation.ensureAuthenticated, [
 
     req.user.save((err) => {
         if (err) {
-            logger.error(err);
-            req.flash('danger', "Something went wrong");
+            return next(err);
         } else {
             req.flash('success', "Successfully saved changes");
         }

@@ -29,7 +29,7 @@ let sorts = {
     "YouTube ID": "youtubeId"
 }
 
-router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, res) => {
+router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, res, next) => {
     let currentSort = req.query.sort;
     let currentOrder = req.query.order;
     let currentQuery = req.query.q;
@@ -64,11 +64,11 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, 
         {access: req.user.id}
     ]}).select("name id").exec((err, channels) => {
         if (err) {
-            logger.error(err)
+            return next(err);
         }
         Video.find(videoQuery).sort(videoSort).select(selects.join(" ")).limit(40).sort({createdAt: -1}).exec((_err, videos) => {
             if (_err) {
-                logger.error(_err)
+                return next(_err);
             }
             res.render('videos/index', {
                 title: "Videos",
@@ -145,10 +145,7 @@ router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
 
     Video.findById(id).populate("channel createdBy editor starring").exec((err, video) => {
         if (err) {
-            logger.error(err);
-            req.flash('danger', "Something went wrong");
-            res.redirect('/videos');
-            return;
+            return next(err);
         }
         if (!video) {
             return next({status: 404});
