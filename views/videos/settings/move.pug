@@ -1,0 +1,13 @@
+h2.header Move this video to another channel.
+p.subtitle It is currently on "#{video.channel.name}"
+
+.field 
+    label.label(for="channelSelect" disabled) Select a channel
+    .control
+        select.input#channelSelect
+
+.field
+    button.button.fluid#moveButton(disabled)
+        span.icon
+            i.fas.fa-shipping-fast
+        span Move to selected channel

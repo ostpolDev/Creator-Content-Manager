@@ -20,3 +20,24 @@ block content
                         span.icon
                             i.fas.fa-arrow-left
                         span Back 
+            .column
+                if setting == "general"
+                    include settings/general.pug
+                else if setting == "change channel"
+                    include settings/move.pug
+                else
+                    .message.danger
+                        .messageHeader You shouldn't be able to see this.
+                        .messageBody
+                            p If you can see this, something went wrong. Please tell someone about this.
+                            .segment.noBackground
+                                pre=JSON.stringify(settings, null, "\t")
+                                p=setting
+
+block scripts
+    script.
+        const currentVideo = "#{video.id}";
+        const currentChannel = "#{video.channel.id}";
+
+    if setting == "change channel"
+    script(src="/js/videoChannelSwitcher.js") 

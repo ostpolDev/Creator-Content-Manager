@@ -290,4 +290,28 @@ router.post('/removeAccess', validation.ensureAuthenticated, async (req, res) =>
     })
 })
 
+router.get('/getWithAccess', validation.ensureAuthenticated, validation.ensureChannel, (req, res) => {
+
+    let except = req.query.except;
+
+    let query = {
+        $or: [
+            {createdBy: req.user.id},
+            {access: req.user.id}
+        ]
+    }
+
+    if (except && isValidObjectId(except)) {
+        query._id = {$ne: except};
+    }
+
+    Channel.find(query).select("name _id").exec((err, channels) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        return res.status(200).json({success: true, channels});
+    })
+})
+
 module.exports = router;

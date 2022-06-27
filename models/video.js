@@ -54,6 +54,21 @@ const VideoSchema = mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User'
             }
+        },
+        move: {
+            lastMove: Date,
+            by: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            from: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Channel'
+            },
+            to: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Channel'
+            }
         }
     },
     status: {

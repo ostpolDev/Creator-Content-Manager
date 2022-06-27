@@ -210,7 +210,7 @@ router.get('/update/:id', validation.ensureAuthenticated, rateLimiter.apiRequest
     res.redirect('/videos/v/'+id);
 })
 
-let settings = ["General", "Change Channel"];
+let settings = ["general", "change channel"];
 
 router.get('/settings/:id', validation.ensureAuthenticated, validation.ensureChannel, (req, res, next) => {
     res.redirect('/videos/settings/'+encodeURIComponent(req.params.id)+"/"+encodeURIComponent(settings[0]));
@@ -227,12 +227,12 @@ router.get("/settings/:id/:setting", (req, res, next) => {
         return next({status: 404});
     }
 
-    Video.findById(id).exec(async (err, video) => {
+    Video.findById(id).populate("channel").exec(async (err, video) => {
         if (err) {
             return next(err);
         }
 
-        let accessResponse = await channelFunctions.hasAccessToChannel(video.channel, req.user.id);
+        let accessResponse = await channelFunctions.hasAccessToChannel(video.channel.id, req.user.id);
         if (!accessResponse.success || !accessResponse.hasAccess) {
             return next({status: 404});
         }
@@ -245,6 +245,44 @@ router.get("/settings/:id/:setting", (req, res, next) => {
             setting,
             settings
         })
+    })
+})
+
+router.post("/move/:id", validation.ensureAuthenticated, (req, res, next) => {
+    let channelId = req.body.channel;
+    let id = req.params.id;
+    if (!isValidObjectId(id) || !isValidObjectId(channelId)) {
+        return res.status(400).json({success: false});
+    }
+
+    Video.findById(id).exec(async (err, video) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        if (!video) {
+            return res.status(404).json({success: false, msg: "Video not found"});
+        }
+
+        let accessResponse = await channelFunctions.hasAccessToChannel(video.channel, req.user.id);
+        if (!accessResponse.success || !accessResponse.hasAccess) {
+            return res.status(404).json({success: false, msg: "Video not found"});
+        }
+
+        accessResponse = await channelFunctions.hasAccessToChannel(channelId, req.user.id);
+        if (!accessResponse.success || !accessResponse.hasAccess) {
+            return res.status(404).json({success: false, msg: "Channel not found"});
+        }
+
+        video.channel = channelId;
+        video.save((err) => {
+            if (err) {
+                logger.error(err);
+                return res.status(500).json({success: false});
+            }
+            return res.status(200).json({success: true});
+        })
+
     })
 })
 
