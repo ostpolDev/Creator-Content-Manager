@@ -3,7 +3,7 @@ extends ../layout
 block content
     -let lastUpdateDiff = new Date().getTime() - channelToView.meta.requestInfo.lastRequest.getTime()
     -let diffHours = lastUpdateDiff / 3.6e+6;
-    -let canUpdate = diffHours >= 2;
+    -let canUpdate = diffHours >= 12;
     -let isSelectedChannel = channelToView.id == channel.id;
 
     .container
@@ -32,6 +32,14 @@ block content
                                 i.fas.fa-toggle-on
                             span Switch to channel
                 .segment
+                    p
+                            b Created by:
+                            br
+                            a(href="/users/v/"+channelToView.createdBy.safeName)=channelToView.createdBy.username 
+                    p
+                            b Created at:
+                            br
+                            span(title=channelToView.createdAt.toLocaleString()) #{formatDate(channelToView.createdAt)} 
                     each thing, i in Object.keys(channelToView.statistics)
                         p
                             b #{formatString(thing)}:
@@ -50,6 +58,11 @@ block content
                         b Hours Since Last Request:
                         br
                         span(title=diffHours data-hover=diffHours) #{diffHours.toFixed(1)}
+                    if channelToView.meta.requestInfo.by
+                        p
+                            b Last Request made by:
+                            br
+                            a(href="/users/v/"+channelToView.meta.requestInfo.by.safeName)=channelToView.meta.requestInfo.by.username 
 
                 .buttons.fluid
                     a.button(href=channelToView.url target="_BLANK") 
@@ -63,10 +76,10 @@ block content
                                 i.fas.fa-sync
                             span Request Update
                     else
-                        button.button(disabled title="Only available every 2 hours")
+                        button.button(disabled title="Only available every 12 hours")
                             span.icon
                                 i.fas.fa-sync
-                            span(disabled data-hover="Only available every 2 hours") Request Update 
+                            span(disabled data-hover="Only available every 12 hours") Request Update 
 
 block scripts
     script(src="/js/channelSwitcher.js") 

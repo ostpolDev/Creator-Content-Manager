@@ -18,7 +18,7 @@ const getChannelCount = function(id) {
     })
 }
 
-const createFromId = function(id, checkExistence) {
+const createFromId = function(id, checkExistence, req) {
     return new Promise(async (res) => {
         let start = new Date();
 
@@ -59,7 +59,8 @@ const createFromId = function(id, checkExistence) {
                     lastRequest: start,
                     start,
                     end,
-                    time: end.getTime() - start.getTime()
+                    time: end.getTime() - start.getTime(),
+                    by: req.user.id
                 }
             },
             statistics: stats,
@@ -72,6 +73,74 @@ const createFromId = function(id, checkExistence) {
                 return res({success: false, error: err, msg: "Something went wrong. Please try again later..."});
             }
             return res({success: true, channel});
+        })
+    })
+}
+
+const updateChannel = function(id, req) {
+    return new Promise(async (res) => {
+
+        let start = new Date();
+
+        Channel.findOne({_id: id, $or: [
+            {createdBy: req.user.id},
+            {access: req.user.id}
+        ]}).exec(async (err, channel) => {
+            if (err) {
+                logger.error(err);
+                return res({success: false, error: err, msg: "Something went wrong"});
+            }
+            if (!channel) {
+                return res({success: false, msg: "No channel found"});
+            }
+    
+            let lastUpdateDiff = new Date().getTime() - channel.meta.requestInfo.lastRequest.getTime()
+            let diffHours = lastUpdateDiff / 3.6e+6;
+            let canUpdate = diffHours >= 12;
+    
+            if (!canUpdate) {
+                return res({success: false, msg: "Cannot update yet. Please try again later."});
+            }
+
+            let channelInfo = await youtube.getChannelInfo(encodeURIComponent(channel.youtubeId));
+
+            if (!channelInfo || !channelInfo.items) {
+                return res({success: false, msg: "The channel was not found"});
+            }
+        
+            let item = channelInfo.items[0];
+            if (!item) {
+                return res({success: false, msg: "The channel was not found"});
+            }
+        
+            let end = new Date();
+        
+            let snippet = item.snippet;
+            let stats = item.statistics;
+            let status = item.status;
+
+            channel.name = snippet.title;
+            channel.thumbnails = snippet.thumbnails;
+            channel.description = snippet.localized.description;
+            channel.statistics = stats;
+            channel.status = status;
+
+            channel.meta.requestInfo = {
+                lastRequest: start,
+                start,
+                end,
+                time: end.getTime() - start.getTime(),
+                by: req.user.id
+            }
+
+            channel.save((err, channel) => {
+                if (err) {
+                    logger.error(err);
+                    return res({success: false, error: err, msg: "Something went wrong. Please try again later..."});
+                }
+                return res({success: true, channel});
+            })
+            
         })
     })
 }
@@ -94,4 +163,4 @@ const hasAccessToChannel = function(channelId, userId) {
     })
 }
 
-module.exports = {getChannelCount, createFromId, hasAccessToChannel};
+module.exports = {getChannelCount, createFromId, hasAccessToChannel, updateChannel};

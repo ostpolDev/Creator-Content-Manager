@@ -102,7 +102,8 @@ const createVideo = function(youtubeId, channel, req) {
                 lastRequest: start,
                 start,
                 end,
-                time: diff
+                time: diff,
+                by: req.user.id
             }
     
             newVideo.save((err, video) => {
@@ -116,7 +117,7 @@ const createVideo = function(youtubeId, channel, req) {
     })
 }
 
-const updateVideoData = function(video) {
+const updateVideoData = function(video, req) {
     return new Promise(async (res) => {
 
         let start = new Date();
@@ -163,7 +164,8 @@ const updateVideoData = function(video) {
             lastRequest: start,
             start,
             end,
-            time: diff
+            time: diff,
+            by: req.user.id
         }
 
         video.save((err, video) => {

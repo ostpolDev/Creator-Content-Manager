@@ -3,9 +3,7 @@ const router = express.Router();
 
 const logger = require('../modules/logger');
 const validation = require('../modules/validation');
-const youtube = require('../modules/youtube');
 const rateLimiter = require('../modules/rateLimiter');
-const userFunctions = require('../modules/userFunctions');
 const channelFunctions = require('../modules/channelFunctions');
 
 const {body, validationResult} = require('express-validator');
@@ -48,7 +46,7 @@ router.post('/add', validation.ensureAuthenticated, [
     }
     let id = req.body.id;
 
-    let channelCreationResult = await channelFunctions.createFromId(id, true);
+    let channelCreationResult = await channelFunctions.createFromId(id, true, req);
     if (channelCreationResult.success === false) {
         req.flash('danger', channelCreationResult.msg);
         res.redirect('/channels/add');
@@ -60,6 +58,21 @@ router.post('/add', validation.ensureAuthenticated, [
 
 })
 
+router.get('/update/:id', validation.ensureAuthenticated, rateLimiter.apiRequestRateLimiterMiddleware, async (req, res, next) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return next({status: 404});
+    }
+
+    let updateChannelResult = await channelFunctions.updateChannel(id, req);
+    if (updateChannelResult.success === false) {
+        req.flash('danger', updateChannelResult.msg);
+    } else {
+        req.flash('success', "Successfully updated channel info");
+    }
+    res.redirect('/channels/v/'+id);
+})
+
 router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
     let id = req.params.id;
     if (!isValidObjectId(id)) {
@@ -67,7 +80,7 @@ router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
         return;
     }
 
-    Channel.findById(id).exec((err, channel) => {
+    Channel.findById(id).populate("createdBy meta.requestInfo.by").exec((err, channel) => {
         if (err) {
             logger.error(err);
             req.flash('danger', "Something went wrong");

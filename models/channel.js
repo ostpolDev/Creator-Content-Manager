@@ -29,7 +29,11 @@ const ChannelSchema = mongoose.Schema({
             lastRequest: Date,
             start: Date,
             end: Date,
-            time: Number
+            time: Number,
+            by: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            }
         }
     },
     statistics: {
