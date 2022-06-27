@@ -42,7 +42,7 @@
 body, html {
     background-color: var(--background-white);
     overflow-x: hidden;
-    height: 100%;
+    /* height: 100%; */
 }
 
 * {
@@ -270,6 +270,7 @@ a.hiddenLink {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: fit-content;
 }
 
 .button.info {
@@ -1073,7 +1074,7 @@ a.card {
     cursor: pointer;
 }
 
-.card.hoverable {
+div.hoverable {
     transition: transform var(--default-transition-time) ease-out;
     cursor: pointer;
 }
@@ -1082,7 +1083,7 @@ a.card {
     display: block;
 } */
 
-.card.hoverable:hover {
+div.hoverable:hover {
     transform: translateY(-5px);
 }
 
@@ -1167,7 +1168,18 @@ h1.menuHeader {
     cursor: pointer;
     transition: filter var(--default-transition-time) ease;
     background-color: var(--background-white);
+    display: block;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: var(--default-padding);
 }
+
+.sideMenu ul li span.icon, .sideMenu ul li a {
+    display: inline !important;
+}
+
 
 .sideMenu ul li:hover {
     filter: brightness(.95);
@@ -1184,6 +1196,74 @@ h1.menuHeader {
     height: 100%;
     display: block;
     padding: var(--default-padding);
+}
+
+/* USER ELEMENT */
+
+a.user {
+    text-decoration: none;
+    color: inherit;
+}
+
+.user {
+    display: block;
+    margin-bottom: var(--default-spacing);
+    border: 1px solid var(--default-border-color);
+    border-radius: var(--default-border-radius);
+    padding: var(--default-padding);
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: var(--default-spacing);
+}
+
+.user h2 {
+    font-size: 26px;
+    line-height: 14px;
+}
+
+.user p {
+    font-size: 21px;
+    line-height: 14px;
+}
+
+.user.small h2 {
+    font-size: 20px;
+    line-height: 10px;
+}
+
+.user.small p {
+    font-size: 16px;
+    line-height: 10px;
+}
+
+.user.fluid {
+    width: 100%;
+}
+
+.user .image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.user .content * {
+    display: block;
+}
+
+.user .image img {
+    width: 128px;
+    height: 128px;
+}
+
+.user.small .image img {
+    width: 64px;
+    height: 64px;
+}
+
+img.rounded {
+    border-radius: 50%;
 }
 
 /* RESPONSIVE STUFFS */
