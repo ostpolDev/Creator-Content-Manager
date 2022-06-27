@@ -54,4 +54,16 @@ const userExists = function(id) {
     })
 }
 
-module.exports = {createSafeName, getMailCount, getUsers, userExists};
+const getInfoForUser = function(name, fields) {
+    return new Promise((res) => {
+        User.findOne({$or: [{safeName: name}, {username: name}]}).select(fields).exec((err, user) => {
+            if (err) {
+                logger.error(err);
+                return res(undefined);
+            }
+            return res(user);
+        })
+    })
+}
+
+module.exports = {createSafeName, getMailCount, getUsers, userExists, getInfoForUser};

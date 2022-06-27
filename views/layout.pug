@@ -49,6 +49,11 @@ html(lang="en")
         section
             .container
                 != messages('misc/message', locals)
+                if back
+                    a.button(href=back)
+                        span.icon
+                            i.fas.fa-arrow-left
+                        span Back 
             block content
 
         script(src="/js/navbar.js")

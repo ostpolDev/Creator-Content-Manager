@@ -13,6 +13,7 @@ const User = require('../models/user');
 const rateLimiter = require('../modules/rateLimiter');
 const channelFunctions = require('../modules/channelFunctions');
 const videoFunctions = require('../modules/videoFunctions');
+const userFunctions = require('../modules/userFunctions');
 const { isValidObjectId } = require('mongoose');
 const marked = require('../modules/marked');
 
@@ -78,7 +79,8 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, 
                 currentSort,
                 currentOrder,
                 currentQuery,
-                field
+                field,
+                subtitle: "For channel " + res.locals.channel.name
             })
         })
     })
@@ -165,5 +167,60 @@ router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
         }
     })
 })
+
+router.get('/starring/:username', validation.ensureAuthenticated, async (req, res, next) => {
+    let username = req.params.username;
+
+    let user = await userFunctions.getInfoForUser(username, "_id name username safeName");
+    if (!user) {
+        req.flash('danger', "Something went wrong");
+        res.redirect('/');
+        return;
+    }
+
+    Video.find({starring: user.id}).exec((err, videos) => {
+        if (err) {
+            logger.error(err);
+            return next(err);
+        }
+        res.render("videos/index", {
+            title: "Videos starring " + user.username,
+            subtitle: "starring " + user.username,
+            videos,
+            disableSort: true,
+            disableChannel: true,
+            back: "/users/v/"+user.safeName
+        })
+    })
+
+})
+
+router.get('/editor/:username', validation.ensureAuthenticated, async (req, res, next) => {
+    let username = req.params.username;
+
+    let user = await userFunctions.getInfoForUser(username, "_id name username safeName");
+    if (!user) {
+        req.flash('danger', "Something went wrong");
+        res.redirect('/');
+        return;
+    }
+
+    Video.find({editor: user.id}).exec((err, videos) => {
+        if (err) {
+            logger.error(err);
+            return next(err);
+        }
+        res.render("videos/index", {
+            title: "Videos edited by " + user.username,
+            subtitle: "edited by " + user.username,
+            videos,
+            disableSort: true,
+            disableChannel: true,
+            back: "/users/v/"+user.safeName
+        })
+    })
+
+})
+
 
 module.exports = router;

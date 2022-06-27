@@ -2,45 +2,46 @@ extends ../layout
 
 block content
     .container
-        h1.header Videos
-        p.subtitle For channel 
-            b "#{channel.name}"
+        h1.header Videos (#{videos.length})
+        if subtitle
+            p.subtitle #{subtitle}
 
-        .segment
+        if !disableChannel
+            .segment
+
+                .field 
+                    label.label(for="channelSelect") Channel Switcher
+                    .control
+                        select.input#channelSelect
+                            each c, i in channels
+                                option(value=c.id,selected=(c.id == channel.id))=c.name
+        if !disableSort
+            .field 
+                label.label(for="channelSelect") Sort by
+                .control
+                    select.input#sortSelect
+                        each sort, i in Object.keys(sorts)
+                            option(value=sort,selected=(currentSort == sort))=sort
 
             .field 
-                label.label(for="channelSelect") Channel Switcher
+                label.label(for="channelSelect") Order
                 .control
-                    select.input#channelSelect
-                        each c, i in channels
-                            option(value=c.id,selected=(c.id == channel.id))=c.name
+                    select.input#orderSelect
+                        option(value=1 selected=(currentOrder == "1")) Acending
+                        option(value=-1 selected=(currentOrder == "-1")) Decending
 
-        .field 
-            label.label(for="channelSelect") Sort by
-            .control
-                select.input#sortSelect
-                    each sort, i in Object.keys(sorts)
-                        option(value=sort,selected=(currentSort == sort))=sort
+            .field
+                .buttons.equal
+                    a.button.fluid(href="/videos")
+                        span.icon
+                            i.fas.fa-trash
+                        span Clear Filter
+                    button.button.fluid#searchButton
+                        span.icon
+                            i.fas.fa-search
+                        span Search
 
-        .field 
-            label.label(for="channelSelect") Order
-            .control
-                select.input#orderSelect
-                    option(value=1 selected=(currentOrder == "1")) Acending
-                    option(value=-1 selected=(currentOrder == "-1")) Decending
-
-        .field
-            .buttons.equal
-                a.button.fluid(href="/videos")
-                    span.icon
-                        i.fas.fa-trash
-                    span Clear Filter
-                button.button.fluid#searchButton
-                    span.icon
-                        i.fas.fa-search
-                    span Search
-
-        .divider
+            .divider
 
         .columns.multiline
             include videoGrid.pug

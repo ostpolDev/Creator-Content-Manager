@@ -3,7 +3,7 @@ each video, i in videos
         a.card.hoverable(href="/videos/v/"+video.id)
             if !video.isEmpty
                 .cardImage
-                    img(src=video.thumbnails.medium.url, alt=video.title) 
+                    img(src=video.thumbnails.medium.url, alt=video.title, loading="lazy") 
             .cardBody
                 h1.header #{video.title}
                 -let fieldValue;
@@ -26,4 +26,4 @@ each video, i in videos
                         p(title=video.meta.publishedAt.toLocaleString()) Uploaded #{formatDate(video.meta.publishedAt)}
 
 if !videos || videos.length <= 0
-    h3.header No videos found for this channel
+    h3.header No videos found
