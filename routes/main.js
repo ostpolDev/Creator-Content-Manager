@@ -4,6 +4,8 @@ const router = express.Router();
 const Video = require('../models/video');
 const Channel = require('../models/channel');
 const logger = require('../modules/logger');
+const validation = require('../modules/validation');
+const channelFunctions = require('../modules/channelFunctions');
 
 router.get('/', async (req, res) => {
     if (!req.isAuthenticated()) {
@@ -33,6 +35,29 @@ router.get('/', async (req, res) => {
                 videos
             })
         })
+    })
+})
+
+router.get('/watch', validation.ensureAuthenticated, (req, res, next) => {
+    let query = req.query.v;
+    if (!query) {
+        return next({status: 404});
+    }
+
+    Video.findOne({youtubeId: query}).select("_id channel").exec(async (err, video) => {
+        if (err) {
+            return next(err);
+        }
+        if (!video) {
+            return next({status: 404});
+        }
+
+        let accessResponse = await channelFunctions.hasAccessToChannel(video.channel, req.user.id);
+        if (!accessResponse.success || !accessResponse.hasAccess) {
+            return next({status: 404});
+        }
+
+        res.redirect('/videos/v/'+video.id);
     })
 })
 
