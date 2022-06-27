@@ -227,7 +227,7 @@ router.get("/settings/:id/:setting", (req, res, next) => {
         return next({status: 404});
     }
 
-    Video.findById(id).populate("channel").exec(async (err, video) => {
+    Video.findById(id).populate("channel meta.move.from meta.move.to meta.move.by").exec(async (err, video) => {
         if (err) {
             return next(err);
         }
@@ -274,7 +274,15 @@ router.post("/move/:id", validation.ensureAuthenticated, (req, res, next) => {
             return res.status(404).json({success: false, msg: "Channel not found"});
         }
 
+        let oldChannel = video.channel;
+
         video.channel = channelId;
+        video.meta.move = {
+            lastMove: new Date(),
+            by: req.user.id,
+            from: oldChannel,
+            to: channelId
+        }
         video.save((err) => {
             if (err) {
                 logger.error(err);

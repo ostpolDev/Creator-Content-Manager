@@ -11,3 +11,21 @@ p.subtitle It is currently on "#{video.channel.name}"
         span.icon
             i.fas.fa-shipping-fast
         span Move to selected channel
+
+.divider.light
+.emptySpace
+if video.meta.move && video.meta.move.lastMove
+    h3.header Last move
+    p This video was last moved from the channel 
+        a(href="/channels/v/"+video.meta.move.from.id) #{video.meta.move.from.name}
+        |  to 
+        a(href="/channels/v/"+video.meta.move.to.id) #{video.meta.move.to.name}
+        |  on 
+        span(title=video.meta.move.lastMove.toLocaleString()) #{formatDate(video.meta.move.lastMove)}.
+
+    h3.header Last moved by
+    a.user.small.fluid(href="/users/v/"+video.meta.move.by.safeName)
+        .image
+            img.rounded(src="https://www.gravatar.com/avatar/"+video.meta.move.by.mailHash, alt=video.meta.move.by.username)
+        .content
+            h1.header #{video.meta.move.by.username}
