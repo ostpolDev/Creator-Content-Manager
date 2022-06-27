@@ -60,8 +60,8 @@ p.subtitle {
     font-size: 20px;
     font-weight: 100;
     line-height: 12px;
-    transform: translateY(-50%);
     margin-bottom: var(--default-spacing);
+    margin-top: -1em;
 }
 
 a {
@@ -1022,10 +1022,13 @@ a.navItem.button {
     display: none;
     pointer-events: none;
     position: absolute;
+    min-width: 100%;
+    top: 100%;
 
     background-color: var(--off-white);
     border: 1px solid var(--default-border-color);
     left: 0;
+    z-index: 10;
     /* top: 100%;
     min-width: 100%; */
 
