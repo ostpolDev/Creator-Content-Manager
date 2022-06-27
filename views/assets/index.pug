@@ -1,0 +1,49 @@
+extends ../layout
+
+block content
+    .container
+        h1.header Assets
+        p.subtitle #{count} assets have been uploaded so far
+
+        .buttons.equal
+            a.button(href="/assets/batches")
+                span.icon
+                    i.fas.fa-folder
+                span Batches
+
+            a.button(href="/assets/category/music")
+                span.icon
+                    i.fas.fa-music
+                span Music
+            
+            a.button(href="/assets/category/sound-effects")
+                span.icon
+                    i.fas.fa-volume-up
+                span Sound effects
+
+            a.button(href="/assets/category/videos")
+                span.icon
+                    i.fas.fa-video
+                span Videos
+
+            a.button(href="/assets/category/images")
+                span.icon
+                    i.fas.fa-image
+                span Images
+        
+        .buttons.fluid
+            a.button.link(href="/assets/search")
+                span.icon
+                    i.fas.fa-search
+                span Search all assets 
+            a.button.success(href="/assets/upload")
+                span.icon
+                    i.fas.fa-upload
+                span Upload assets 
+
+        .emptySpace
+
+        h2.header Recent assets
+        p.subtitle The 10 most recent assets uploaded
+
+        include assetList.pug

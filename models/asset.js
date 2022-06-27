@@ -81,7 +81,11 @@ const AssetSchema = mongoose.Schema({
         }
     },
     meta: {
-        downloads: Number
+        downloads: Number,
+        uploadedBy: {
+            username: String,
+            safeName: String
+        }
     }
 }, {timestamps: true});
 
