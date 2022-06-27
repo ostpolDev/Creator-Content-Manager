@@ -36,11 +36,11 @@ block content
                             span.icon 
                                 i.fas.fa-star
                             span View favorites
-                    a.button(href="/videos/starring/"+encodeURIComponent(toView.safeName))
+                    a.button(href="/videos?starring="+encodeURIComponent(toView.safeName))
                             span.icon 
                                 i.fas.fa-video
                             span Videos with #{toView.username}
-                    a.button(href="/videos/editor/"+encodeURIComponent(toView.safeName))
+                    a.button(href="/videos?editor="+encodeURIComponent(toView.safeName))
                             span.icon 
                                 i.fas.fa-cut
                             span Videos edited by #{toView.username}

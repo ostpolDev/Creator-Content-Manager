@@ -46,6 +46,9 @@ block content
         .columns.multiline
             include videoGrid.pug
 
+        .divider.light
+        small #{JSON.stringify(videoQuery)} #{JSON.stringify(videoSort)}
+
 block scripts
     script(src="/js/channelSwitcher.js") 
     script(src="/js/videos.js") 

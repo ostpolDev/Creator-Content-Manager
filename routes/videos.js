@@ -30,10 +30,19 @@ let sorts = {
     "YouTube ID": "youtubeId"
 }
 
-router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, res, next) => {
+router.get("/", validation.ensureAuthenticated, validation.ensureChannel, async (req, res, next) => {
     let currentSort = req.query.sort;
     let currentOrder = req.query.order;
     let currentQuery = req.query.q;
+
+    let starring = req.query.starring;
+    let editor = req.query.editor;
+
+    let user;
+
+    if (starring || editor) {
+        user = await userFunctions.getInfoForUser(starring || editor, "_id name safeName username");
+    }
 
     if (!currentSort || !Object.keys(sorts).includes(currentSort)) {
         currentSort = "Upload Date";
@@ -45,9 +54,15 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, 
 
     currentOrder = parseInt(currentOrder);
 
-    let videoQuery = {
-        channel: res.locals.channel.id
-    };
+    let videoQuery = {};
+
+    if (starring) {
+        videoQuery.starring = user.id;
+    } else if (editor) {
+        videoQuery.editor = user.id;
+    } else {
+        videoQuery.channel = res.locals.channel.id
+    }
 
     let videoSort = {}
 
@@ -80,7 +95,9 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, 
                 currentOrder,
                 currentQuery,
                 field,
-                subtitle: "For channel " + res.locals.channel.name
+                subtitle: "For channel " + res.locals.channel.name,
+                videoQuery,
+                videoSort
             })
         })
     })
@@ -167,60 +184,5 @@ router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
         }
     })
 })
-
-router.get('/starring/:username', validation.ensureAuthenticated, async (req, res, next) => {
-    let username = req.params.username;
-
-    let user = await userFunctions.getInfoForUser(username, "_id name username safeName");
-    if (!user) {
-        req.flash('danger', "Something went wrong");
-        res.redirect('/');
-        return;
-    }
-
-    Video.find({starring: user.id}).exec((err, videos) => {
-        if (err) {
-            logger.error(err);
-            return next(err);
-        }
-        res.render("videos/index", {
-            title: "Videos starring " + user.username,
-            subtitle: "starring " + user.username,
-            videos,
-            disableSort: true,
-            disableChannel: true,
-            back: "/users/v/"+user.safeName
-        })
-    })
-
-})
-
-router.get('/editor/:username', validation.ensureAuthenticated, async (req, res, next) => {
-    let username = req.params.username;
-
-    let user = await userFunctions.getInfoForUser(username, "_id name username safeName");
-    if (!user) {
-        req.flash('danger', "Something went wrong");
-        res.redirect('/');
-        return;
-    }
-
-    Video.find({editor: user.id}).exec((err, videos) => {
-        if (err) {
-            logger.error(err);
-            return next(err);
-        }
-        res.render("videos/index", {
-            title: "Videos edited by " + user.username,
-            subtitle: "edited by " + user.username,
-            videos,
-            disableSort: true,
-            disableChannel: true,
-            back: "/users/v/"+user.safeName
-        })
-    })
-
-})
-
 
 module.exports = router;
