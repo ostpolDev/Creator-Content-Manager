@@ -17,7 +17,49 @@ const videoFunctions = require('../modules/videoFunctions');
 const { isValidObjectId } = require('mongoose');
 const marked = require('../modules/marked');
 
+let sorts = {
+    "Title": "title",
+    "Upload Date": "meta.publishedAt",
+    "Added Date": "createdAt",
+    "Views": "statistics.viewCount",
+    "Likes": "statistics.likeCount",
+    "Comments": "statistics.commentCount",
+    "Category": "categoryId",
+    "Made for Kids": "status.madeForKids",
+    "Licence": "status.licence",
+    "YouTube ID": "youtubeId"
+}
+
 router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, res) => {
+    let currentSort = req.query.sort;
+    let currentOrder = req.query.order;
+    let currentQuery = req.query.q;
+
+    if (!currentSort || !Object.keys(sorts).includes(currentSort)) {
+        currentSort = "Upload Date";
+    }
+
+    if (!currentOrder || (currentOrder != "1" && currentOrder != "-1")) {
+        currentOrder = "-1";
+    }
+
+    currentOrder = parseInt(currentOrder);
+
+    let videoQuery = {
+        channel: res.locals.channel.id
+    };
+
+    let videoSort = {}
+
+    let field = sorts[currentSort];
+
+    videoSort[field] = currentOrder;
+
+    let selects = ["title", "statistics", "isEmpty", "createdAt", "thumbnails", "meta"];
+    if (!selects.includes(field)) {
+        selects.push(field);
+    }
+
     Channel.find({$or: [
         {createdBy: req.user.id},
         {access: req.user.id}
@@ -25,14 +67,19 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, (req, 
         if (err) {
             logger.error(err)
         }
-        Video.find({channel: res.locals.channel.id}).select("title statistics isEmpty createdAt thumbnails meta").limit(40).sort({createdAt: -1}).exec((_err, videos) => {
+        Video.find(videoQuery).sort(videoSort).select(selects.join(" ")).limit(40).sort({createdAt: -1}).exec((_err, videos) => {
             if (_err) {
                 logger.error(_err)
             }
             res.render('videos/index', {
                 title: "Videos",
                 channels,
-                videos
+                videos,
+                sorts,
+                currentSort,
+                currentOrder,
+                currentQuery,
+                field
             })
         })
     })

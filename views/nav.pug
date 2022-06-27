@@ -8,10 +8,14 @@ nav.navbar
                     span Home
 
                 if user
-                    a.navItem(href="/videos")
-                        span.icon
-                            i.fas.fa-video
-                        span Videos
+                    .navItem.dropdown
+                        a.navItem.chevron(href="/videos")
+                            span.icon
+                                i.fas.fa-video
+                            span Videos
+
+                        .dropdown
+                            a.navItem(href="/videos/add") Add
 
                 .navItem.dropdown
                     a.navItem.chevron(href="/assets") Assets

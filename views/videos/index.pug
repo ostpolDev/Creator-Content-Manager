@@ -6,12 +6,36 @@ block content
         p.subtitle For channel 
             b "#{channel.name}"
 
+        .segment
+
+            .field 
+                label.label(for="channelSelect") Channel Switcher
+                .control
+                    select.input#channelSelect
+                        each c, i in channels
+                            option(value=c.id,selected=(c.id == channel.id))=c.name
+
         .field 
-            label.label(for="channelSelect") Channel Switcher
+            label.label(for="channelSelect") Sort by
             .control
-                select.input#channelSelect
-                    each c, i in channels
-                        option(value=c.id,selected=(c.id == channel.id))=c.name
+                select.input#sortSelect
+                    each sort, i in Object.keys(sorts)
+                        option(value=sort,selected=(currentSort == sort))=sort
+
+        .field 
+            label.label(for="channelSelect") Order
+            .control
+                select.input#orderSelect
+                    option(value=1 selected=(currentOrder == "1")) Acending
+                    option(value=-1 selected=(currentOrder == "-1")) Decending
+
+        .field
+            button.button.fluid#searchButton
+                span.icon
+                    i.fas.fa-search
+                span Search
+
+        .divider
 
         .columns.multiline
             each video, i in videos
@@ -22,11 +46,16 @@ block content
                                 img(src=video.thumbnails.medium.url, alt=video.title) 
                         .cardBody
                             h1.header #{video.title}
-                            if !video.isEmpty
-                                p #{numberWithCommas(video.statistics.viewCount)} views
-                                p Edited by #{video.meta.editorsString}
+                            p
+                                if !video.isEmpty
+                                    | #{numberWithCommas(video.statistics.viewCount)} views
+                                    br
+                                    | Edited by #{video.meta.editorsString}
                                     br
                                     | Starring #{video.meta.starringString}
+                                if video[field] && (field != "title" && field != "createdAt" && field != "meta.publishedAt" && field != "statistics.viewCount")
+                                    br
+                                    | #{currentSort}: #{video[field]}
                             .meta
                                 if video.isEmpty
                                     p(title=video.createdAt.toLocaleString()) Added #{formatDate(video.createdAt)}
@@ -38,3 +67,4 @@ block content
 
 block scripts
     script(src="/js/channelSwitcher.js") 
+    script(src="/js/videos.js") 

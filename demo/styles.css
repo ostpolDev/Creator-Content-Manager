@@ -61,7 +61,7 @@ p.subtitle {
     font-weight: 100;
     line-height: 12px;
     margin-bottom: var(--default-spacing);
-    margin-top: -1em;
+    margin-top: -0.6em;
 }
 
 a {

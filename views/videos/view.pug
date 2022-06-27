@@ -1,9 +1,10 @@
 extends ../layout
 
 block content
-    -let lastUpdateDiff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime()
-    -let diffHours = lastUpdateDiff / 3.6e+6;
-    -let canUpdate = diffHours >= 2;
+    if !video.isEmpty
+        -let lastUpdateDiff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime()
+        -let diffHours = lastUpdateDiff / 3.6e+6;
+        -let canUpdate = diffHours >= 2;
     .container 
         .buttons
             a.button(href="/videos") 
@@ -96,16 +97,17 @@ block content
                                         | #{formatString(_thing)}
                                     else if type == "boolean"
                                         | #{formatBoolean(_thing)}
-                    .divider
-                    p
-                        b Last Update:
-                        br
-                        span(title=video.meta.requestInfo.lastRequest.toLocaleString()) #{formatDate(video.meta.requestInfo.lastRequest)}
-                    p
-                        b Last Request Duration:
-                        br
-                        span #{video.meta.requestInfo.time}ms
-                    p
-                        b Hours Since Last Request:
-                        br
-                        span(title=diffHours data-hover=diffHours) #{diffHours.toFixed(1)}
+                    if !video.isEmpty
+                        .divider
+                        p
+                            b Last Update:
+                            br
+                            span(title=video.meta.requestInfo.lastRequest.toLocaleString()) #{formatDate(video.meta.requestInfo.lastRequest)}
+                        p
+                            b Last Request Duration:
+                            br
+                            span #{video.meta.requestInfo.time}ms
+                        p
+                            b Hours Since Last Request:
+                            br
+                            span(title=diffHours data-hover=diffHours) #{diffHours.toFixed(1)}

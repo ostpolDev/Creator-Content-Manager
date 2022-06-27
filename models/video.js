@@ -61,10 +61,10 @@ const VideoSchema = mongoose.Schema({
         madeForKids: Boolean
     },
     statistics: {
-        viewCount: String,
-        likeCount: String,
-        favoriteCount: String,
-        commentCount: String
+        viewCount: Number,
+        likeCount: Number,
+        favoriteCount: Number,
+        commentCount: Number
     },
     isEmpty: Boolean,
     categoryId: String,
