@@ -195,4 +195,19 @@ router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
     })
 })
 
+router.get('/update/:id', validation.ensureAuthenticated, rateLimiter.apiRequestRateLimiterMiddleware, async (req, res, next) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return next({status: 404});
+    }
+
+    let updateVideoResult = await videoFunctions.updateVideoData(id, req);
+    if (updateVideoResult.success === false) {
+        req.flash('danger', updateVideoResult.msg);
+    } else {
+        req.flash('success', "Successfully updated video info");
+    }
+    res.redirect('/videos/v/'+id);
+})
+
 module.exports = router;

@@ -117,3 +117,15 @@ block content
                             b Hours Since Last Request:
                             br
                             span(title=diffHours data-hover=diffHours) #{diffHours.toFixed(1)}
+
+                if !video.isEmpty
+                    if canUpdate
+                        a.button.fluid(href="/videos/update/"+channelToView.id)
+                            span.icon
+                                i.fas.fa-sync
+                            span Request Update
+                    else
+                        button.button.fluid(disabled title="Only available every 12 hours")
+                            span.icon
+                                i.fas.fa-sync
+                            span(disabled data-hover="Only available every 12 hours") Request Update 
