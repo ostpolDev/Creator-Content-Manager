@@ -2,4 +2,21 @@ extends layout
 
 block content
     .container
+        h1.title Creator Content Manager
+        p.subtitle Welcome #{user.name}! This is your overview.
+
+        .emptySpace
+
+        if videos && videos.length > 0
+            h2.header Latest videos
+            p.subtitle #{videos.length} latest videos across all of your channels
+            .columns.multiline
+                include videos/videoGrid.pug
         
+        .emptySpace 
+        .divider.light
+
+        p
+            strong Tip: 
+            | Change what's shown here in your 
+            a(href="/users/settings/preferences") preference settings
