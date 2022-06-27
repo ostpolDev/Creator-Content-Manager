@@ -25,6 +25,7 @@ let sorts = {
     "Likes": "statistics.likeCount",
     "Comments": "statistics.commentCount",
     "Category": "categoryId",
+    "Privacy Status": "status.privacyStatus",
     "Made for Kids": "status.madeForKids",
     "Licence": "status.licence",
     "YouTube ID": "youtubeId"
@@ -78,8 +79,8 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, async 
 
     videoSort[field] = currentOrder;
 
-    let selects = ["title", "statistics", "isEmpty", "createdAt", "thumbnails", "meta"];
-    if (!field.startsWith("statistics") && !field.startsWith("meta") && !selects.includes(field)) {
+    let selects = ["title", "statistics", "isEmpty", "createdAt", "thumbnails", "meta", "status"];
+    if (!field.startsWith("statistics") && !field.startsWith("meta") && !selects.includes(field) && !field.startsWith("status")) {
         selects.push(field);
     }
 

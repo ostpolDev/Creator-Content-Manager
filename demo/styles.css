@@ -745,6 +745,11 @@ span.icon {
     margin-right: 8px;
 }
 
+span.icon.right {
+    margin-right: 0;
+    margin-left: 8px;
+}
+
 .field p.help {
     font-weight: 100;
     font-size: 14px;

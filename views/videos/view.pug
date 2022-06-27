@@ -8,6 +8,13 @@ block content
                     i.fas.fa-arrow-left
                 span Back
         h1.header #{video.title}
+            if !video.isEmpty
+                if video.status.privacyStatus == "unlisted"
+                    span.icon.right
+                        i.fas.fa-eye
+                else if video.status.privacyStatus == "private"
+                    span.icon.right
+                        i.fas.fa-eye-slash
         p.subtitle #{video.channel.name}
             if !video.isEmpty
                 |  | Uploaded #{formatDate(video.meta.publishedAt)}
