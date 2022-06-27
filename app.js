@@ -153,6 +153,7 @@ app.use("/", require('./routes/main'));
 app.use("/users", require('./routes/users'));
 app.use("/channels", require('./routes/channels'));
 app.use("/videos", require("./routes/videos"));
+app.use("/assets", require('./routes/assets'));
 
 app.use("/api", require('./routes/api/_index'));
 
