@@ -33,6 +33,7 @@ router.post('/login', csrfProtection, validation.ensureNotAuthenticated, (req, r
 
 router.get("/logout", (req, res) => {
     req.logout();
+    res.clearCookie("channel");
     res.redirect('/');
 })
 
