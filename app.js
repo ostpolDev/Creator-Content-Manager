@@ -36,6 +36,7 @@ db.on("error", (err) => {
 
 app.use(helmet({contentSecurityPolicy: false}));
 
+
 app.set("views", paths.views);
 app.set("view engine", "pug");
 
@@ -149,13 +150,14 @@ app.post('/setTheme', [
     }
 })
 
+app.use("/api", require('./routes/api/_index'));
+
 app.use("/", require('./routes/main'));
 app.use("/users", require('./routes/users'));
 app.use("/channels", require('./routes/channels'));
 app.use("/videos", require("./routes/videos"));
 app.use("/assets", require('./routes/assets'));
 
-app.use("/api", require('./routes/api/_index'));
 
 app.listen(PORT, () => {
     logger.info(`Server listening on port ${PORT}`);

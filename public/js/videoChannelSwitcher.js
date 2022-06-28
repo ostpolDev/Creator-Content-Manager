@@ -23,7 +23,7 @@ getChannels();
 
 function moveChannel() {
     let newChannel = channelSelect.value;
-    fetch("/videos/move/"+encodeURIComponent(currentVideo), {
+    fetch("/api/videos/move/"+encodeURIComponent(currentVideo), {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'

@@ -8,5 +8,6 @@ router.get("/", (req, res) => {
 })
 
 router.use("/channels", require('./channels'));
+router.use("/videos", require('./videos'));
 
 module.exports = router;
