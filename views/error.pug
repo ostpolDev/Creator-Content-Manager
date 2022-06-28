@@ -10,6 +10,9 @@ block content
                 p If you see this, something went really wrong. Please take a screenshot, or send a message with the Error ID in the header to a moderator. 
                 | If possible, also include a description of what happend to get to this error.
         
+        if environment == "development"
+            pre=message
+
         .buttons
             a.button(href="/")
                 span.icon

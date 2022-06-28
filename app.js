@@ -23,6 +23,8 @@ const rateLimiter = require('./modules/rateLimiter');
 
 const PORT = process.env.PORT || 3000;
 
+var environment = process.env.NODE_ENV || 'development';
+
 mongoose.connect(config.database, {useNewUrlParser: true, useUnifiedTopology: true});
 let db = mongoose.connection;
 
@@ -88,7 +90,7 @@ app.use(cookie_parser());
 
 let colorModes = ["Auto", "Dark", "Light"]
 
-console.log(`Running in ${process.env.NODE_ENV === "production" ? "Production" : "Development"}`)
+console.log(`Running in ${environment === "production" ? "Production" : "Development"}`)
 
 app.get('*', (req, res, next) => {
     res.locals.user = req.user || null;
@@ -133,6 +135,11 @@ app.get('*', (req, res, next) => {
     }
 });
 
+app.use("*", (req, res, next) => {
+    res.locals.environment = environment;
+    next();
+})
+
 app.post('/setTheme', [
     body("theme", "Invalid theme").notEmpty().isLength({min: 1, max: 15}).isAlphanumeric()
 ], rateLimiter.rateLimiterMiddleware, (req, res) => {
@@ -173,7 +180,12 @@ app.use((error, req, res, next) => {
     logger.error(errorID);
     logger.error(error);
 
-    res.redirect("/error?i="+encodeURIComponent(errorID));
+    let url = "/error?i="+encodeURIComponent(errorID);
+    if (environment !== "production") {
+        url += "&msg="+encodeURIComponent(error.msg || error.message);
+    }
+
+    res.redirect(url);
 
 })
 
@@ -184,7 +196,8 @@ app.get("/error", (req, res) => {
         return;
     }
     res.render("error", {
-        id
+        id,
+        message: req.query.msg
     })
 })
 

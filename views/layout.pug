@@ -56,6 +56,16 @@ html(lang="en")
                         span Back 
             block content
 
+        if environment == "development"
+            section
+                .container
+                    small
+                        span.icon(title="This site is running in development mode")
+                            i.fas.fa-tools
+                        span This site is running in 
+                            strong #{environment} 
+                            |  mode.
+
         script(src="/js/navbar.js")
         script(src="/js/fileInputs.js")
         script(src="/js/modal.js")
