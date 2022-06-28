@@ -6,16 +6,15 @@ block content
         if subtitle
             p.subtitle #{subtitle}
 
-        if !disableChannel
-            .segment
+    
+        .segment#channelSelectContainer
 
-                .field 
-                    label.label(for="channelSelect") Channel Switcher
-                    .control
-                        select.input#channelSelect
-                            each c, i in channels
-                                option(value=c.id,selected=(c.id == channel.id))=c.name
-        if !disableSort
+            .field 
+                label.label(for="channelSelect") Channel Switcher
+                .control
+                    select.input#channelSelect
+
+        #sortContainer
             .field 
                 label.label(for="channelSelect") Sort by
                 .control
@@ -27,12 +26,12 @@ block content
                 label.label(for="channelSelect") Order
                 .control
                     select.input#orderSelect
-                        option(value=1 selected=(currentOrder == "1")) Acending
-                        option(value=-1 selected=(currentOrder == "-1")) Decending
+                        option(value=1) Acending
+                        option(value=-1) Decending
 
             .field
                 .buttons.equal
-                    a.button.fluid(href="/videos")
+                    button.button.fluid#clearButton
                         span.icon
                             i.fas.fa-trash
                         span Clear Filter
@@ -43,11 +42,7 @@ block content
 
             .divider
 
-        .columns.multiline
-            include videoGrid.pug
-
-        .divider.light
-        small #{JSON.stringify(videoQuery)} #{JSON.stringify(videoSort)}
+        .columns.multiline#videoGridContainer
 
 block scripts
     script(src="/js/channelSwitcher.js") 

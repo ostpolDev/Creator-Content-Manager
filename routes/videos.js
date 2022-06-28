@@ -23,85 +23,9 @@ router.use("*", (req, res, next) => {
 })
 
 router.get("/", validation.ensureAuthenticated, validation.ensureChannel, async (req, res, next) => {
-    let currentSort = req.query.sort;
-    let currentOrder = req.query.order;
-    let currentQuery = req.query.q;
-
-    let starring = req.query.starring;
-    let editor = req.query.editor;
-
-    let user;
-    let disableChannel = starring || editor;
-
-    if (disableChannel) {
-        user = await userFunctions.getInfoForUser(starring || editor, "_id name safeName username");
-    }
-
-    if (!user) {
-        disableChannel = false;
-    }
-
-    if (!currentSort || !Object.keys(videoFunctions.sorts).includes(currentSort)) {
-        currentSort = "upload date";
-    } else {
-        currentSort = currentSort.toLocaleLowerCase();
-    }
-
-    if (!currentOrder || (currentOrder != "1" && currentOrder != "-1")) {
-        currentOrder = "-1";
-    }
-
-    currentOrder = parseInt(currentOrder);
-
-    let videoQuery = {};
-
-    if (disableChannel) {
-        if (starring) {
-            videoQuery.starring = user.id;
-        } else if (editor) {
-            videoQuery.editor = user.id;
-        }
-    } else {
-        videoQuery.channel = res.locals.channel.id
-    }
-
-
-    let videoSort = {}
-
-    let field = videoFunctions.sorts[currentSort];
-
-    videoSort[field] = currentOrder;
-
-    let selects = ["title", "statistics", "isEmpty", "createdAt", "thumbnails", "meta", "status"];
-    if (!field.startsWith("statistics") && !field.startsWith("meta") && !selects.includes(field) && !field.startsWith("status")) {
-        selects.push(field);
-    }
-
-    Channel.find({$or: [
-        {createdBy: req.user.id},
-        {access: req.user.id}
-    ]}).select("name id").exec((err, channels) => {
-        if (err) {
-            return next(err);
-        }
-        Video.find(videoQuery).sort(videoSort).select(selects.join(" ")).limit(40).sort({createdAt: -1}).exec((_err, videos) => {
-            if (_err) {
-                return next(_err);
-            }
-            res.render('videos/index', {
-                title: "Videos",
-                channels,
-                videos,
-                currentSort,
-                currentOrder,
-                currentQuery,
-                field,
-                subtitle: disableChannel ? (starring ? "Starring " : "Edited by ") + user.username : "For channel " + res.locals.channel.name,
-                videoQuery,
-                videoSort,
-                disableChannel
-            })
-        })
+    res.render('videos/index', {
+        title: "Videos",
+        sorts: videoFunctions.sorts
     })
 })
 
