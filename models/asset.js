@@ -5,6 +5,14 @@ const AssetSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    cleanName: {
+        type: String,
+        required: false
+    },
+    uuid: {
+        type: String,
+        required: true
+    },
     description: {
         raw: String,
         rendered: String
@@ -47,8 +55,7 @@ const AssetSchema = mongoose.Schema({
         type: String
     },
     licence: {
-        name: String,
-        url: String
+        type: String
     },
     source: {
         type: String
@@ -82,6 +89,7 @@ const AssetSchema = mongoose.Schema({
     },
     meta: {
         downloads: Number,
+        hasCustomName: Boolean,
         uploadedBy: {
             username: String,
             safeName: String

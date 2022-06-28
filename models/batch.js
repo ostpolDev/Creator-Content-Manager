@@ -6,6 +6,10 @@ const BatchSchema = mongoose.Schema({
         ref: 'User',
         required: true
     },
+    name: {
+        type: String,
+        required: true
+    },
     skippedCount: {
         type: Number,
         default: 0
@@ -27,14 +31,17 @@ const BatchSchema = mongoose.Schema({
     fileSize: Number,
     attemptedFileSize: Number,
     missedFileSize: Number,
-    uploadTime: Number,
+    uploadTime: {
+        start: Date,
+        end: Date,
+        time: Number
+    },
     isAlbum: Boolean,
     cover: {
         hasCover: Boolean,
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
+            ref: 'User'
         },
         updatedAt: Date,
         size: Number,

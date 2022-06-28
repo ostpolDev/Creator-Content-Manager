@@ -1,14 +1,17 @@
 const mongoose = require('mongoose');
 
 const MetaSchema = mongoose.Schema({
-    asset: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Asset',
-        required: true
-    },
     batch: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Batch',
+        required: true
+    },
+    url: {
+        type: String,
+        required: true
+    },
+    uuid: {
+        type: String,
         required: true
     },
     requestInfo: {

@@ -33,6 +33,7 @@
     "marked": "^4.0.17",
     "md5": "^2.3.0",
     "memorystore": "^1.6.7",
+    "metadata-scraper": "^0.2.57",
     "mongoose": "^6.4.0",
     "morgan": "^1.10.0",
     "passport": "^0.5.3",

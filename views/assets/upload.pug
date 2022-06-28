@@ -108,7 +108,7 @@ block content
                 .field 
                     label.label(for="assetType") Select an asset type
                     .control
-                        select.input#assetType
+                        select.input#assetType(name="assetType")
                             each type, i in assetTypes
                                 option(value=type) #{formatString(type)}
 
@@ -144,6 +144,15 @@ block content
                             each licence, i in Object.keys(licenceTypes)
                                 option(value=licence) #{licence}
                         p.help This is completely optional. Please only choose a licence if you know that it is the correct one.
+
+                .field
+                    legend Supported Platforms
+                    div.checkbox
+                        input.checkbox#streaming(type="checkbox" name="streaming" checked)
+                        label(for="streaming") Streaming
+                    div.checkbox
+                        input.checkbox#videos(type="checkbox" name="videos" checked)
+                        label(for="videos") Videos
 
                 .field
                     button.button.success.fluid

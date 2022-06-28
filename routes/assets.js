@@ -4,25 +4,19 @@ const router = express.Router();
 const validation = require('../modules/validation');
 const logger = require('../modules/logger');
 
+const assetFunctions = require('../modules/assetFunctions');
+
 const Asset = require('../models/asset');
 const Batch = require('../models/batch');
 
-const fileTypes = [".jpg", ".png", ".mp3", ".mp4", ".wmv", ".webp", ".ogg", ".jpeg", ".pdn"];
-const assetTypes = ["music", "soundEffect", "video", "image"];
-const licenceTypes = {
-    "Attribution": {url: "https://creativecommons.org/licenses/by/4.0", icon: "https://licensebuttons.net/l/by/3.0/88x31.png"},
-    "Attribution-ShareAlike": {url: "https://creativecommons.org/licenses/by-sa/4.0", icon: "https://licensebuttons.net/l/by-sa/3.0/88x31.png"},
-    "Attribution-NoDerivs": {url: "https://creativecommons.org/licenses/by-nd/4.0", icon: "https://licensebuttons.net/l/by-nd/3.0/88x31.png"},
-    "Attribution-NonCommercial": {url: "https://creativecommons.org/licenses/by-nc/4.0", icon: "https://licensebuttons.net/l/by-nc/3.0/88x31.png"},
-    "Attribution-NonCommercial-ShareAlike": {url: "https://creativecommons.org/licenses/by-nc-sa/4.0", icon: "https://licensebuttons.net/l/by-nc-sa/3.0/88x31.png"},
-    "Attribution-NonCommercial-NoDerivs": {url: "https://creativecommons.org/licenses/by-nc-nd/4.0", icon: "https://licensebuttons.net/l/by-nc-nd/3.0/88x31.png"},
-    "CC0": {url: "https://creativecommons.org/publicdomain/zero/1.0/", icon: "https://i.creativecommons.org/p/zero/1.0/88x31.png"}
-}
+
+const {body, validationResult} = require("express-validator");
+const fileUpload = require('express-fileupload');
 
 router.use("*", (req, res, next) => {
-    res.locals.fileTypes = fileTypes;
-    res.locals.assetTypes = assetTypes;
-    res.locals.licenceTypes = licenceTypes;
+    res.locals.fileTypes = assetFunctions.fileTypes;
+    res.locals.assetTypes = assetFunctions.assetTypes;
+    res.locals.licenceTypes = assetFunctions.licenceTypes;
     next();
 })
 
@@ -48,6 +42,40 @@ router.get('/upload', validation.ensureAuthenticated, (req, res, next) => {
     res.render('assets/upload', {
         title: "Upload assets"
     })
+})
+
+router.post('/upload', [
+    body("name", "Name cannot be longer than 256 characters").isLength({max: 256}),
+    body("batchName", "Batch name cannot be longer than 256 characters").isLength({max: 256}),
+    body("about", "About text cannot be longer than 10,000 characters").isLength({max: 10000}),
+    body("legalInfo", "Legal information cannot be longer than 512 characters").isLength({max: 512}),
+    body("assetType", "Asset type is required").notEmpty().isLength({max: 128}),
+    body("tags", "Tags cannot be longer than 2048 characters").isLength({max: 2048}),
+    body("source", "Source has to be a valid URL").optional({checkFalsy: true}).isURL(),
+    body("price", "The price has to be a valid number").optional({checkFalsy: true}).isFloat({min: 0.0, max: 1000.0}),
+    body("licence", "Licence is too long").isLength({max: 512})
+], validation.ensureAuthenticated, async (req, res, /**@type {import('express').NextFunction} */ next) => {
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        errors.array().forEach(e => {
+            req.flash("error", e.msg)
+        })
+        return res.redirect('/assets/upload');
+    }
+
+    if (!req.files && !req.files.assets) {
+        req.flash('error', "At least one file is required");
+        return res.redirect('/assets/upload');
+    }
+
+    let assetFileHandleResponse = await assetFunctions.handleFiles(req);
+    if (assetFileHandleResponse.success === false) {
+        req.flash('error', assetFileHandleResponse.msg);
+        res.redirect('/assets/upload');
+    } else {
+        req.flash('success', "Successfully uploaded your assets");
+        res.redirect('/assets/batches/v/' + assetFileHandleResponse.batchId);
+    }
 })
 
 module.exports = router;
