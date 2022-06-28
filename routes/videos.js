@@ -17,19 +17,10 @@ const userFunctions = require('../modules/userFunctions');
 const { isValidObjectId } = require('mongoose');
 const marked = require('../modules/marked');
 
-let sorts = {
-    "Title": "title",
-    "Upload Date": "meta.publishedAt",
-    "Added Date": "createdAt",
-    "Views": "statistics.viewCount",
-    "Likes": "statistics.likeCount",
-    "Comments": "statistics.commentCount",
-    "Category": "categoryId",
-    "Privacy Status": "status.privacyStatus",
-    "Made for Kids": "status.madeForKids",
-    "Licence": "status.licence",
-    "YouTube ID": "youtubeId"
-}
+router.use("*", (req, res, next) => {
+    res.locals.sorts = videoFunctions.sorts;
+    next();
+})
 
 router.get("/", validation.ensureAuthenticated, validation.ensureChannel, async (req, res, next) => {
     let currentSort = req.query.sort;
@@ -50,7 +41,7 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, async 
         disableChannel = false;
     }
 
-    if (!currentSort || !Object.keys(sorts).includes(currentSort)) {
+    if (!currentSort || !Object.keys(videoFunctions.sorts).includes(currentSort)) {
         currentSort = "Upload Date";
     }
 
@@ -75,7 +66,7 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, async 
 
     let videoSort = {}
 
-    let field = sorts[currentSort];
+    let field = videoFunctions.sorts[currentSort];
 
     videoSort[field] = currentOrder;
 
@@ -99,7 +90,6 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, async 
                 title: "Videos",
                 channels,
                 videos,
-                sorts,
                 currentSort,
                 currentOrder,
                 currentQuery,

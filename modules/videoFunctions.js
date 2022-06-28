@@ -4,8 +4,24 @@ const uuid = require('uuid').v4;
 const Video = require('../models/video');
 const youtube = require('./youtube');
 const userFunctions = require('./userFunctions');
+const channelFunctions = require('./channelFunctions');
+const { isValidObjectId } = require("mongoose");
 
 const categories = ['', 'Film & Animation', 'Autos & Vehicles', '', '', '', '', '', '', '', 'Music', '', '', '', '', 'Pets & Animals', '', 'Sports', 'Short Movies', 'Travel & Events', 'Gaming', 'Videoblogging', 'People & Blogs', 'Comedy', 'Entertainment', 'News & Politics', 'Howto & Style', 'Education', 'Science & Technology', 'Nonprofits & Activism', 'Movies', 'Anime/Animation', 'Action/Adventure', 'Classics', 'Comedy', 'Documentary', 'Drama', 'Family', 'Foreign', 'Horror', 'Sci-Fi/Fantasy', 'Thriller', 'Shorts', 'Shows', 'Trailers']
+
+const sorts = {
+    "title": "title",
+    "upload date": "meta.publishedAt",
+    "added date": "createdAt",
+    "views": "statistics.viewCount",
+    "likes": "statistics.likeCount",
+    "comments": "statistics.commentCount",
+    "category": "categoryId",
+    "privacy ptatus": "status.privacyStatus",
+    "made for kids": "status.madeForKids",
+    "licence": "status.licence",
+    "youTube id": "youtubeId"
+}
 
 const getCategory = function(index) {
     try {
@@ -185,4 +201,99 @@ const replaceWithNumbers = function(obj) {
     return obj;
 }
 
-module.exports = {categories, getCategory, createVideo, updateVideoData, replaceWithNumbers}
+const getList = function(req, res, skip, limit) {
+    return new Promise(async (res) => {
+        let currentSort = req.query.sort;
+        let currentOrder = req.query.order;
+        let currentQuery = req.query.q;
+    
+        let starring = req.query.starring;
+        let editor = req.query.editor;
+    
+        let disableChannel = starring || editor;
+        let channelId = req.query.channel;
+        let user;
+
+        if (!channelId || !isValidObjectId(channelId)) {
+            let ids = await channelFunctions.getChannelIds(req.user.id);
+            if (!ids) {
+                return res({success: false, msg: "No channels found for user"});
+            }
+            channelId = ids;
+        } else {
+            channelId = [channelId];
+        }
+    
+        if (disableChannel) {
+            user = await userFunctions.getInfoForUser(starring || editor, "_id name safeName username");
+        }
+    
+        if (!user) {
+            disableChannel = false;
+        }
+    
+        if (!currentSort || !Object.keys(sorts).includes(currentSort)) {
+            currentSort = "upload date";
+        } else {
+            currentSort = currentSort.toLowerCase()
+        }
+    
+        if (!currentOrder || (currentOrder != "1" && currentOrder != "-1")) {
+            currentOrder = "-1";
+        }
+    
+        currentOrder = parseInt(currentOrder);
+    
+        let videoQuery = {};
+    
+        if (disableChannel) {
+            if (starring) {
+                videoQuery.starring = user.id;
+            } else if (editor) {
+                videoQuery.editor = user.id;
+            }
+        } else {
+            videoQuery.channel = {$in: channelId};
+        }
+    
+    
+        let videoSort = {}
+    
+        let field = sorts[currentSort];
+    
+        videoSort[field] = currentOrder;
+    
+        let selects = ["title", "statistics", "isEmpty", "createdAt", "thumbnails", "meta", "status"];
+        if (!field.startsWith("statistics") && !field.startsWith("meta") && !selects.includes(field) && !field.startsWith("status")) {
+            selects.push(field);
+        }
+
+        let channel;
+        if (!disableChannel) {
+            channel = await channelFunctions.getChannel(channelId[0], req.user.id);
+            if (!channel) {
+                return res({success: false, msg: "Channel not found"});
+            }
+        }
+    
+        Video.find(videoQuery).sort(videoSort).select(selects.join(" ")).limit(limit).sort({createdAt: -1}).skip(skip).exec((_err, videos) => {
+            if (_err) {
+                return next(_err);
+            }
+            let params = {
+                currentSort,
+                currentOrder,
+                currentQuery,
+                field,
+                subtitle: disableChannel ? (starring ? "Starring " : "Edited by ") + user.username : "For channel " + channel.name,
+                videoQuery,
+                videoSort,
+                disableChannel,
+                channelId
+            }
+            return res({success: true, params, videos})
+        })
+    })
+}
+
+module.exports = {categories, sorts, getCategory, createVideo, updateVideoData, replaceWithNumbers, getList}

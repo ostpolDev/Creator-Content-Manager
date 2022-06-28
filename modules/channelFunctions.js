@@ -163,4 +163,35 @@ const hasAccessToChannel = function(channelId, userId) {
     })
 }
 
-module.exports = {getChannelCount, createFromId, hasAccessToChannel, updateChannel};
+const getChannelIds = function(userId) {
+    return new Promise((res) => {
+        Channel.find({$or: [
+            {createdBy: userId},
+            {access: userId}
+        ]}).select("name _id").exec((err, channels) => {
+            if (err) {
+                logger.error(err);
+                return res(undefined);
+            }
+            let channelIds = channels.map(x => x.id);
+            return res(channelIds);
+        })
+    })
+}
+
+const getChannel = function(id, userId) {
+    return new Promise((res) => {
+        Channel.findOne({_id: id, $or: [
+            {createdBy: userId},
+            {access: userId}
+        ]}).select("name _id").exec((err, channel) => {
+            if (err) {
+                logger.error(err);
+                return res(undefined);
+            }
+            return res(channel);
+        })
+    })
+}
+
+module.exports = {getChannelCount, createFromId, hasAccessToChannel, updateChannel, getChannelIds, getChannel};
