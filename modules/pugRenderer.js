@@ -13,11 +13,6 @@ const render = function (req, pugPath, vars) {
         if (!vars) {
             vars = {};
         }
-        if (req && req.__) {
-            vars["__"] = req.__;
-        } else {
-            vars["__"] = i18n.__;
-        }
 
         let finalPath = path.join(viewsPath, pugPath);
 
