@@ -4,6 +4,10 @@ block content
     .container
         h1.title Creator Content Manager
         p.subtitle Welcome #{user.name}! This is your overview.
+            if channel && channel.name
+                span  Your currently using the channel 
+                    strong #{channel.name}
+                    | .
 
         .emptySpace
 
