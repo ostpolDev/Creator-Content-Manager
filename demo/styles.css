@@ -1023,7 +1023,7 @@ a.navItem.button {
     margin-left: 5px;
 }
 
-.navItem:hover {
+a.navItem:hover, div.navItem:hover {
     backdrop-filter: brightness(.95);
 }
 
@@ -1032,21 +1032,20 @@ a.navItem.button {
     padding: 0 1em 0 1em !important;
 }
 
-.navItem.dropdown .dropdown {
+.navItem:not(.dropdown) span {
+    height: 100%;
+}
+
+div.navItem.dropdown div.dropdown {
     display: none;
     pointer-events: none;
     position: absolute;
-    min-width: 100%;
-    top: 100%;
 
     background-color: var(--off-white);
     border: 1px solid var(--default-border-color);
-    left: 0;
     z-index: 10;
-    /* top: 100%;
-    min-width: 100%; */
-
-    width: max-content;
+    left: 0;
+    min-width: 100%;
 
     -webkit-box-shadow: 5px 5px 15px -3px rgba(0,0,0,0.16); 
     box-shadow: 5px 5px 15px -3px rgba(0,0,0,0.16);
@@ -1054,19 +1053,28 @@ a.navItem.button {
     border-radius: 0 0 var(--default-border-radius) var(--default-border-radius);
 }
 
-.navItem.dropdown .dropdown .navItem:first-child {
+div.navItem.dropdown div.dropdown a.navItem:first-child {
     padding: 0 var(--default-padding) 0 var(--default-padding);;
 }
 
-.navItem.dropdown {
+div.navItem.dropdown {
     padding-left: 10px;
     cursor: pointer;
+    position: relative;
 }
 
-.navItem.dropdown:hover .dropdown, .navItem.dropdown:focus-within .dropdown {
+div.navItem.dropdown:hover div.dropdown, div.navItem.dropdown:focus-within div.dropdown {
     pointer-events: all;
-    display: flex;
-    flex-direction: column;
+    display: block;
+}
+
+.navItem.dropdown .dropdown {
+    white-space: nowrap;
+    left: 0;
+}
+
+.navItem.dropdown .dropdown .navItem {
+    display: block;
 }
 
 .navItem.dropdown .navItem.chevron::after {
