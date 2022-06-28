@@ -73,7 +73,12 @@ router.get('/get/rendered', validation.ensureAuthenticated, validation.ensureCha
         return res.status(400).json({success: false, msg: videoListResult.msg});
     }
     
-    let renderedResult = renderer.render("videos/videoGrid", {videos: videoListResult.videos, backendRender: true});
+    let renderedResult = renderer.render("videos/videoGrid", {
+        videos: videoListResult.videos, 
+        backendRender: true,
+        field: videoListResult.params.field,
+        currentSort: videoListResult.params.currentSort
+    });
     if (!renderedResult) {
         return res.status(500).json({success: false, msg: "Something went wrong when rendering..."});
     }

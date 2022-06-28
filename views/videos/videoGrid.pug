@@ -2,7 +2,7 @@ if backendRender && backendRender === true
     include ../misc/functions.pug
 
 each video, i in videos
-    .column(class=(videoGridSize ? videoGridSize : "oneQuarter"))
+    .column(class=(videoGridSize ? videoGridSize : "oneQuarter") id="vgc_"+video._id)
         a.card.hoverable(href="/videos/v/"+video.id)
             if !video.isEmpty
                 .cardImage
@@ -20,7 +20,8 @@ each video, i in videos
                     -fieldValue = getObjectByString(video, field);
                 p
                     if field && fieldValue && (field != "title" && field != "createdAt" && field != "meta.publishedAt" && field != "statistics.viewCount")
-                        | #{currentSort}: #{fieldValue}
+                        span.capitalized #{currentSort}: 
+                        | #{fieldValue}
                         br
                     if !video.isEmpty
                         | #{numberWithCommas(video.statistics.viewCount)} views
