@@ -201,11 +201,12 @@ const replaceWithNumbers = function(obj) {
     return obj;
 }
 
-const getList = function(req, res, skip, limit) {
+const getList = function(req) {
     return new Promise(async (res) => {
         let currentSort = req.query.sort;
         let currentOrder = req.query.order;
         let currentQuery = req.query.q;
+        let searchQuery = req.query.query;
     
         let starring = req.query.starring;
         let editor = req.query.editor;
@@ -282,6 +283,15 @@ const getList = function(req, res, skip, limit) {
             }
         } else {
             videoQuery.channel = {$in: channelId};
+        }
+
+        if (searchQuery && searchQuery.trim() != "") {
+            videoQuery.$or = [
+                {title: {$regex: searchQuery, $options: "i"}},
+                {youtubeTags: {$regex: searchQuery, $options: "i"}},
+                {description: {$regex: searchQuery, $options: "i"}},
+                {youtubeId: {$regex: searchQuery, $options: "i"}}
+            ]
         }
     
     

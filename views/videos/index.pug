@@ -27,6 +27,13 @@ block content
                         option(value=-1 selected) Decending
 
             .field
+                label.label(for="searchQuery") Search Query
+                .control.hasIcon
+                    input.input#searchQuery(type="url" name="searchQuery" placeholder="Title, description, tags, ...") 
+                    span.icon
+                        i.fas.fa-search
+
+            .field
                 .buttons.equal
                     button.button.fluid#clearButton
                         span.icon

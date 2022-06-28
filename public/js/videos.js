@@ -5,10 +5,17 @@ let channelSelect = document.getElementById("channelSelect");
 let videoGridContainer = document.getElementById("videoGridContainer");
 let loadMoreButton = document.getElementById("loadMoreButton");
 let clearButton = document.getElementById("clearButton");
+let searchQuery = document.getElementById("searchQuery");
 
 searchButton.addEventListener("click", () => {search(true);});
 loadMoreButton.addEventListener("click", search);
 clearButton.addEventListener("click", clear);
+
+searchQuery.addEventListener("keyup", (e) => {
+    if (e.key == "Enter") {
+        search(true);
+    }
+})
 
 function getChannels() {
     searchButton.disabled = channelSelect.disabled = true;
@@ -50,11 +57,14 @@ function search(forceNew) {
     let order = orderSelect.value;
     let sort = sortSelect.value;
     let channel = channelSelect.value;
+    let searchText = searchQuery.value;
 
     let url = `/api/videos/get/rendered?`;
     let params = `channel=${encodeURIComponent(channel)}&limit=12&sort=${encodeURIComponent(sort)}&order=${encodeURIComponent(order)}`;
 
-    console.log(params);
+    if (searchText && searchText.trim() != "") {
+        params += "&query="+encodeURIComponent(searchText);
+    }
 
     if (params != previousParams) { // This is a new search. Not a "load more" request
         loadMoreButton.classList.remove("hidden");
@@ -99,5 +109,7 @@ function search(forceNew) {
 function clear() {
     sortSelect.value = "upload date";
     orderSelect.value = "-1";
+    searchQuery.value = "";
+    channelSelect.value = currentChannel;
     search();
 }

@@ -57,7 +57,7 @@ router.post("/move/:id", validation.ensureAuthenticated, (req, res, next) => {
 
 router.get('/get', validation.ensureAuthenticated, validation.ensureChannel, async (req, res) => {
 
-    let videoListResult = await videoFunctions.getList(req, res);
+    let videoListResult = await videoFunctions.getList(req);
     if (videoListResult.success === false) {
         return res.status(400).json({success: false, msg: videoListResult.msg});
     }
@@ -68,7 +68,7 @@ router.get('/get', validation.ensureAuthenticated, validation.ensureChannel, asy
 
 router.get('/get/rendered', validation.ensureAuthenticated, validation.ensureChannel, async (req, res) => {
 
-    let videoListResult = await videoFunctions.getList(req, res);
+    let videoListResult = await videoFunctions.getList(req);
     if (videoListResult.success === false) {
         return res.status(400).json({success: false, msg: videoListResult.msg});
     }
