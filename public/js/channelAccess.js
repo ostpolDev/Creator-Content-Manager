@@ -20,7 +20,7 @@ function search() {
     console.log("Searching...");
 
     clear(newAccessContainer);
-    let url = "/channels/searchNewUsers/"+encodeURIComponent(currentChannel)+"?q="+encodeURIComponent(searchValue);
+    let url = "/api/channels/searchNewUsers/"+encodeURIComponent(currentChannel)+"?q="+encodeURIComponent(searchValue);
 
     fetch(url).then((res) => {return res.json();}).then(json => {
         if (json.success === true) {
@@ -53,7 +53,7 @@ function addToContainer(container, user, removeOnClick) {
 
 function getExistingAccess() {
     clear(currentAccessContainer);
-    fetch("/channels/getAccessUsers/"+currentChannel).then((res) => {
+    fetch("/api/channels/getAccessUsers/"+currentChannel).then((res) => {
         return res.json();
     }).then(json => {
         if (json.success === true) {
@@ -72,7 +72,7 @@ function addUser(id) {
     if (!id) {
         return;
     }
-    fetch("/channels/addAccess", {
+    fetch("/api/channels/addAccess", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -94,7 +94,7 @@ function removeUser(id) {
     if (!id) {
         return;
     }
-    fetch("/channels/removeAccess", {
+    fetch("/api/channels/removeAccess", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'

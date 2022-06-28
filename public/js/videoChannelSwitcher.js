@@ -7,7 +7,7 @@ function getChannels() {
     moveButton.disabled = channelSelect.disabled = true;
     channelSelect.innerHTML = "";
 
-    fetch("/channels/getWithAccess?except="+encodeURIComponent(currentChannel)).then((res) => {return res.json()}).then(json => {
+    fetch("/api/channels/getWithAccess?except="+encodeURIComponent(currentChannel)).then((res) => {return res.json()}).then(json => {
         if (json.success === true) {
             json.channels.forEach(c => {
                 channelSelect.innerHTML += `<option value="${c._id}">${c.name}</option>`
