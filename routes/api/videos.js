@@ -66,7 +66,7 @@ router.get('/get', validation.ensureAuthenticated, validation.ensureChannel, asy
 
 })
 
-router.get('/getRendered', validation.ensureAuthenticated, validation.ensureChannel, async (req, res) => {
+router.get('/get/rendered', validation.ensureAuthenticated, validation.ensureChannel, async (req, res) => {
 
     let videoListResult = await videoFunctions.getList(req, res);
     if (videoListResult.success === false) {

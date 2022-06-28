@@ -1,45 +1,5 @@
-if backendRender
-    -
-        function numberWithCommas(x) {
-            if (!x) {
-                return "";
-            }
-            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        }
-
-        function getObjectByString(o, s) {
-            s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
-            s = s.replace(/^\./, '');           // strip a leading dot
-            var a = s.split('.');
-            for (var i = 0, n = a.length; i < n; ++i) {
-                var k = a[i];
-                if (k in o) {
-                    o = o[k];
-                } else {
-                    return;
-                }
-            }
-            return o;
-        }
-
-        function formatDate(date) {
-            if (date == undefined) {
-                return "--";
-            }
-            var monthNames = [
-                "January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
-            ];
-
-            if (typeof date === "string") {
-                date = new Date(date);
-            }
-
-            var day = date.getDate();
-            var monthIndex = date.getMonth();
-            var year = date.getFullYear();
-
-            return monthNames[monthIndex] + ' ' + day + ', ' + year;
-        }
+if backendRender && backendRender === true
+    include ../misc/functions.pug
 
 each video, i in videos
     .column(class=(videoGridSize ? videoGridSize : "oneQuarter"))
