@@ -4,9 +4,11 @@ let searchButton = document.getElementById("searchButton");
 let channelSelect = document.getElementById("channelSelect");
 let videoGridContainer = document.getElementById("videoGridContainer");
 let loadMoreButton = document.getElementById("loadMoreButton");
+let clearButton = document.getElementById("clearButton");
 
 searchButton.addEventListener("click", () => {search(true);});
 loadMoreButton.addEventListener("click", search);
+clearButton.addEventListener("click", clear);
 
 function getChannels() {
     searchButton.disabled = channelSelect.disabled = true;
@@ -92,4 +94,10 @@ function search(forceNew) {
     }).catch((err) => {
         console.error(err);
     })
+}
+
+function clear() {
+    sortSelect.value = "upload date";
+    orderSelect.value = "-1";
+    search();
 }
