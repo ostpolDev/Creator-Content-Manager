@@ -41,6 +41,8 @@ block content
                     .control
                         textarea.textarea(name="about", id="about", placeholder="Write about yourself... \n(optional)", maxlength="4096")
 
+                input(type="hidden" value=csrfToken name="_csrf")
+
                 .field
                     button.button   
                         span.icon

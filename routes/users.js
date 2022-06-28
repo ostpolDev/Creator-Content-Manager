@@ -49,13 +49,14 @@ router.get("/logout", (req, res) => {
     res.redirect('/');
 })
 
-router.get('/register', validation.ensureNotAuthenticated, (req, res) => {
+router.get('/register', csrfProtection, validation.ensureNotAuthenticated, (req, res) => {
     res.render('users/register', {
-        title: "Register"
+        title: "Register",
+        csrfToken: req.csrfToken()
     })
 })
 
-router.post('/register', validation.ensureNotAuthenticated, [
+router.post('/register', csrfProtection, validation.ensureNotAuthenticated, [
     body("name", "Name has to be between 1 and 128 characters").isLength({min: 1, max: 128}),
     body("username", "Username has to be between 3 and 128 characters").isLength({min: 3, max: 128}),
     body("email", "E-Mail address is invalid").isEmail(),
