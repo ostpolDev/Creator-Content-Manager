@@ -112,4 +112,5 @@ function clear() {
     searchQuery.value = "";
     channelSelect.value = currentChannel;
     search();
+    searchButton.disabled = false;
 }
