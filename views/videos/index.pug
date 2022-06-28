@@ -19,9 +19,9 @@ block content
             .field 
                 label.label(for="channelSelect") Sort by
                 .control
-                    select.input#sortSelect
+                    select.input.capitalized#sortSelect
                         each sort, i in Object.keys(sorts)
-                            option(value=sort,selected=(currentSort == sort))=sort
+                            option.capitalized(value=sort,selected=(currentSort == sort))=sort
 
             .field 
                 label.label(for="channelSelect") Order

@@ -7,6 +7,7 @@ const videoFunctions = require('../../modules/videoFunctions');
 const validation = require('../../modules/validation');
 const logger = require('../../modules/logger');
 const { isValidObjectId } = require('mongoose');
+const renderer = require('../../modules/pugRenderer');
 
 router.post("/move/:id", validation.ensureAuthenticated, (req, res, next) => {
     let channelId = req.body.channel;
@@ -62,6 +63,22 @@ router.get('/get', validation.ensureAuthenticated, validation.ensureChannel, asy
     }
 
     return res.status(200).json({success: true, items: videoListResult.videos.length, reachedEnd: videoListResult.videos.length < videoListResult.params.limit, params: videoListResult.params, videos: videoListResult.videos});
+
+})
+
+router.get('/getRendered', validation.ensureAuthenticated, validation.ensureChannel, async (req, res) => {
+
+    let videoListResult = await videoFunctions.getList(req, res);
+    if (videoListResult.success === false) {
+        return res.status(400).json({success: false, msg: videoListResult.msg});
+    }
+    
+    let renderedResult = renderer.render("videos/videoGrid", {videos: videoListResult.videos, backendRender: true});
+    if (!renderedResult) {
+        return res.status(500).json({success: false, msg: "Something went wrong when rendering..."});
+    }
+
+    return res.status(200).json({success: true, items: videoListResult.videos.length, reachedEnd: videoListResult.videos.length < videoListResult.params.limit, params: videoListResult.params, renderedResult});
 
 })
 

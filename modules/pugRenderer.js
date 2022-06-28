@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const viewsPath = path.join(__dirname, "..", "views");
 
-const render = function (req, pugPath, vars) {
+const render = function (pugPath, vars) {
     try {
         if (!pugPath.endsWith(".pug")) {
             pugPath = pugPath + ".pug";

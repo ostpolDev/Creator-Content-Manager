@@ -42,7 +42,9 @@ router.get("/", validation.ensureAuthenticated, validation.ensureChannel, async 
     }
 
     if (!currentSort || !Object.keys(videoFunctions.sorts).includes(currentSort)) {
-        currentSort = "Upload Date";
+        currentSort = "upload date";
+    } else {
+        currentSort = currentSort.toLocaleLowerCase();
     }
 
     if (!currentOrder || (currentOrder != "1" && currentOrder != "-1")) {
