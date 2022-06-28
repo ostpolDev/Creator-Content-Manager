@@ -214,7 +214,35 @@ const getList = function(req, res, skip, limit) {
         let channelId = req.query.channel;
         let user;
 
-        if (!channelId || !isValidObjectId(channelId)) {
+        let skip = req.query.skip;
+        let limit = req.query.limit;
+
+        try {
+            if (skip) {
+                skip = parseInt(skip);
+            } else {
+                skip = 0;
+            }
+
+            if (limit) {
+                limit = parseInt(limit);
+            } else {
+                limit = 4;
+            }
+
+            if (limit > 50) {
+                limit = 50;
+            }
+        } catch (e) {
+            logger.error(e);
+            return res({success: false, msg: "Invalid parameters"});
+        }
+
+        if (channelId && !isValidObjectId(channelId)) {
+            return res({success: false, msg: "Invalid channel ID"});
+        }
+
+        if (!channelId) {
             let ids = await channelFunctions.getChannelIds(req.user.id);
             if (!ids) {
                 return res({success: false, msg: "No channels found for user"});
@@ -289,7 +317,9 @@ const getList = function(req, res, skip, limit) {
                 videoQuery,
                 videoSort,
                 disableChannel,
-                channelId
+                channelId,
+                limit,
+                skip
             }
             return res({success: true, params, videos})
         })
