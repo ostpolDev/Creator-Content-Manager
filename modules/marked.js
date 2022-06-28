@@ -50,6 +50,17 @@ const sanitizeSubtitle = (input) => {
     })
 }
 
+const sanitizeFull = (input) => {
+    if (!input) {
+        return undefined;
+    }
+    return sanitizeHtml(input, {
+        allowedTags: [],
+        allowedAttributes: {},
+        allowedClasses: {}
+    })
+}
+
 const markAndSanitize = (input) => {
     if (!input) {
         return undefined;
@@ -64,4 +75,4 @@ const mark = (input) => {
     return marked.parse(input);
 }
 
-module.exports = {markAndSanitize, sanitizeDefault, mark, highlightString, sanitizeSubtitle}
+module.exports = {markAndSanitize, sanitizeDefault, mark, highlightString, sanitizeSubtitle, sanitizeFull}

@@ -208,10 +208,6 @@ const getList = function(req) {
         let currentQuery = req.query.q;
         let searchQuery = req.query.query;
     
-        let starring = req.query.starring;
-        let editor = req.query.editor;
-    
-        let disableChannel = starring || editor;
         let channelId = req.query.channel;
         let user;
 
@@ -253,10 +249,6 @@ const getList = function(req) {
             channelId = [channelId];
         }
     
-        if (disableChannel) {
-            user = await userFunctions.getInfoForUser(starring || editor, "_id name safeName username");
-        }
-    
         if (!user) {
             disableChannel = false;
         }
@@ -275,15 +267,7 @@ const getList = function(req) {
     
         let videoQuery = {};
     
-        if (disableChannel) {
-            if (starring) {
-                videoQuery.starring = user.id;
-            } else if (editor) {
-                videoQuery.editor = user.id;
-            }
-        } else {
-            videoQuery.channel = {$in: channelId};
-        }
+        videoQuery.channel = {$in: channelId};
 
         if (searchQuery && searchQuery.trim() != "") {
             videoQuery.$or = [
@@ -306,12 +290,9 @@ const getList = function(req) {
             selects.push(field);
         }
 
-        let channel;
-        if (!disableChannel) {
-            channel = await channelFunctions.getChannel(channelId[0], req.user.id);
-            if (!channel) {
-                return res({success: false, msg: "Channel not found"});
-            }
+        let channel = await channelFunctions.getChannel(channelId[0], req.user.id);
+        if (!channel) {
+            return res({success: false, msg: "Channel not found"});
         }
     
         Video.find(videoQuery).sort(videoSort).select(selects.join(" ")).limit(limit).sort({createdAt: -1}).skip(skip).exec((_err, videos) => {
@@ -323,7 +304,7 @@ const getList = function(req) {
                 currentOrder,
                 currentQuery,
                 field,
-                subtitle: disableChannel ? (starring ? "Starring " : "Edited by ") + user.username : "For channel " + channel.name,
+                subtitle: "For channel " + channel.name,
                 videoQuery,
                 videoSort,
                 disableChannel,

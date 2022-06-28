@@ -3,6 +3,7 @@ extends ../layout
 block content
     .container
         h1.header Videos
+        p.subtitle#subtitle
     
         .segment#channelSelectContainer
 
@@ -55,5 +56,6 @@ block content
 
 block scripts
     script.
-        const currentChannel = "#{channel.id}"; 
+        const currentChannel = "#{channel.id}";
+        
     script(src="/js/videos.js") 
