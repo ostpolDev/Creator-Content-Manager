@@ -22,6 +22,9 @@ router.get('/v/:id', (req, res, next) => {
         if (err) {
             return next(err);
         }
+        if (!batch) {
+            return next({status: 404})
+        }
         res.render(batch.isAlbum ? 'batches/viewAlbum' : "batches/view", {
             title: batch.name,
             batch

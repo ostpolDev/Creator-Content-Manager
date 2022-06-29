@@ -18,6 +18,7 @@ const commonToReplace = ["y2mate.com"];
 const fileTypes = [".jpg", ".png", ".mp3", ".mp4", ".wmv", ".webp", ".ogg", ".jpeg", ".pdn"];
 const assetTypes = ["music", "soundEffect", "video", "image"];
 const licenceTypes = {
+    "None": {},
     "Attribution": {url: "https://creativecommons.org/licenses/by/4.0", icon: "https://licensebuttons.net/l/by/3.0/88x31.png"},
     "Attribution-ShareAlike": {url: "https://creativecommons.org/licenses/by-sa/4.0", icon: "https://licensebuttons.net/l/by-sa/3.0/88x31.png"},
     "Attribution-NoDerivs": {url: "https://creativecommons.org/licenses/by-nd/4.0", icon: "https://licensebuttons.net/l/by-nd/3.0/88x31.png"},
@@ -48,7 +49,7 @@ const handleFiles = function(req) {
             files = [files];
         }
 
-        let name = req.body.name;
+        let name = req.body.name.trim();
         let batchName = req.body.batchName;
         let about = req.body.about;
         let legalInfo = req.body.legalInfo;
@@ -70,8 +71,10 @@ const handleFiles = function(req) {
             return res({success: false, msg: "Invalid asset type"});
         }
 
-        if (!Object.keys(licenceTypes).includes(licence)) {
-            return res({success: false, msg: "Invalid licence"});
+        if (licence && licence != "undefined" && licence != undefined) {
+            if (!Object.keys(licenceTypes).includes(licence)) {
+                return res({success: false, msg: "Invalid licence"});
+            }
         }
         
         let batch = await makeBatch(req.user.id, batchName);
@@ -157,7 +160,7 @@ const handleFiles = function(req) {
                         unsafe: false,
                         meta: {
                             downloads: 0,
-                            hasCustomName: name != undefined,
+                            hasCustomName: name != "",
                             uploadedBy: {
                                 username: req.user.username,
                                 safeName: req.user.safeName
@@ -315,7 +318,13 @@ const cleanName = function(name) {
         name = name.replace(c, "");
     })
     name = name.replace(/^[_\.\-\*]/g, " ");
+    name = formatCamelCase(name);
     return name.trim();
+}
+
+function formatCamelCase(text) {
+    const result = text.replace(/([A-Z])/g, " $1");
+    return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
 const getList = function(req) {
@@ -370,10 +379,10 @@ const getList = function(req) {
 
         if (searchQuery && searchQuery.trim() != "") {
             assetQuery.$or = [
-                {title: {$regex: searchQuery, $options: "i"}},
-                {youtubeTags: {$regex: searchQuery, $options: "i"}},
-                {description: {$regex: searchQuery, $options: "i"}},
-                {youtubeId: {$regex: searchQuery, $options: "i"}}
+                {name: {$regex: searchQuery, $options: "i"}},
+                {cleanName: {$regex: searchQuery, $options: "i"}},
+                {"description.raw": {$regex: searchQuery, $options: "i"}},
+                {uuid: {$regex: searchQuery, $options: "i"}}
             ]
         }
 
@@ -433,4 +442,4 @@ const makeBoolean = function(string) {
     }
 }
 
-module.exports = {handleFiles, makeBatch, makeMeta, cleanName, makeBoolean, fileTypes, assetTypes, licenceTypes, getList}
+module.exports = {handleFiles, makeBatch, makeMeta, cleanName, makeBoolean, fileTypes, assetTypes, licenceTypes, getList, sorts}

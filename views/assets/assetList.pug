@@ -10,23 +10,28 @@ if backendRender && backendRender === true
         return firstPart;
     }
 
-each _asset, i in assets
-    tr
-        td
-            -let type = getType(_asset.mimetype);
-            if type == "audio"
-                button.button.iconButton.rounded(onclick="playAsset('"+_asset.id+"')")
-                    i.fas.fa-play
-            else if type == "video"
-                button.button.iconButton.rounded(onclick="showVideo('"+_asset.id+"')")
-                    i.fas.fa-video
-            else if type == "image"
-                button.button.iconButton.rounded(onclick="showImage('"+_asset.id+"')")
-                    i.fas.fa-image
-            button.button.iconButton.rounded(onclick="download('"+_asset.id+"')")
-                i.fas.fa-download
-        td #{_asset.name}
-        td
-            a(href="/users/v/"+_asset.meta.uploadedBy.safeName) #{_asset.meta.uploadedBy.username}
-        td(title=_asset.createdAt.toLocaleString()) #{formatDate(_asset.createdAt)}
-        td #{_asset.tagsString} 
+if assets && assets.length > 0
+    each _asset, i in assets
+        tr
+            td
+                -let type = getType(_asset.mimetype);
+                if type == "audio"
+                    button.button.iconButton.rounded(onclick="playAsset('"+_asset.id+"')")
+                        i.fas.fa-play
+                else if type == "video"
+                    button.button.iconButton.rounded(onclick="showVideo('"+_asset.id+"')")
+                        i.fas.fa-video
+                else if type == "image"
+                    button.button.iconButton.rounded(onclick="showImage('"+_asset.id+"')")
+                        i.fas.fa-image
+                button.button.iconButton.rounded(onclick="download('"+_asset.id+"')")
+                    i.fas.fa-download
+            td #{_asset.meta.hasCustomName ? _asset.name : _asset.cleanName}
+            td
+                a(href="/users/v/"+_asset.meta.uploadedBy.safeName) #{_asset.meta.uploadedBy.username}
+            td(title=_asset.createdAt.toLocaleString()) #{formatDate(_asset.createdAt)}
+            td #{_asset.tags.splice(0, 3).join(", ")} 
+                if _asset.tags.length > 3
+                    span ,...
+else 
+    p Nothing found

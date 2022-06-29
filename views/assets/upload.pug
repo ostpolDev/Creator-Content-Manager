@@ -140,7 +140,6 @@ block content
                     label.label(for="licenceTypes") Licence
                     .control
                         select.input#licenceTypes(name="licence")
-                            option(value=undefined) None
                             each licence, i in Object.keys(licenceTypes)
                                 option(value=licence) #{licence}
                         p.help This is completely optional. Please only choose a licence if you know that it is the correct one.

@@ -16,6 +16,7 @@ router.use("*", (req, res, next) => {
     res.locals.fileTypes = assetFunctions.fileTypes;
     res.locals.assetTypes = assetFunctions.assetTypes;
     res.locals.licenceTypes = assetFunctions.licenceTypes;
+    res.locals.sorts = assetFunctions.sorts;
     next();
 })
 
@@ -62,7 +63,7 @@ router.post('/upload', [
         return res.redirect('/assets/upload');
     }
 
-    if (!req.files && !req.files.assets) {
+    if (!req.files || !req.files.assets) {
         req.flash('error', "At least one file is required");
         return res.redirect('/assets/upload');
     }
