@@ -9,5 +9,6 @@ router.get("/", (req, res) => {
 
 router.use("/channels", require('./channels'));
 router.use("/videos", require('./videos'));
+router.use("/assets", require('./assets'));
 
 module.exports = router;

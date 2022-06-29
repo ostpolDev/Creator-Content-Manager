@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+    .container
+        h1.header #{batch.name}
+        p.subtitle Asset batch
+
+        .columns
+            .column.threeQuarter
+                .segment#descriptionSegment
+                    if batch.customInfo.hasCustomInfo
+                        pre!=batch.customInfo.description.rendered
+                .segment Work in progress...
+
+            .column
+                .buttons.fluid
+                    if user && user.id == batch.createdBy.id
+                        a.button(href="/assets/batches/settings/"+batch.id)
+                            span.icon
+                                i.fas.fa-cog
+                            span Settings
+
+block scripts
+    script.
+        const currentBatch = "#{batch.id}";
+    script(src="/js/batch.js") 
