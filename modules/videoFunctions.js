@@ -224,7 +224,7 @@ const getList = function(req) {
             if (limit) {
                 limit = parseInt(limit);
             } else {
-                limit = 4;
+                limit = 8;
             }
 
             if (limit > 50) {

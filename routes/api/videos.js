@@ -74,8 +74,7 @@ router.get('/get/rendered', validation.ensureAuthenticated, validation.ensureCha
     }
     
     let renderedResult = renderer.render("videos/videoGrid", {
-        videos: videoListResult.videos, 
-        backendRender: true,
+        videos: videoListResult.videos,
         field: videoListResult.params.field,
         currentSort: videoListResult.params.currentSort
     });

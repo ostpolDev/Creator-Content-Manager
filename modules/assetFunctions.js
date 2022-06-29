@@ -11,6 +11,7 @@ const paths = require('../modules/paths');
 const path = require("path");
 const fs = require('fs');
 const marked = require("../modules/marked");
+const { isValidObjectId } = require("mongoose");
 
 const commonToReplace = ["y2mate.com"];
 
@@ -24,6 +25,19 @@ const licenceTypes = {
     "Attribution-NonCommercial-ShareAlike": {url: "https://creativecommons.org/licenses/by-nc-sa/4.0", icon: "https://licensebuttons.net/l/by-nc-sa/3.0/88x31.png"},
     "Attribution-NonCommercial-NoDerivs": {url: "https://creativecommons.org/licenses/by-nc-nd/4.0", icon: "https://licensebuttons.net/l/by-nc-nd/3.0/88x31.png"},
     "CC0": {url: "https://creativecommons.org/publicdomain/zero/1.0/", icon: "https://i.creativecommons.org/p/zero/1.0/88x31.png"}
+}
+
+const sorts = {
+    "name": "name",
+    "added date": "createdAt",
+    "clean name": "cleanName",
+    "unique id": "uuid",
+    "size": "size",
+    "type": "assetType",
+    "file type": "mimetype",
+    "extention": "extention",
+    "original name": "originalName",
+    "batch size": "batchSize"
 }
 
 const handleFiles = function(req) {
@@ -304,4 +318,119 @@ const cleanName = function(name) {
     return name.trim();
 }
 
-module.exports = {handleFiles, makeBatch, makeMeta, cleanName, fileTypes, assetTypes, licenceTypes}
+const getList = function(req) {
+    return new Promise(async (res) => {
+        let currentSort = req.query.sort;
+        let currentOrder = req.query.order;
+        let currentQuery = req.query.q;
+        let searchQuery = req.query.query;
+
+        let batch = req.query.batch;
+
+        let skip = req.query.skip;
+        let limit = req.query.limit;
+
+        let allowedVideos = makeBoolean(req.query.videos);
+        let allowedStreams = makeBoolean(req.query.streams);
+
+        try {
+            if (skip) {
+                skip = parseInt(skip);
+            } else {
+                skip = 0;
+            }
+
+            if (limit) {
+                limit = parseInt(limit);
+            } else {
+                limit = 20;
+            }
+
+            if (limit > 50) {
+                limit = 50;
+            }
+        } catch (e) {
+            logger.error(e);
+            return res({success: false, msg: "Invalid parameters"});
+        }
+    
+        if (!currentSort || !Object.keys(sorts).includes(currentSort)) {
+            currentSort = "added date";
+        } else {
+            currentSort = currentSort.toLowerCase()
+        }
+    
+        if (!currentOrder || (currentOrder != "1" && currentOrder != "-1")) {
+            currentOrder = "-1";
+        }
+    
+        currentOrder = parseInt(currentOrder);
+    
+        let assetQuery = {};
+
+        if (searchQuery && searchQuery.trim() != "") {
+            assetQuery.$or = [
+                {title: {$regex: searchQuery, $options: "i"}},
+                {youtubeTags: {$regex: searchQuery, $options: "i"}},
+                {description: {$regex: searchQuery, $options: "i"}},
+                {youtubeId: {$regex: searchQuery, $options: "i"}}
+            ]
+        }
+
+        if (allowedVideos !== undefined) {
+            assetQuery["allowedPlatforms.videos"] = allowedVideos;
+        }
+
+        if (allowedStreams !== undefined) {
+            assetQuery["allowedPlatforms.streams"] = allowedStreams;
+        }
+
+        if (isValidObjectId(batch)) {
+            assetQuery.batch = batch;
+        }
+    
+    
+        let assetSort = {}
+    
+        let field = sorts[currentSort];
+    
+        assetSort[field] = currentOrder;
+    
+        let selects = ["name", "cleanName", "fileType", "mimetype", "meta", "createdAt", "tags", "tagsString"];
+        if (!field.startsWith("meta") && !selects.includes(field)) {
+            selects.push(field);
+        }
+    
+        Asset.find(assetQuery).sort(assetSort).select(selects.join(" ")).limit(limit).sort({createdAt: -1}).skip(skip).exec((_err, assets) => {
+            if (_err) {
+                return next(_err);
+            }
+            let params = {
+                currentSort,
+                currentOrder,
+                currentQuery,
+                field,
+                assetQuery,
+                assetSort,
+                limit,
+                skip
+            }
+            return res({success: true, params, assets})
+        })
+    })
+}
+
+const makeBoolean = function(string) {
+    if (!string) {
+        return undefined;
+    }
+    if (string == "true") {
+        return true;
+    } else if (string == "false") {
+        return false;
+    } else {
+        return undefined;
+    }
+}
+
+module.exports = {handleFiles, makeBatch, makeMeta, cleanName, makeBoolean, fileTypes, assetTypes, licenceTypes, getList}

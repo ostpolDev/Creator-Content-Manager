@@ -47,4 +47,12 @@ block content
         h2.header Recent assets
         p.subtitle The 10 most recent assets uploaded
 
-        include assetList.pug
+        table.table.striped.hoverable
+            thead 
+                th Action
+                th Name
+                th Uploader
+                th Date
+                th Tags
+            tbody
+                include assetList.pug

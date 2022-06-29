@@ -14,6 +14,8 @@ const render = function (pugPath, vars) {
             vars = {};
         }
 
+        vars["backendRender"] = true;
+
         let finalPath = path.join(viewsPath, pugPath);
 
         if (fs.existsSync(finalPath)) {

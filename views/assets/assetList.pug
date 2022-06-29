@@ -10,31 +10,23 @@ if backendRender && backendRender === true
         return firstPart;
     }
 
-table.table.striped.hoverable
-    thead 
-        th Action
-        th Name
-        th Uploader
-        th Date
-        th Tags
-    tbody
-        each _asset, i in assets
-            tr
-                td
-                    -let type = getType(_asset.mimetype);
-                    if type == "audio"
-                        button.button.iconButton.rounded(onclick="playAsset('"+_asset.id+"')")
-                            i.fas.fa-play
-                    else if type == "video"
-                        button.button.iconButton.rounded(onclick="showVideo('"+_asset.id+"')")
-                            i.fas.fa-video
-                    else if type == "image"
-                        button.button.iconButton.rounded(onclick="showImage('"+_asset.id+"')")
-                            i.fas.fa-image
-                    button.button.iconButton.rounded(onclick="download('"+_asset.id+"')")
-                        i.fas.fa-download
-                td #{_asset.name}
-                td
-                    a(href="/users/v/"+_asset.meta.uploadedBy.safeName) #{_asset.meta.uploadedBy.username}
-                td(title=_asset.createdAt.toLocaleString()) #{formatDate(_asset.createdAt)}
-                td #{_asset.tagsString} 
+each _asset, i in assets
+    tr
+        td
+            -let type = getType(_asset.mimetype);
+            if type == "audio"
+                button.button.iconButton.rounded(onclick="playAsset('"+_asset.id+"')")
+                    i.fas.fa-play
+            else if type == "video"
+                button.button.iconButton.rounded(onclick="showVideo('"+_asset.id+"')")
+                    i.fas.fa-video
+            else if type == "image"
+                button.button.iconButton.rounded(onclick="showImage('"+_asset.id+"')")
+                    i.fas.fa-image
+            button.button.iconButton.rounded(onclick="download('"+_asset.id+"')")
+                i.fas.fa-download
+        td #{_asset.name}
+        td
+            a(href="/users/v/"+_asset.meta.uploadedBy.safeName) #{_asset.meta.uploadedBy.username}
+        td(title=_asset.createdAt.toLocaleString()) #{formatDate(_asset.createdAt)}
+        td #{_asset.tagsString} 
