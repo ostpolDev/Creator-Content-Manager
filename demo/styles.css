@@ -409,7 +409,7 @@ table.table.striped tbody tr {
     background-color: var(--background-white);
 }
 
-table.table.striped tbody tr:nth-child(odd) {
+table.table.striped tbody tr:nth-child(even) {
     background-color: var(--dark-white);
 }
 

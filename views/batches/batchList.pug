@@ -1,0 +1,20 @@
+if backendRender && backendRender === true
+    include ../misc/functions.pug
+
+if batches && batches.length > 0
+    each _batch, i in batches
+        tr
+            td
+                
+                button.button.iconButton.rounded(onclick="showBatch('"+_batch.id+"')")
+                    if _batch.isAlbum === true
+                        i.fas.fa-music
+                    else
+                        i.fas.fa-eye
+            td 
+                a.hiddenLink(href="/assets/batches/v/"+_batch.id) #{_batch.name}
+            td
+                a(href="/users/v/"+_batch.createdBy.safeName) #{_batch.createdBy.safeName}
+            td(title=_batch.createdAt.toLocaleString()) #{formatDate(_batch.createdAt)}
+else
+    p Nothing found

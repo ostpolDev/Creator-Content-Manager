@@ -44,7 +44,7 @@ const getList = function(req) {
         }
     
         if (!currentSort || !Object.keys(sorts).includes(currentSort)) {
-            currentSort = "added date";
+            currentSort = "album";
         } else {
             currentSort = currentSort.toLowerCase()
         }

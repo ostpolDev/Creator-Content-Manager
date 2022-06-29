@@ -11,10 +11,12 @@ const Batch = require('../models/batch');
 
 const {body, validationResult} = require("express-validator");
 const { isValidObjectId } = require('mongoose');
+const batchFunctions = require('../modules/batchFunctions');
 
 router.get('/', (req, res) => {
     res.render('batches/index', {
-        title: "Batches"
+        title: "Batches",
+        sorts: batchFunctions.sorts
     })
 })
 

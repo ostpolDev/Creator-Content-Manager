@@ -9,7 +9,7 @@ block content
             .control
                 select.input.capitalized#sortSelect
                     each sort, i in Object.keys(sorts)
-                        option.capitalized(value=sort,selected=(sort == "name date"))=sort
+                        option.capitalized(value=sort,selected=(sort == "album"))=sort
 
         .field 
             label.label(for="channelSelect") Order
@@ -24,3 +24,31 @@ block content
                 input.input#searchQuery(type="url" name="searchQuery" placeholder="Title, description, tags, ...") 
                 span.icon
                     i.fas.fa-search
+
+        .field
+            .buttons.equal
+                button.button.fluid#clearButton
+                    span.icon
+                        i.fas.fa-trash
+                    span Clear Filter
+                button.button.fluid#searchButton
+                    span.icon
+                        i.fas.fa-search
+                    span Search
+
+
+        table.table.striped.hoverable
+            thead 
+                th Action
+                th Name
+                th Uploader
+                th Date
+            tbody#batchTableBody
+
+        button.button.link.fluid.hidden#loadMoreButton
+            span.icon
+                i.fas.fa-plus
+            span Load More
+
+block scripts
+    script(src="/js/batchList.js") 

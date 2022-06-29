@@ -34,7 +34,7 @@ router.get('/get/rendered', async(req, res) => {
         return res.status(400).json({success: false, msg: batchListResult.msg});
     }
 
-    let renderedResult = renderer.render("assets/batchList", {
+    let renderedResult = renderer.render("batches/batchList", {
         batches: batchListResult.batches,
         field: batchListResult.params.field
     })
