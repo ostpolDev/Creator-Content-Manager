@@ -78,34 +78,44 @@ const updateAssetCount = function(id, count) {
     })
 }
 
+/**
+ * Add or remove an asset from the users favorite asset list
+ * @param {*} userId ID of the user to modify
+ * @param {*} assetId Asset id of the asset to add
+ * @param {*} type "add" or "remove"
+ * @returns true or false based on success
+ */
 const modifyFavorite = function(userId, assetId, type) {
     return new Promise((res) => {
         User.findById(userId).select("favorites").exec((err, user) => {
             if (err) {
                 logger.error(err);
-                return res(false);
+                return res({success: false});
             }
             let index = user.favorites.indexOf(assetId);
+            let isInFav = false;
             if (type == "add") {
                 if (index === -1) {
                     user.favorites.push(assetId);
+                    isInFav = true;
                 } else {
-                    return res(true);
+                    return res({success: true, isInFav: true});
                 }
             } else if (type == "remove") {
                 if (index !== -1) {
                     user.favorites.splice(index, 1);
+                    isInFav = false;
                 } else {
-                    return res(true);
+                    return res({success: true, isInFav: false});
                 }
             }
 
             user.save((err) => {
                 if (err) {
                     logger.error(err);
-                    return res(false);
+                    return res({success: false});
                 }
-                return res(true);
+                return res({success: true, isInFav});
             })
         })
     })

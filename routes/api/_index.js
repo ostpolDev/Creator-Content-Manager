@@ -11,5 +11,6 @@ router.use("/channels", require('./channels'));
 router.use("/videos", require('./videos'));
 router.use("/assets", require('./assets'));
 router.use("/batches", require('./batches'));
+router.use("/users", require('./users'));
 
 module.exports = router;

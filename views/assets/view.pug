@@ -49,6 +49,15 @@ block content
                             span.icon
                                 i.fas.fa-folder
                             span View Batch
+                    if user
+                        -let _index = user.favorites.indexOf(asset.id);
+                        button.button.warning#removeFavButton(class=(_index == -1 ? "hidden" : ""), onclick="manageFav('remove', '"+asset.id+"')")
+                            span.icon
+                                i.fas.fa-star
+
+                        button.button#addFavButton(class=(_index != -1 ? "hidden" : ""), onclick="manageFav('add', '"+asset.id+"')")
+                            span.icon
+                                i.far.fa-star
 
                 a.user.small.fluid(href="/users/v/"+asset.createdBy.safeName)
                     .image
@@ -74,6 +83,10 @@ block content
                         b Downloads:
                         br
                         span(title=asset.meta.downloads || 0) #{numberWithCommas(asset.meta.downloads || 0)} 
+                    p
+                        b Favorites:
+                        br
+                        span #{favoriteCount} 
                     p
                         b Size:
                         br
@@ -114,3 +127,6 @@ block content
                             span 
                                 strong Cannot
                                 |  be used for streams
+
+block scripts
+    script(src="/js/asset.js")
