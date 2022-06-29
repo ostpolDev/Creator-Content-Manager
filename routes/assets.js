@@ -7,8 +7,8 @@ const logger = require('../modules/logger');
 const assetFunctions = require('../modules/assetFunctions');
 
 const Asset = require('../models/asset');
-const Batch = require('../models/batch');
 const Meta = require('../models/meta');
+const User = require('../models/user');
 
 const path = require('path');
 const paths = require('../modules/paths');
@@ -69,11 +69,17 @@ router.get('/v/:id', (req, res, next) => {
                     metaData = JSON.parse(fs.readFileSync(metaPath));
                 }
             }
-            res.render('assets/view', {
-                title: asset.meta.hasCustomName ? asset.name : asset.cleanName,
-                asset,
-                dbMeta: meta,
-                meta: metaData,
+            User.countDocuments({favorites: asset.id}).exec((err, favoriteCount) => {
+                if (err) {
+                    return next(err);
+                }
+                res.render('assets/view', {
+                    title: asset.meta.hasCustomName ? asset.name : asset.cleanName,
+                    asset,
+                    dbMeta: meta,
+                    meta: metaData,
+                    favoriteCount
+                })
             })
         })
     })
