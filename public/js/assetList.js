@@ -28,10 +28,10 @@ function search(forceNew) {
         previousParams = "";
     }
 
-    let order = orderSelect.value;
-    let sort = sortSelect.value;
+    let order = orderSelect.value || "-1";
+    let sort = sortSelect.value || "name";
     let batch = currentBatch;
-    let searchText = searchQuery.value;
+    let searchText = searchQuery.value || "";
 
     let url = `/api/assets/get/rendered?`;
     let params = `batch=${encodeURIComponent(batch)}&limit=12&sort=${encodeURIComponent(sort)}&order=${encodeURIComponent(order)}`;

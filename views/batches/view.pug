@@ -13,39 +13,40 @@ block content
                     else if firstAsset && firstAsset.description.rendered
                         pre!=firstAsset.description.rendered.trim()
 
-                .field 
-                    label.label(for="sortSelect") Sort by
-                    .control
-                        select.input.capitalized#sortSelect
-                            each sort, i in Object.keys(sorts)
-                                option.capitalized(value=sort,selected=(sort == "name date"))=sort
+                #searchContainer(class=(batch.length > 1 ? "" : "hidden"))
+                    .field 
+                        label.label(for="sortSelect") Sort by
+                        .control
+                            select.input.capitalized#sortSelect
+                                each sort, i in Object.keys(sorts)
+                                    option.capitalized(value=sort,selected=(sort == "name date"))=sort
 
-                .field 
-                    label.label(for="channelSelect") Order
-                    .control
-                        select.input#orderSelect
-                            option(value=1) Acending
-                            option(value=-1 selected) Decending
+                    .field 
+                        label.label(for="channelSelect") Order
+                        .control
+                            select.input#orderSelect
+                                option(value=1) Acending
+                                option(value=-1 selected) Decending
 
-                .field
-                    label.label(for="searchQuery") Search Query
-                    .control.hasIcon
-                        input.input#searchQuery(type="url" name="searchQuery" placeholder="Title, description, tags, ...") 
-                        span.icon
-                            i.fas.fa-search
-
-                .field
-                    .buttons.equal
-                        button.button.fluid#clearButton
-                            span.icon
-                                i.fas.fa-trash
-                            span Clear Filter
-                        button.button.fluid#searchButton
+                    .field
+                        label.label(for="searchQuery") Search Query
+                        .control.hasIcon
+                            input.input#searchQuery(type="url" name="searchQuery" placeholder="Title, description, tags, ...") 
                             span.icon
                                 i.fas.fa-search
-                            span Search
 
-                .divider
+                    .field
+                        .buttons.equal
+                            button.button.fluid#clearButton
+                                span.icon
+                                    i.fas.fa-trash
+                                span Clear Filter
+                            button.button.fluid#searchButton
+                                span.icon
+                                    i.fas.fa-search
+                                span Search
+
+                    .divider
 
                 table.table.striped.hoverable
                     thead 

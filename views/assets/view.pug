@@ -3,7 +3,7 @@ extends ../layout
 block content
     .container
         h1.header #{asset.meta.hasCustomName ? asset.name : asset.cleanName}
-
+        p.subtitle.capitalized #{asset.assetType}
         .columns
             .column.threeQuarter
                 -let type = getType(asset.mimetype);
@@ -12,4 +12,77 @@ block content
                 else if type == "video"
                     video(src="/assets/getFile/"+asset.id) 
                 else if type == "image"
-                    img.img(src="/assets/getFile/"+asset.id, alt=asset.originalName)
+                    img.img(style="display: block; width: 100%; margin-bottom: 1em;", src="/assets/getFile/"+asset.id, alt=asset.originalName)
+
+                if asset.description.rendered
+                    .segment
+                        pre!=asset.description.rendered.trim()
+
+                if asset.legalInfo
+                    h2.header Legal Information
+                    p.subtitle Include this in your description to not get in trouble with the copyright holder.
+                    .segment
+                        pre!=replace_content(asset.legalInfo.trim())
+
+                if asset.licence && asset.licence != "None"
+                    -let licence = licenceTypes[asset.licence]
+                    h2.header Licence
+                    a.user.tiny.noBorder(href=licence.url target="_BLANK")
+                        .image.auto
+                            img(src=licence.icon, alt=asset.licence)
+                        .content
+                            h1.header #{asset.licence}
+
+            .column
+                .buttons.fluid
+                    a.button.success(href="/assets/download/"+asset.id)
+                        span.icon
+                            i.fas.fa-download
+                        span Download
+                    if asset.source
+                        a.button(href=asset.source target="_BLANK")
+                            span.icon
+                                i.fas.fa-globe 
+                            span View source 
+                    if asset.batchSize > 1
+                        a.button(href="/assets/batches/v/"+asset.batch) 
+                            span.icon
+                                i.fas.fa-folder
+                            span View Batch
+
+                a.user.small.fluid(href="/users/v/"+asset.createdBy.safeName)
+                    .image
+                        img.rounded(src="https://www.gravatar.com/avatar/"+asset.createdBy.mailHash, alt=asset.createdBy.username)
+                    .content
+                        h1.header #{asset.createdBy.username}
+                        p Creator of this asset
+
+                .segment
+                    p
+                        b Uploaded at:
+                        br
+                        span(title=asset.createdAt.toLocaleString()) #{formatDate(asset.createdAt)} 
+                    p
+                        b Extention:
+                        br
+                        span #{asset.extention} 
+                    p
+                        b Type:
+                        br
+                        span #{asset.mimetype} 
+                    p
+                        b Downloads:
+                        br
+                        span(title=asset.meta.downloads || 0) #{numberWithCommas(asset.meta.downloads || 0)} 
+                    p
+                        b Size:
+                        br
+                        span(title=asset.size) #{bytesToSize(asset.size)} 
+                    p
+                        b Batch Size:
+                        br
+                        a.hiddenLink(href="/assets/batches/v/"+asset.batch)  #{asset.batchSize} 
+                    p
+                        b Original Name:
+                        br
+                        span #{asset.originalName} 

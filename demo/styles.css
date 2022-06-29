@@ -98,6 +98,11 @@ a.hiddenLink {
     background-color: var(--background-white) !important;
 }
 
+.noBorder {
+    border: none !important;
+    padding: 0 !important;
+}
+
 /* SEGMENTS */
 
 .segment {
@@ -1281,6 +1286,19 @@ a.user {
 .user.small .image img {
     width: 64px;
     height: 64px;
+}
+
+.user.tiny .image img {
+    width: 32px;
+    height: 32px;
+}
+
+.user.tiny h1 {
+    font-size: 16px;
+}
+
+.user .image.auto img {
+    width: auto !important;
 }
 
 img.rounded {

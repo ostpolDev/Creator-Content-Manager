@@ -88,7 +88,10 @@ const AssetSchema = mongoose.Schema({
         }
     },
     meta: {
-        downloads: Number,
+        downloads: {
+            type: Number,
+            default: 0
+        },
         hasCustomName: Boolean,
         uploadedBy: {
             username: String,
