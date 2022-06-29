@@ -21,7 +21,7 @@ let totalSkip = 0;
 let reachedEnd = false;
 
 function search(forceNew) {
-    console.log("Searching for assets...");
+    console.log("Searching for batches...");
     searchButton.disabled = true;
 
     if (forceNew == true) {

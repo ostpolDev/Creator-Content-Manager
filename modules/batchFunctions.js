@@ -60,9 +60,7 @@ const getList = function(req) {
         if (searchQuery && searchQuery.trim() != "") {
             batchQuery.$or = [
                 {name: {$regex: searchQuery, $options: "i"}},
-                {cleanName: {$regex: searchQuery, $options: "i"}},
-                {"description.raw": {$regex: searchQuery, $options: "i"}},
-                {uuid: {$regex: searchQuery, $options: "i"}}
+                {"customInfo.description.raw": {$regex: searchQuery, $options: "i"}}
             ]
         }
     
