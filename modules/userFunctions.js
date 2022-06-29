@@ -54,6 +54,25 @@ const userExists = function(id) {
     })
 }
 
+const userNameExists = function(name) {
+    return new Promise((res) => {
+        if (!name) {
+            return res(false);
+        }
+
+        User.countDocuments({$or: [
+            {username: name},
+            {safeName: name}
+        ]}).exec((err, count) => {
+            if (err) {
+                logger.error(err);
+                return res(false);
+            }
+            return res(count > 0);
+        })
+    })
+}
+
 const getInfoForUser = function(name, fields) {
     return new Promise((res) => {
         User.findOne({$or: [{safeName: name}, {username: name}]}).select(fields).exec((err, user) => {
@@ -121,4 +140,25 @@ const modifyFavorite = function(userId, assetId, type) {
     })
 }
 
-module.exports = {createSafeName, getMailCount, getUsers, userExists, getInfoForUser, updateAssetCount, modifyFavorite};
+const getFavorites = function(username) {
+    return new Promise((res) => {
+        if (!username) {
+            return res(undefined);
+        }
+        User.findOne({$or: [{safeName: username}, {username: username}]}).select("favorites").exec((err, user) => {
+            if (err) {
+                logger.error(err);
+                return res(undefined);
+            }
+            if (!user) {
+                return res(undefined);
+            }
+            if (user.favorites && user.favorites.length <= 0) {
+                return res([]);
+            }
+            return res(user.favorites);
+        })
+    })
+}
+
+module.exports = {createSafeName, getMailCount, getUsers, userExists, getInfoForUser, updateAssetCount, modifyFavorite, userNameExists, getFavorites};

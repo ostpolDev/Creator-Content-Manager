@@ -5,6 +5,7 @@ const validation = require('../modules/validation');
 const logger = require('../modules/logger');
 
 const assetFunctions = require('../modules/assetFunctions');
+const userFunctions = require('../modules/userFunctions');
 
 const Asset = require('../models/asset');
 const Meta = require('../models/meta');
@@ -179,6 +180,21 @@ router.get('/download/:id', (req, res) => {
         filestream.pipe(res);
 
         
+    })
+})
+
+router.get('/favorites/:name', async (req, res, next) => {
+    let name = req.params.name;
+    let userExists = await userFunctions.userNameExists(name);
+
+    if (!userExists) {
+        return next({status: 404});
+    }
+
+    res.render('assets/specialList', {
+        title: name + "'s favorites",
+        type: "userFav",
+        user: name
     })
 })
 

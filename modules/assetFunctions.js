@@ -342,6 +342,8 @@ const getList = function(req) {
         let skip = req.query.skip;
         let limit = req.query.limit;
 
+        let favUser = req.query.favUser;
+
         let allowedVideos = makeBoolean(req.query.videos);
         let allowedStreams = makeBoolean(req.query.streams);
 
@@ -390,17 +392,24 @@ const getList = function(req) {
         }
 
         if (allowedVideos !== undefined) {
-            assetQuery["allowedPlatforms.videos"] = allowedVideos;
+            assetQuery["allowedPlatforms.videos"] = true;
         }
 
         if (allowedStreams !== undefined) {
-            assetQuery["allowedPlatforms.streams"] = allowedStreams;
+            assetQuery["allowedPlatforms.streams"] = true;
         }
 
         if (isValidObjectId(batch)) {
             assetQuery.batch = batch;
         }
     
+        if (favUser) {
+            let favorites = await userFunctions.getFavorites(favUser);
+            if (favorites === undefined) {
+                return res({success: false, msg: "Could not find favorites of user"});
+            }
+            assetQuery._id = {$in: favorites};
+        }
     
         let assetSort = {}
     
