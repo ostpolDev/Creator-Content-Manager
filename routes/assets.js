@@ -11,7 +11,6 @@ const Batch = require('../models/batch');
 
 
 const {body, validationResult} = require("express-validator");
-const fileUpload = require('express-fileupload');
 
 router.use("*", (req, res, next) => {
     res.locals.fileTypes = assetFunctions.fileTypes;
@@ -77,5 +76,7 @@ router.post('/upload', [
         res.redirect('/assets/batches/v/' + assetFileHandleResponse.batchId);
     }
 })
+
+router.use("/batches", require('./batches'));
 
 module.exports = router;
