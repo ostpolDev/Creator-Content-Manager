@@ -66,4 +66,16 @@ const getInfoForUser = function(name, fields) {
     })
 }
 
-module.exports = {createSafeName, getMailCount, getUsers, userExists, getInfoForUser};
+const updateAssetCount = function(id, count) {
+    return new Promise((res) => {
+        User.findOneAndUpdate({_id: id}, {$inc: {"meta.assetCount": count}}).exec((err) => {
+            if (err) {
+                logger.error(err);
+                return res(false);
+            }
+            return res(true);
+        })
+    })
+}
+
+module.exports = {createSafeName, getMailCount, getUsers, userExists, getInfoForUser, updateAssetCount};

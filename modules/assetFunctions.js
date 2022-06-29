@@ -5,6 +5,7 @@ const Meta = require('../models/meta');
 const fileUpload = require('express-fileupload');
 const uuid = require('uuid').v4;
 const getMetaData = require('metadata-scraper');
+const userFunctions = require('./userFunctions');
 
 const logger = require('../modules/logger');
 const paths = require('../modules/paths');
@@ -211,7 +212,7 @@ const handleFiles = function(req) {
 
         }
 
-        function done() {
+        async function done() {
             let end = new Date();
 
             batch.skippedCount = skipped;
@@ -225,6 +226,8 @@ const handleFiles = function(req) {
                 end,
                 time: end.getTime() - start.getTime()
             }
+
+            await userFunctions.updateAssetCount(req.user.id, files.length - skipped);
 
             batch.save((err, _batch) => {
                 if (err) {
