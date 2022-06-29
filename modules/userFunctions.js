@@ -78,4 +78,37 @@ const updateAssetCount = function(id, count) {
     })
 }
 
-module.exports = {createSafeName, getMailCount, getUsers, userExists, getInfoForUser, updateAssetCount};
+const modifyFavorite = function(userId, assetId, type) {
+    return new Promise((res) => {
+        User.findById(userId).select("favorites").exec((err, user) => {
+            if (err) {
+                logger.error(err);
+                return res(false);
+            }
+            let index = user.favorites.indexOf(assetId);
+            if (type == "add") {
+                if (index === -1) {
+                    user.favorites.push(assetId);
+                } else {
+                    return res(true);
+                }
+            } else if (type == "remove") {
+                if (index !== -1) {
+                    user.favorites.splice(index, 1);
+                } else {
+                    return res(true);
+                }
+            }
+
+            user.save((err) => {
+                if (err) {
+                    logger.error(err);
+                    return res(false);
+                }
+                return res(true);
+            })
+        })
+    })
+}
+
+module.exports = {createSafeName, getMailCount, getUsers, userExists, getInfoForUser, updateAssetCount, modifyFavorite};
