@@ -8,9 +8,14 @@ const assetFunctions = require('../modules/assetFunctions');
 
 const Asset = require('../models/asset');
 const Batch = require('../models/batch');
+const Meta = require('../models/meta');
 
+const path = require('path');
+const paths = require('../modules/paths');
+const fs = require('fs');
 
 const {body, validationResult} = require("express-validator");
+const { isValidObjectId } = require('mongoose');
 
 router.use("*", (req, res, next) => {
     res.locals.fileTypes = assetFunctions.fileTypes;
@@ -34,6 +39,42 @@ router.get('/', (req, res, next) => {
                 count,
                 assets
             })
+        })
+    })
+})
+
+router.get('/v/:id', (req, res, next) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return next({status: 404});
+    }
+
+    Asset.findById(id).populate("createdBy").exec((err, asset) => {
+        if (err) {
+            return next(err);
+        }
+        if (!asset) {
+            return next({status: 404});
+        }
+        Meta.findOne({batch: asset.batch}).exec((err, meta) => {
+            if (err) {
+                next(err);
+            }
+            if (meta) {
+
+                let metaPath = path.join(paths.meta, meta.uuid);
+                let metaData;
+                if (fs.existsSync(metaPath)) {
+                    metaData = JSON.parse(fs.readFileSync(metaPath));
+                }
+
+                res.render('assets/view', {
+                    title: asset.meta.hasCustomName ? asset.name : asset.cleanName,
+                    asset,
+                    dbMeta: meta,
+                    meta: metaData,
+                })
+            }
         })
     })
 })
@@ -76,6 +117,63 @@ router.post('/upload', [
         req.flash('success', "Successfully uploaded your assets");
         res.redirect('/assets/batches/v/' + assetFileHandleResponse.batchId);
     }
+})
+
+router.get('/getFile/:id', (req, res) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return res.status(400).send();
+    }
+
+    Asset.findById(id).select("uuid extention").exec((err, asset) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send();
+        }
+        if (!asset) {
+            return res.status(404).send();
+        }
+
+        let filePath = path.join(paths.upload, asset.uuid + asset.extention);
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).send();
+        }
+
+        return res.status(200).sendFile(filePath);
+        
+    })
+})
+
+router.get('/download/:id', (req, res) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return res.status(400).send();
+    }
+
+    Asset.findById(id).select("uuid extention mimetype originalName extention").exec(async (err, asset) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send();
+        }
+        if (!asset) {
+            return res.status(404).send();
+        }
+
+        let filePath = path.join(paths.upload, asset.uuid + asset.extention);
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).send();
+        }
+
+        await assetFunctions.updateDownloadCount(asset.id);
+
+        res.setHeader('Content-disposition', 'attachment; filename=' + asset.originalName + asset.extention);
+        res.setHeader('Content-type', asset.mimetype);
+
+        var filestream = fs.createReadStream(filePath);
+        filestream.pipe(res);
+
+        
+    })
 })
 
 router.use("/batches", require('./batches'));

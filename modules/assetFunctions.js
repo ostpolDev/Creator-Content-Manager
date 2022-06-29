@@ -445,4 +445,16 @@ const makeBoolean = function(string) {
     }
 }
 
-module.exports = {handleFiles, makeBatch, makeMeta, cleanName, makeBoolean, fileTypes, assetTypes, licenceTypes, getList, sorts}
+const updateDownloadCount = function(assetId) {
+    return new Promise((res) => {
+        Asset.findOneAndUpdate({_id: assetId}, {$inc: {"meta.downloads": 1}}).exec((err) => {
+            if (err) {
+                logger.error(err);
+                return res(false);
+            }
+            return res(true);
+        })
+    })
+}
+
+module.exports = {handleFiles, makeBatch, makeMeta, cleanName, makeBoolean, fileTypes, assetTypes, licenceTypes, getList, sorts, updateDownloadCount}

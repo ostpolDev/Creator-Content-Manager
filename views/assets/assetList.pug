@@ -1,15 +1,6 @@
 if backendRender && backendRender === true
     include ../misc/functions.pug
 
--
-    function getType(mimetype) {
-        if (!mimetype) {
-            return "";
-        }
-        let firstPart = mimetype.split("/")[0];
-        return firstPart;
-    }
-
 if assets && assets.length > 0
     each _asset, i in assets
         tr
@@ -26,7 +17,8 @@ if assets && assets.length > 0
                         i.fas.fa-image
                 button.button.iconButton.rounded(onclick="download('"+_asset.id+"')")
                     i.fas.fa-download
-            td #{_asset.meta.hasCustomName ? _asset.name : _asset.cleanName}
+            td
+                a.hiddenLink(href="/assets/v/"+_asset.id)  #{_asset.meta.hasCustomName ? _asset.name : _asset.cleanName}
             td
                 a(href="/users/v/"+_asset.meta.uploadedBy.safeName) #{_asset.meta.uploadedBy.username}
             td(title=_asset.createdAt.toLocaleString()) #{formatDate(_asset.createdAt)}

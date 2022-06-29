@@ -160,3 +160,11 @@
         }
         return o;
     }
+
+    function getType(mimetype) {
+        if (!mimetype) {
+            return "";
+        }
+        let firstPart = mimetype.split("/")[0];
+        return firstPart;
+    }

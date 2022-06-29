@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+    .container
+        h1.header #{asset.meta.hasCustomName ? asset.name : asset.cleanName}
+
+        .columns
+            .column.threeQuarter
+                -let type = getType(asset.mimetype);
+                if type == "audio"
+                    audio(src="/assets/getFile/"+asset.id) 
+                else if type == "video"
+                    video(src="/assets/getFile/"+asset.id) 
+                else if type == "image"
+                    img.img(src="/assets/getFile/"+asset.id, alt=asset.originalName)
