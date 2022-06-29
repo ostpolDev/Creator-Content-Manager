@@ -8,9 +8,9 @@ block content
             .column.threeQuarter
                 -let type = getType(asset.mimetype);
                 if type == "audio"
-                    audio(src="/assets/getFile/"+asset.id) 
+                    audio#audioPlayer(src="/assets/getFile/"+asset.id, controls, controlsList="nodownload", style="width: 100%; z-index: 0; display: block;" download="no")
                 else if type == "video"
-                    video(src="/assets/getFile/"+asset.id) 
+                    video(src="/assets/getFile/"+asset.id, controls, controlsList="nodownload", style="display: block; width: 100%;") 
                 else if type == "image"
                     img.img(style="display: block; width: 100%; margin-bottom: 1em;", src="/assets/getFile/"+asset.id, alt=asset.originalName)
 
@@ -86,3 +86,31 @@ block content
                         b Original Name:
                         br
                         span #{asset.originalName} 
+
+
+                .buttons.fluid
+                    if asset.allowedPlatforms.videos === true
+                        button.button.success
+                            span.icon
+                                i.fab.fa-youtube
+                            span Can be used for videos
+                    else
+                        button.button.danger
+                            span.icon
+                                i.fab.fa-youtube
+                            span 
+                                strong Cannot
+                                |  be used for videos
+
+                    if asset.allowedPlatforms.streams === true
+                        button.button.success
+                            span.icon
+                                i.fab.fa-twitch
+                            span Can be used for streams
+                    else
+                        button.button.danger
+                            span.icon
+                                i.fab.fa-twitch
+                            span 
+                                strong Cannot
+                                |  be used for streams

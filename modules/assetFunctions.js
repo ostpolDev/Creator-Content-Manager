@@ -16,7 +16,7 @@ const { isValidObjectId } = require("mongoose");
 
 const commonToReplace = ["y2mate.com"];
 
-const fileTypes = [".jpg", ".png", ".mp3", ".mp4", ".wmv", ".webp", ".ogg", ".jpeg", ".pdn"];
+const fileTypes = [".jpg", ".png", ".mp3", ".mp4", ".wmv", ".webp", ".ogg", ".jpeg", ".pdn", ".wav"];
 const assetTypes = ["music", "soundEffect", "video", "image"];
 const licenceTypes = {
     "None": {},

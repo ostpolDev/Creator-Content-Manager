@@ -60,21 +60,21 @@ router.get('/v/:id', (req, res, next) => {
             if (err) {
                 next(err);
             }
+            let metaPath;
+            let metaData;
             if (meta) {
-
-                let metaPath = path.join(paths.meta, meta.uuid);
-                let metaData;
+                metaPath = path.join(paths.meta, meta.uuid);
+                
                 if (fs.existsSync(metaPath)) {
                     metaData = JSON.parse(fs.readFileSync(metaPath));
                 }
-
-                res.render('assets/view', {
-                    title: asset.meta.hasCustomName ? asset.name : asset.cleanName,
-                    asset,
-                    dbMeta: meta,
-                    meta: metaData,
-                })
             }
+            res.render('assets/view', {
+                title: asset.meta.hasCustomName ? asset.name : asset.cleanName,
+                asset,
+                dbMeta: meta,
+                meta: metaData,
+            })
         })
     })
 })
