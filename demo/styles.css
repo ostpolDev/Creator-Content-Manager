@@ -422,11 +422,11 @@ table.table td.centered {
     align-items: center !important;
 }
 
-table.table td .button {
+table.table td *.button {
     display: inline-block;
 }
 
-table.table td .button:not(:last-child) {
+table.table td *.button:not(:last-child) {
     margin-right: 4px;
 }
 

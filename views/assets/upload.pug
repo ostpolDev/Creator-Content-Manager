@@ -139,7 +139,7 @@ block content
                 .field 
                     label.label(for="licenceTypes") Licence
                     .control
-                        select.input#licenceTypes
+                        select.input#licenceTypes(name="licence")
                             option(value=undefined) None
                             each licence, i in Object.keys(licenceTypes)
                                 option(value=licence) #{licence}
