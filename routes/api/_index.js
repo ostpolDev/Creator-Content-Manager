@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const validation = require('../../modules/validation');
+const limiter = require('../../modules/rateLimiter');
+
+router.use("*", limiter.rateLimiterMiddleware, (req, res, next) => {
+    next();
+})
 
 router.get("/", (req, res) => {
     res.status(200).json({msg: "Hello World!"});
