@@ -320,7 +320,7 @@ const cleanName = function(name) {
     commonToReplace.forEach(c => {
         name = name.replace(c, "");
     })
-    name = name.replace(/^[_\.\-\*]/g, " ");
+    name = name.replace(/^[_\.\*]/g, " ");
     name = formatCamelCase(name);
     return name.trim();
 }

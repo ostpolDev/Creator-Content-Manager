@@ -28,15 +28,15 @@ document.addEventListener("keyup", (e) => {
         showMusicPlayer();
     }
 
-    if (e.key === "e") {
-        showMusicPlayer({
-            url:"http://127.0.0.1:5500/demo/hapi.wav",
-            artist: "Alex Bär",
-            title: "Hapi",
-            cover: "https://placekitten.com/500/500",
-            page: "#"
-        });
-    }
+    // if (e.key === "e") {
+    //     showMusicPlayer({
+    //         url:"http://127.0.0.1:5500/demo/hapi.wav",
+    //         artist: "Alex Bär",
+    //         title: "Hapi",
+    //         cover: "https://placekitten.com/500/500",
+    //         page: "#"
+    //     });
+    // }
 
     if (e.key === " ") {
         if (audio) {
@@ -109,6 +109,16 @@ function showMusicPlayer(songInfo) {
         audio = undefined;
         return;
     }
+
+    if (songInfo.cover) {
+        musicPlayerImage.classList.remove("hidden");
+        musicPlayer.classList.remove("noImage");
+    } else {
+        musicPlayerImage.classList.add("hidden");
+        musicPlayer.classList.add("noImage");
+    }
+
+    musicPlayerLink.href = songInfo.page;
 
     playerSongName.innerText = songInfo.title;
     playerArtist.innerText = songInfo.artist;

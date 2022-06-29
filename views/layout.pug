@@ -54,6 +54,34 @@ html(lang="en")
                                 i.fas.fa-eye
                             span View
 
+        #musicPlayer.musicPlayer.active
+            .playerContainer
+                .previewImage
+                    a(href="")#playerImageLink
+                        img#musicPlayerImage
+                .playerControlsContainer
+                    p.playerSongName
+                        a#playerLink
+                            span#playerSongTitle
+                            span#playerArtist.playerArtist
+                    .playerControls
+                        span#musicPlayerTime 00:00
+                        input#musicPlayerProgress.playerProgress(type="range" min="0" max="0" value="0")
+                        span#musicPlayerTotalTime 00:00
+                    .playerButtons
+                        .buttonContainer
+                            button#musicPlayerPause.button.rounded.iconButton(data-hover="Pause / Resume")
+                                #playerPauseIcon
+                                    i.fas.fa-pause
+                                #playerPlayIcon.hidden
+                                    i.fas.fa-play
+                            button#musicPlayerReplay.button.rounded.iconButton(data-hover="Replay")
+                                i.fas.fa-redo
+                            a#musicPlayerLink.button.rounded.iconButton(data-hover="Go to asset")
+                                i.fas.fa-eye
+                            button#musicPlayerClose.button.rounded.iconButton(data-hover="Close")
+                                i.fas.fa-times
+
         .hoverTag#hoverTag
             span#hoverTagText
 
@@ -88,6 +116,7 @@ html(lang="en")
         script(src="/js/modal.js")
         script(src="/js/hover.js")  
         script(src="/js/themeSwitcher.js") 
+        script(src="/js/musicPlayer.js") 
 
         script(src="/js/assetFunctions.js") 
 

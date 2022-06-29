@@ -77,7 +77,7 @@ router.get('/get/info/:id', (req, res) => {
         return res.status(400).json({success: false, msg: "Invalid ID"});
     }
 
-    Asset.findById(id).select("name cleanName uuid meta").exec((err, asset) => {
+    Asset.findById(id).select("name cleanName uuid meta").populate("batch", "name length isAlbum cover").exec((err, asset) => {
         if (err) {
             logger.error(err);
             return res.status(500).json({success: false, msg: "Something went wrong"});

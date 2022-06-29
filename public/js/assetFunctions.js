@@ -9,6 +9,24 @@ let currentAsset;
 
 async function playAsset(id) {
     currentAsset = await getAssetInfo(id);
+    if (currentAsset) {
+        let title = currentAsset.meta.hasCustomName ? currentAsset.name : currentAsset.cleanName;
+        let splits = title.split("-");
+        let artist = "";
+        if (splits.length > 1) {
+            artist = splits[1];
+
+            title = splits[0];
+        }
+        
+        showMusicPlayer({
+            url: "/assets/getFile/"+encodeURIComponent(currentAsset._id),
+            artist,
+            title,
+            cover: currentAsset.batch.cover.hasCover ? "/batches/getCover/"+encodeURIComponent(currentAsset.batch._id) : undefined,
+            page: "/assets/v/"+encodeURIComponent(currentAsset._id)
+        })
+    }
 }
 
 async function showVideo(id) {

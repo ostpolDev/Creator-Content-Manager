@@ -41,7 +41,10 @@ const BatchSchema = mongoose.Schema({
         default: false
     },
     cover: {
-        hasCover: Boolean,
+        hasCover: {
+            type: Boolean,
+            default: false
+        },
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
