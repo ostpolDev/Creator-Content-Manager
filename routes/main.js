@@ -6,8 +6,9 @@ const Channel = require('../models/channel');
 const logger = require('../modules/logger');
 const validation = require('../modules/validation');
 const channelFunctions = require('../modules/channelFunctions');
+const Asset = require('../models/asset');
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     if (!req.isAuthenticated()) {
         res.render("indexLoggedOut");
         return;
@@ -20,20 +21,22 @@ router.get('/', async (req, res) => {
         ]
     }).select("id").exec((err, channels) => {
         if (err) {
-            logger.error(err);
-            res.render("indexLoggedOut");
-            return;
+            return next(err);
         }
         let channelIds = channels.map(x => x._id);
         Video.find({channel: {$in: channelIds}}).sort({createdAt: -1}).limit(8).exec((err, videos) => {
             if (err) {
-                logger.error(err);
-                res.render("indexLoggedOut");
-                return;
+                return next(err);
             }
-            res.render("index", {
-                videos
-            })
+            Asset.find({}).sort({createdAt: -1}).limit(10).exec((err, assets) => {
+                if (err) {
+                    return next(err);
+                }
+                res.render("index", {
+                    videos,
+                    assets
+                })
+            });
         })
     })
 })

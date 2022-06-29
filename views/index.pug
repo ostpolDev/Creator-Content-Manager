@@ -16,6 +16,20 @@ block content
             p.subtitle #{videos.length} latest videos across all of your channels
             .columns.multiline
                 include videos/videoGrid.pug
+
+        if assets && assets.length > 0
+            h2.header Recent assets
+            p.subtitle The 10 most recent assets uploaded
+
+            table.table.striped.hoverable
+                thead 
+                    th Action
+                    th Name
+                    th Uploader
+                    th Date
+                    th Tags
+                tbody
+                    include assets/assetList.pug
         
         .emptySpace 
         .divider.light
