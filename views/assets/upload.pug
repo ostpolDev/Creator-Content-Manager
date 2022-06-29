@@ -76,7 +76,7 @@ block content
                         label.label Select Files
                     input.input.fileUploadName(type="text" readonly)
                     //- "audio/*,video/*,image/*"
-                    input(type="file" multiple name="assets" accept=fileTypes.join(","))
+                    input#fileInput(type="file" multiple name="assets" accept=fileTypes.join(","))
                 p.help Accepted file types are #{fileTypes.join(", ")}
 
                 .divider
@@ -166,3 +166,19 @@ block content
 block scripts
     script.
         const easyMDE = new EasyMDE({element: document.getElementById("aboutText")});
+
+    script.
+        const fileInput = document.getElementById("fileInput");
+        const assetType = document.getElementById("assetType");
+
+        fileInput.addEventListener("change", (e) => {
+            let file = e.target.files[0];
+            let type = file.type;
+            if (type.startsWith("image")) {
+                assetType.value = "image";
+            } else if (type.startsWith("video")) {
+                assetType.value = "video";
+            } else if (type.startsWith("audio")) {
+                assetType.value = "music";
+            }
+        })
