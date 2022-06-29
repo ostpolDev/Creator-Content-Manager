@@ -37,6 +37,23 @@ html(lang="en")
                             i.fas.fa-times
                         span Close
 
+        .modal.image#mediaModal
+            .modalBackground(data-modal="close")
+            .modalContainer
+                img.rounded.hidden#mediaModalImage
+                video.hidden.rounded(controls, autoplay)#mediaModalVideo 
+                .modalFooter
+                    h1#mediaModalName
+                    .buttons
+                        button.button.hasIcon(data-modal="close")
+                            span.icon
+                                i.fas.fa-times
+                            span Close
+                        a.button.hasIcon#mediaModalViewButton
+                            span.icon
+                                i.fas.fa-eye
+                            span View
+
         .hoverTag#hoverTag
             span#hoverTagText
 
@@ -71,5 +88,7 @@ html(lang="en")
         script(src="/js/modal.js")
         script(src="/js/hover.js")  
         script(src="/js/themeSwitcher.js") 
+
+        script(src="/js/assetFunctions.js") 
 
         block scripts

@@ -14,7 +14,7 @@ const fs = require('fs');
 const marked = require("../modules/marked");
 const { isValidObjectId } = require("mongoose");
 
-const commonToReplace = ["y2mate.com"];
+const commonToReplace = ["y2mate.com", "redditsave.com"];
 
 const fileTypes = [".jpg", ".png", ".mp3", ".mp4", ".wmv", ".webp", ".ogg", ".jpeg", ".pdn", ".wav"];
 const assetTypes = ["music", "soundEffect", "video", "image"];

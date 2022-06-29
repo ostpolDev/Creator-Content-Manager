@@ -23,5 +23,19 @@ function openModal(/**@type {HTMLElement} */ modal, open) {
         modal.classList.add("active");
     } else {
         modal.classList.remove("active");
+        document.dispatchEvent(new CustomEvent("modalClose", {detail: {
+            element: modal
+        }}))
     }
+}
+
+function toggleModalQuery(query) {
+    let modalElement = document.querySelector(query);
+    if (!modalElement) {
+        return;
+    }
+
+    modalElement.classList.toggle("active");
+    let isOpen = modalElement.classList.contains("active");
+    modalElement.style.opacity = isOpen ? 1 : 0;
 }

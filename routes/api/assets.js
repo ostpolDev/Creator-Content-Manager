@@ -71,4 +71,22 @@ router.get('/get/rendered', async(req, res) => {
 
 })
 
+router.get('/get/info/:id', (req, res) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return res.status(400).json({success: false, msg: "Invalid ID"});
+    }
+
+    Asset.findById(id).select("name cleanName uuid meta").exec((err, asset) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false, msg: "Something went wrong"});
+        }
+        if (!asset) {
+            return res.status(404).json({success: false, msg: "Asset not found"});
+        }
+        return res.status(200).json({success: true, asset});
+    })
+})
+
 module.exports = router;

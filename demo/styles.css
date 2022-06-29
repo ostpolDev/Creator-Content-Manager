@@ -540,12 +540,12 @@ span.close {
     align-items: center;
 }
 
-.modal.image .modalContainer>img {
+.modal.image .modalContainer>img, .modal.image .modalContainer>video {
     width: 100%;
 }
 
-.modal.image .modalContainer>img.rounded {
-    border-radius: var(--default-border-radius) var(--default-border-radius) 0 0;
+.modal.image .modalContainer>img.rounded, .modal.image .modalContainer>video.rounded {
+    border-radius: var(--default-border-radius) var(--default-border-radius) 0 0 !important;
 }
 
 .modal.image .modalFooter h1 {
@@ -1301,7 +1301,7 @@ a.user {
     width: auto !important;
 }
 
-img.rounded {
+.user img.rounded {
     border-radius: 50%;
 }
 
