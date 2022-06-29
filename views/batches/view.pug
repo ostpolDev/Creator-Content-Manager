@@ -3,7 +3,7 @@ extends ../layout
 block content
     .container
         h1.header #{batch.name}
-        p.subtitle Asset batch
+        p.subtitle #{batch.length} assets in batch
 
         .columns
             .column.threeQuarter
@@ -12,7 +12,6 @@ block content
                         pre!=batch.customInfo.description.rendered
                     else if firstAsset && firstAsset.description.rendered
                         pre!=firstAsset.description.rendered.trim()
-                .segment Work in progress...
 
                 .field 
                     label.label(for="channelSelect") Sort by
@@ -82,6 +81,25 @@ block content
                         .content
                             h1.header #{batch.createdBy.username}
                             p Creator of this batch
+
+                    .segment
+                        p
+                            b Created at:
+                            br
+                            span(title=batch.createdAt.toLocaleString()) #{formatDate(batch.createdAt)} 
+                        p
+                            b Failed files:
+                            br
+                            span #{batch.skipped.length}
+                        p
+                            b Total Size:
+                            br
+                            span(title=batch.fileSize) #{bytesToSize(batch.fileSize)}
+
+                        p
+                            b Upload duration:
+                            br
+                            span #{batch.uploadTime.time}ms
 
 block scripts
     script.
