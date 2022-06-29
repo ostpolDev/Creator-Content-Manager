@@ -12,6 +12,12 @@ const Batch = require('../models/batch');
 const {body, validationResult} = require("express-validator");
 const { isValidObjectId } = require('mongoose');
 
+router.get('/', (req, res) => {
+    res.render('batches/index', {
+        title: "Batches"
+    })
+})
+
 router.get('/v/:id', (req, res, next) => {
     let id = req.params.id;
     if (!isValidObjectId(id)) {

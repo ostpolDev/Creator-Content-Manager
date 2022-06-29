@@ -36,7 +36,10 @@ const BatchSchema = mongoose.Schema({
         end: Date,
         time: Number
     },
-    isAlbum: Boolean,
+    isAlbum: {
+        type: Boolean,
+        default: false
+    },
     cover: {
         hasCover: Boolean,
         createdBy: {

@@ -14,7 +14,7 @@ block content
                         pre!=firstAsset.description.rendered.trim()
 
                 .field 
-                    label.label(for="channelSelect") Sort by
+                    label.label(for="sortSelect") Sort by
                     .control
                         select.input.capitalized#sortSelect
                             each sort, i in Object.keys(sorts)
