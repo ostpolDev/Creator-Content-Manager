@@ -10,6 +10,8 @@ block content
                 .segment#descriptionSegment
                     if batch.customInfo.hasCustomInfo
                         pre!=batch.customInfo.description.rendered
+                    else if firstAsset && firstAsset.description.rendered
+                        pre!=firstAsset.description.rendered.trim()
                 .segment Work in progress...
 
                 .field 
@@ -68,8 +70,21 @@ block content
                                 i.fas.fa-cog
                             span Settings
 
+                    if firstAsset && firstAsset.source
+                        a.button(href=firstAsset.source target="_BLANK")
+                            span.icon
+                                i.fas.fa-globe
+                            span View Source 
+
+                    a.user.small.fluid(href="/users/v/"+batch.createdBy.safeName)
+                        .image
+                            img.rounded(src="https://www.gravatar.com/avatar/"+batch.createdBy.mailHash, alt=batch.createdBy.username)
+                        .content
+                            h1.header #{batch.createdBy.username}
+                            p Creator of this batch
+
 block scripts
     script.
         const currentBatch = "#{batch.id}";
-    script(src="/js/batch.js") 
+    //- script(src="/js/batch.js") 
     script(src="/js/assetList.js") 
