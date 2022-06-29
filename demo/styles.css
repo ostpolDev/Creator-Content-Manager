@@ -1171,7 +1171,7 @@ div.hoverable:hover, a.card.hoverable:hover {
 }
 
 img.grayscale {
-    filter: grayscale(.6);
+    filter: grayscale(.6) saturate(.2);
 }
 
 /* SIDE MENU */
