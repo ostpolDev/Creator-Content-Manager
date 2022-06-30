@@ -50,10 +50,10 @@ nav.navbar
                             i.fas.fa-user-plus
                         span Register
                 else
-                    a.navItem(href="/users/v/"+user.safeName)
+                    a.navItem(href="/users/v/"+user.safeName, data-context-name="Settings" data-context-icon="cog" data-context-link="/users/settings")
                         span.icon
                             i.fas.fa-user
-                        span #{user.username} 
+                        span(data-context-name="Settings" data-context-icon="cog" data-context-link="/users/settings") #{user.username} 
                     a.navItem.button(href="/users/logout")
                         span.icon
                             i.fas.fa-sign-out-alt

@@ -9,7 +9,7 @@ block content
                 .column.oneQuarter
                     a.card.hoverable.circular(href="/users/v/"+u.safeName)
                         .cardImage
-                            img(src="https://www.gravatar.com/avatar/"+u.mailHash, alt=u.username)
+                            img(src="https://www.gravatar.com/avatar/"+u.mailHash+"?s=200", alt=u.username)
                         .cardBody.centerText
                             h1.header #{u.username}
                             .meta
