@@ -20,6 +20,16 @@ html(lang="en")
         block head
     body
 
+        .contextMenu#contextMenu
+            h1.menuHeader#specificDivider Quick Action
+            .contextList#contextSpecific
+            h1.menuHeader Context
+            .contextList#contextSpecific
+                a.item(href="/")
+                    span.icon
+                        i.fas.fa-home
+                    span Home 
+
         .modal#lightModeModal
             .modalBackground(data-modal="close")
             .modalContainer
@@ -119,5 +129,6 @@ html(lang="en")
         script(src="/js/musicPlayer.js") 
 
         script(src="/js/assetFunctions.js") 
+        script(src="/js/contextMenu.js") 
 
         block scripts
