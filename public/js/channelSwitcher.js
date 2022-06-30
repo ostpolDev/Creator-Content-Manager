@@ -19,7 +19,7 @@ function switchToChannel(id) {
         return;
     }
 
-    fetch("/channels/switch/"+encodeURIComponent(id), {
+    fetch("/api/channels/switch/"+encodeURIComponent(id), {
         method: "POST"
     }).then(res => {
         return res.json();
