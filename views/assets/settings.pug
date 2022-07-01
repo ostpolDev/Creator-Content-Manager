@@ -5,7 +5,6 @@ block head
     script(src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js") 
 
 block content
-
     .modal#uploadHelpModal
         .modalBackground(data-modal="close")
         .modalContainer
@@ -57,62 +56,50 @@ block content
                 span.icon
                     i.fas.fa-info
                 span Help & Information
+        h1.header #{asset.name}
+        p.subtitle Settings
 
-        h1.header Upload assets
         .message.info
             .messageHeader Quick Info
             .messageBody
                 p Please make sure that the asset is freely useable on video or live-streaming platforms, and that if there are special permissons that need to be given, that you add them accordingly.
 
         .segment
-            form(action="/assets/upload", method="post", enctype="multipart/form-data")
-                .field.required.file
-                    .fileUploadLabel
-                        span.icon
-                            i.fas.fa-upload
-                        label.label Select Files
-                    input.input.fileUploadName(type="text" readonly)
-                    //- "audio/*,video/*,image/*"
-                    input#fileInput(type="file" multiple name="assets" accept=fileTypes.join(","))
-                p.help Accepted file types are #{fileTypes.join(", ")}
-
-                .divider
-
+            form(action="/assets/settings/save/"+asset.id, method="post")
                 .field
                     label.label(for="name") Name
                     .control.hasIcon
-                        input.input#name(type="text", name="name", placeholder="Super cool asset name", maxlength="256", autocomplete="off")
+                        input.input#name(type="text", name="name", placeholder="Super cool asset name", maxlength="256", autocomplete="off", value=asset.name)
                         span.icon
                             i.fas.fa-heading
-
-                .field
-                    label.label(for="batchName") Batch Name
-                    .control.hasIcon
-                        input.input#batchName(type="text", name="batchName", placeholder="Album by Person", maxlength="256", autocomplete="off")
-                        span.icon
-                            i.fas.fa-folder
+                    p.help Original: 
+                        strong #{asset.originalName}
+                        | | Generated: 
+                        strong #{asset.cleanName}
 
                 .field
                     label.label(for="aboutText") About
                     .control
                         textarea.textarea#aboutText(type="text", name="about", placeholder="About the asset...", autocomplete="off")
+                            | #{asset.description.raw}
 
                 .field
                     label.label(for="legalInfo") Legal Information
                     .control
                         textarea.textarea#legalInfo(type="text", name="legalInfo", placeholder="Required legal information about the asset", autocomplete="off")
+                            | #{asset.legalInfo}
 
                 .field 
                     label.label(for="assetType") Select an asset type
                     .control
                         select.input#assetType(name="assetType")
                             each type, i in assetTypes
-                                option(value=type) #{formatString(type)}
+                                option(value=type, selected=(asset.assetType == type)) #{formatString(type)}
 
                 .field
                     label.label(for="tags") Tags
                     .control.hasIcon
-                        input.input#tags(type="text" name="tags" placeholder="super, cool, assets")
+                        input.input#tags(type="text" name="tags" placeholder="super, cool, assets", value=asset.tagsString)
                         span.icon
                             i.fas.fa-tag
                     p.help Enter tags seperated with 
@@ -122,14 +109,14 @@ block content
                 .field
                     label.label(for="source") Source
                     .control.hasIcon
-                        input.input#source(type="url" name="source" placeholder="https://www.youtube.com/watch?v=94vIKBfX9hI") 
+                        input.input#source(type="url" name="source" placeholder="https://www.youtube.com/watch?v=94vIKBfX9hI" value=asset.source) 
                         span.icon
                             i.fas.fa-globe
 
                 .field
                     label.label(for="price") Price
                     .control.hasIcon
-                        input.input#price(type="number" name="price" min=0 step=0.01 placeholder="7.99")
+                        input.input#price(type="number" name="price" min=0 step=0.01 placeholder="7.99" value=asset.purchase.price)
                         span.icon
                             i.fas.fa-money-bill-alt
 
@@ -138,44 +125,28 @@ block content
                     .control
                         select.input#licenceTypes(name="licence")
                             each licence, i in Object.keys(licenceTypes)
-                                option(value=licence) #{licence}
+                                option(value=licence selected=(asset.licence == licence)) #{licence}
                         p.help This is completely optional. Please only choose a licence if you know that it is the correct one.
 
                 .field
                     legend Supported Platforms
                     div.checkbox
-                        input.checkbox#streaming(type="checkbox" name="streaming" checked)
+                        input.checkbox#streaming(type="checkbox" name="streaming" checked=asset.allowedPlatforms.streams)
                         label(for="streaming") Streaming
                     div.checkbox
-                        input.checkbox#videos(type="checkbox" name="videos" checked)
+                        input.checkbox#videos(type="checkbox" name="videos" checked=asset.allowedPlatforms.videos)
                         label(for="videos") Videos
 
                 .field
                     button.button.success.fluid
                         span.icon
-                            i.fas.fa-upload
-                        span Upload
+                            i.fas.fa-save
+                        span Save
 
         .divider.light
         p
             small * Required
-                
+
 block scripts
     script.
         const easyMDE = new EasyMDE({element: document.getElementById("aboutText")});
-
-    script.
-        const fileInput = document.getElementById("fileInput");
-        const assetType = document.getElementById("assetType");
-
-        fileInput.addEventListener("change", (e) => {
-            let file = e.target.files[0];
-            let type = file.type;
-            if (type.startsWith("image")) {
-                assetType.value = "image";
-            } else if (type.startsWith("video")) {
-                assetType.value = "video";
-            } else if (type.startsWith("audio")) {
-                assetType.value = "music";
-            }
-        })
