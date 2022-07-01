@@ -198,13 +198,13 @@ router.get('/favorites/:name', async (req, res, next) => {
     })
 })
 
-router.get('/settings/:id', (req, res, next) => {
+router.get('/settings/:id', validation.ensureAuthenticated, (req, res, next) => {
     let id = req.params.id;
     if (!isValidObjectId(id)) {
         return next({status: 404});
     }
 
-    Asset.findById(id).exec((err, asset) => {
+    Asset.findOne({_id: id, createdBy: req.user.id}).exec((err, asset) => {
         if (err) {
             return next(err);
         }
