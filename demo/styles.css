@@ -1316,7 +1316,7 @@ a.user {
     display: block;
     transform-origin: top left;
     pointer-events: none;
-    transition: all var(--default-transition-time) ease;
+    transition: opacity var(--default-transition-time) ease;
     scale: 0;
     opacity: 0;
     z-index: 99999;
