@@ -114,6 +114,18 @@ function getExtraContext(/** @type {HTMLElement} */ element , /** @type {MouseEv
     let customFunction = element.getAttribute("data-context-function");
     let customLink = element.getAttribute("data-context-link");
     let customSource = element.getAttribute("data-context-source");
+    let targetElem;
+
+    if (!customName || !customSource) {
+        targetElem = element.closest("[data-context-name],[data-context-source]");
+        if (targetElem) {
+            customName = targetElem.getAttribute("data-context-name");
+            customIcon = targetElem.getAttribute("data-context-icon");
+            customFunction = targetElem.getAttribute("data-context-function");
+            customLink = targetElem.getAttribute("data-context-link");
+            customSource = targetElem.getAttribute("data-context-source");
+        }
+    }
     
     if (customName && customIcon && (customFunction || customLink)) {
         menus.push({
@@ -130,14 +142,18 @@ function getExtraContext(/** @type {HTMLElement} */ element , /** @type {MouseEv
     }
 
     if (customSource) {
-        let customSourceMenus = executeFunctionByName(customSource, window, event);
-        if (customSourceMenus) {
-            if (!Array.isArray(customSourceMenus)) {
-                customSourceMenus = [customSourceMenus];
+        try {
+            let customSourceMenus = executeFunctionByName(customSource, window, event, targetElem ? targetElem : element);
+            if (customSourceMenus) {
+                if (!Array.isArray(customSourceMenus)) {
+                    customSourceMenus = [customSourceMenus];
+                }
+                if (customSourceMenus && customSourceMenus.length > 0) {
+                    menus.push(...customSourceMenus);
+                }
             }
-            if (customSourceMenus && customSourceMenus.length > 0) {
-                menus.push(...customSourceMenus);
-            }
+        } catch (e) {
+            console.error(e);
         }
     }
 

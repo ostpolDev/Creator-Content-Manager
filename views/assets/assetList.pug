@@ -3,7 +3,7 @@ if backendRender && backendRender === true
 
 if assets && assets.length > 0
     each _asset, i in assets
-        tr
+        tr(data-context-source="getAssetContext" data-video=_asset.id data-owner=(user && _asset.createdBy == user.id).toString())
             td
                 -let type = getType(_asset.mimetype);
                 if type == "audio"
@@ -18,11 +18,12 @@ if assets && assets.length > 0
                 button.button.iconButton.rounded(onclick="download('"+_asset.id+"')")
                     i.fas.fa-download
             td
-                a.hiddenLink(href="/assets/v/"+_asset.id) 
+                a.assetName.hiddenLink(href="/assets/v/"+_asset.id) 
                     if user && user.favorites.includes(_asset.id)
                         span.icon
                             i.fas.fa-star
                     | #{_asset.meta.hasCustomName ? _asset.name : _asset.cleanName}
+                input.input.hidden.assetRename(type="text" value=_asset.name placeholder=_asset.name)
             td
                 a(href="/users/v/"+_asset.meta.uploadedBy.safeName) #{_asset.meta.uploadedBy.username}
             td(title=_asset.createdAt.toLocaleString()) #{formatDate(_asset.createdAt)}

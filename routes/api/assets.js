@@ -54,7 +54,8 @@ router.get('/get/rendered', async(req, res) => {
 
     let renderedResult = renderer.render("assets/assetList", {
         assets: assetListResult.assets,
-        field: assetListResult.params.field
+        field: assetListResult.params.field,
+        user: req.user
     })
 
     if (!renderedResult) {
@@ -86,6 +87,39 @@ router.get('/get/info/:id', (req, res) => {
             return res.status(404).json({success: false, msg: "Asset not found"});
         }
         return res.status(200).json({success: true, asset});
+    })
+})
+
+router.post("/rename", validation.ensureAuthenticated, (req, res) => {
+    let name = req.body.name;
+    let id = req.body.asset;
+
+    if (!isValidObjectId(id) || !name || name.length > 256) {
+        return res.status(400).json({success: false, msg: "Invalid parameters"});
+    }
+
+    Asset.findById(id).select("name cleanName meta createdBy").exec((err, asset) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        if (!asset) {
+            return res.status(404).json({success: false});
+        }
+        if (!asset.createdBy == req.user.id) {
+            return res.status(403).json({success: false, msg: "Access denied"});
+        }
+
+        asset.meta.hasCustomName = true;
+        asset.name = name;
+
+        asset.save((err) => {
+            if (err) {
+                logger.error(err);
+                return res.status(500).json({success: false, msg: "Could not save"});
+            }
+            return res.status(200).json({success: true});
+        })
     })
 })
 
