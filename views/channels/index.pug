@@ -7,7 +7,7 @@ block content
 
         .columns.multiline
             each c, i in channels
-                .column.oneQuarter(data-context-source="getChannelContext" data-channel=c.id)
+                .column.oneQuarter(data-context-source="getChannelContext" data-channel=c.id, data-channel-selected=(c.id == channel.id).toString())
                     a.card.hoverable.circular(href="/channels/v/"+c.id)
                         .cardImage
                             img(src=c.thumbnails.default.url, alt=c.name, class=(c.id == channel.id?"":"grayscale"))

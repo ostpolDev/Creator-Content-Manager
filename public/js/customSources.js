@@ -89,10 +89,11 @@ function submitName(id, newName) {
 
 function getChannelContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ element) {
     let id = element.getAttribute("data-channel");
+    let selected = element.getAttribute("data-channel-selected");
 
     let menus = [];
 
-    if (id) {
+    if (id && selected == "false") {
         menus.push({
             text: "Switch",
             event: (linkEvent, pointerEvent) => {
