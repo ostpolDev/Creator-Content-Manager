@@ -1,11 +1,11 @@
 function getAssetContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ element) {
+    let id = element.getAttribute("data-asset");
     let menus = [];
     let isOwner = element.getAttribute("data-owner");
 
     menus.push({
         text: "View",
         event: (linkEvent, pointerEvent) => {
-            let id = element.getAttribute("data-video");
             window.location = "/assets/v/"+encodeURIComponent(id);
         }
     })
@@ -13,7 +13,6 @@ function getAssetContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ e
     menus.push({
         text: "Download",
         event: (linkEvent, pointerEvent) => {
-            let id = element.getAttribute("data-video");
             window.location = "/assets/download/"+encodeURIComponent(id);
         }
     })
@@ -24,8 +23,7 @@ function getAssetContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ e
             text: "Rename",
             event: (linkEvent, pointerEvent) => {
                 console.log("Renaming asset");
-                let id = element.getAttribute("data-video");
-                
+
                 let nameElement = element.querySelector(".assetName");
                 let inputElement = element.querySelector(".assetRename");
 
@@ -53,6 +51,13 @@ function getAssetContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ e
                     nameElement.classList.remove("hidden");
                     inputElement.classList.add("hidden");
                 }
+            }
+        })
+
+        menus.push({
+            text: "Settings",
+            event: () => {
+                window.location = "/assets/settings/"+encodeURIComponent(id);
             }
         })
     }

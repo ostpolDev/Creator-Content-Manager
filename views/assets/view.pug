@@ -50,6 +50,11 @@ block content
                                 i.fas.fa-folder
                             span View Batch
                     if user
+                        if user.id == asset.createdBy.id
+                            a.button(href="/assets/settings/"+asset.id) 
+                                span.icon
+                                    i.fas.fa-cog
+                                span Settings 
                         -let _index = user.favorites.indexOf(asset.id);
                         button.button.warning#removeFavButton(class=(_index == -1 ? "hidden" : ""), onclick="manageFav('remove', '"+asset.id+"')")
                             span.icon
