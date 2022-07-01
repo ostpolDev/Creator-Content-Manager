@@ -86,3 +86,31 @@ function submitName(id, newName) {
         })
     })
 }
+
+function getChannelContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ element) {
+    let id = element.getAttribute("data-channel");
+
+    let menus = [];
+
+    if (id) {
+        menus.push({
+            text: "Switch",
+            event: (linkEvent, pointerEvent) => {
+                fetch("/api/channels/switch/"+encodeURIComponent(id), {
+                    method: "POST"
+                }).then(res => {
+                    return res.json();
+                }).then(json => {
+                    if (json.success === true) {
+                        window.location.reload();
+                    }
+                }).catch((err) => {
+                    console.error(err);
+                })
+            }
+        })
+    }
+
+    return menus;
+}
+
