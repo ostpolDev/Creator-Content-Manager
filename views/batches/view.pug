@@ -102,6 +102,16 @@ block content
                             br
                             span #{batch.uploadTime.time}ms
 
+                if firstAsset.licence && firstAsset.licence != "None"
+                    -let licence = licenceTypes[firstAsset.licence]
+                    h2.header Licence
+                    a.user.tiny.noBorder(href=licence.url target="_BLANK")
+                        .image.auto
+                            img(src=licence.icon, alt=firstAsset.licence)
+                        .content
+                            h1.header #{firstAsset.licence}
+
+
 block scripts
     script.
         const currentBatch = "#{batch.id}";
