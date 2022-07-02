@@ -14,7 +14,7 @@ const fs = require('fs');
 const marked = require("../modules/marked");
 const { isValidObjectId } = require("mongoose");
 
-const commonToReplace = ["y2mate.com", "redditsave.com"];
+const commonToReplace = ["y2matecom", "redditsavecom", "y2mate.com", "redditsave.com"];
 
 const fileTypes = [".jpg", ".png", ".mp3", ".mp4", ".wmv", ".webp", ".ogg", ".jpeg", ".pdn", ".wav"];
 const assetTypes = ["music", "soundEffect", "video", "image"];
@@ -315,14 +315,16 @@ const cleanName = function(name) {
     if (!name) {
         return "";
     }
-    name = name.replace(/_/g, " ");
-    name = name.replace(path.extname(name), "");
+    name = name.toLowerCase();
     commonToReplace.forEach(c => {
         name = name.replace(c, "");
     })
+    name = name.replace(/_/g, " ");
+    name = name.replace(path.extname(name), "");
     name = name.replace(/^[_\.\*]/g, " ");
-    name = formatCamelCase(name);
-    return name.trim();
+    name = formatCamelCase(name).trim();
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+    return name;
 }
 
 function formatCamelCase(text) {
