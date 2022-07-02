@@ -2,8 +2,10 @@ extends ../layout
 
 block content
     .container
-        h1.header #{asset.meta.hasCustomName ? asset.name : asset.cleanName}
-        p.subtitle.capitalized #{asset.assetType}
+        #headerContainer(data-context-source="getAssetContext" data-asset=asset.id data-owner=(user && asset.createdBy.id == user.id).toString())
+            h1.header.assetName #{asset.meta.hasCustomName ? asset.name : asset.cleanName}
+            p.subtitle.capitalized #{asset.assetType}
+            input.input.hidden.assetRename(type="text" value=asset.name placeholder=asset.name)
         .columns
             .column.threeQuarter
                 -let type = getType(asset.mimetype);
@@ -76,6 +78,10 @@ block content
                         b Uploaded at:
                         br
                         span(title=asset.createdAt.toLocaleString()) #{formatDate(asset.createdAt)} 
+                    p
+                        b Updated at:
+                        br
+                        span(title=asset.updatedAt.toLocaleString()) #{formatDate(asset.updatedAt)} 
                     p
                         b Extention:
                         br
