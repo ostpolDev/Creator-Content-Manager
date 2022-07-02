@@ -23,7 +23,7 @@ if assets && assets.length > 0
                         span.icon
                             i.fas.fa-star
                     | #{_asset.meta.hasCustomName ? _asset.name : _asset.cleanName}
-                input.input.hidden.assetRename(type="text" value=_asset.name placeholder=_asset.name)
+                input.input.hidden.assetRename(type="text" value=(_asset.meta.hasCustomName ? _asset.name : _asset.cleanName) placeholder=_asset.name)
             td
                 a(href="/users/v/"+_asset.meta.uploadedBy.safeName) #{_asset.meta.uploadedBy.username}
             td(title=_asset.createdAt.toLocaleString()) #{formatDate(_asset.createdAt)}

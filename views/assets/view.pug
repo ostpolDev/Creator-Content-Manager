@@ -10,11 +10,33 @@ block head
         }
 
 block content
+    .modal#confirmAssetDelete
+        .modalBackground(data-modal="close")
+        .modalContainer
+            .modalHeader 
+                h2 Are you sure?
+                span.close(data-modal="close")
+                    i.fas.fa-times 
+            .modalContent
+                p This will remove the asset named 
+                    strong "#{asset.meta.hasCustomName ? asset.name : asset.cleanName}"
+                    |  from this site. This cannot be undone.
+
+                p This will also remove this assets reference from all videos that use it.
+            .modalFooter
+                button.button.has-icon.danger#deleteAssetButton
+                    span.icon
+                        i.fas.fa-trash
+                    span Confirm
+                button.button.has-icon(data-modal="close")
+                    span.icon
+                        i.fas.fa-times
+                    span Cancel
     .container
         #headerContainer(data-context-source="getAssetContext" data-asset=asset.id data-owner=(user && asset.createdBy.id == user.id).toString())
             h1.header.assetName #{asset.meta.hasCustomName ? asset.name : asset.cleanName}
             p.subtitle.capitalized #{asset.assetType}
-            input.input.hidden.assetRename(type="text" value=asset.name placeholder=asset.name)
+            input.input.hidden.assetRename(type="text" value=(asset.meta.hasCustomName ? asset.name : asset.cleanName) placeholder=asset.name)
         .columns
             .column.threeQuarter
                 -let type = getType(asset.mimetype);
@@ -67,6 +89,10 @@ block content
                                 span.icon
                                     i.fas.fa-cog
                                 span Settings 
+                            button.button.danger(data-modal="#confirmAssetDelete")
+                                span.icon
+                                    i.fas.fa-trash
+                                span Delete Asset
                         -let _index = user.favorites.indexOf(asset.id);
                         button.button.warning#removeFavButton(class=(_index == -1 ? "hidden" : ""), onclick="manageFav('remove', '"+asset.id+"')")
                             span.icon
@@ -150,4 +176,7 @@ block content
                                 |  be used for streams
 
 block scripts
+    script.
+        const assetId = "#{asset.id}";
+    
     script(src="/js/asset.js")

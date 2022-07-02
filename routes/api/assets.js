@@ -5,9 +5,14 @@ const validation = require('../../modules/validation');
 const logger = require('../../modules/logger');
 
 const assetFunctions = require('../../modules/assetFunctions');
+const userFunctions = require('../../modules/userFunctions');
+const batchFunctions = require('../../modules/batchFunctions');
 
 const Asset = require('../../models/asset');
 const Batch = require('../../models/batch');
+const User = require('../../models/user');
+const Video = require('../../models/video');
+const Meta = require('../../models/meta');
 
 const {body, validationResult} = require("express-validator");
 const { isValidObjectId } = require('mongoose');
@@ -119,6 +124,69 @@ router.post("/rename", validation.ensureAuthenticated, (req, res) => {
                 return res.status(500).json({success: false, msg: "Could not save"});
             }
             return res.status(200).json({success: true});
+        })
+    })
+})
+
+router.post("/delete/:id", validation.ensureAuthenticated, (req, res) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return res.status(400).json({success: false, msg: "Invalid ID"});
+    }
+    
+
+    Asset.findOneAndRemove({
+        _id: id,
+        createdBy: req.user.id
+    }).exec((err, asset) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false, msg: "Something went wrong"});
+        }
+
+        Meta.findOneAndRemove({
+            batch: asset.batch
+        }).exec((err, meta) => {
+            if (err) {
+                logger.error(err);
+                return res.status(500).json({success: false, msg: "Something went wrong"});
+            }
+
+            User.updateMany({favorites: id}, {$pull: {favorites: id}}, {new: true}).exec((err) => {
+                if (err) {
+                    logger.error(err);
+                    return res.status(500).json({success: false, msg: "Something went wrong"});
+                }
+    
+                Video.updateMany({assets: id}, {$pull: {assets: id}}, {new: true}).exec(async (err) => {
+                    if (err) {
+                        logger.error(err);
+                        return res.status(500).json({success: false, msg: "Something went wrong"});
+                    }
+    
+                    if (!assetFunctions.deleteFile(asset)) {
+                        logger.error("Could not remove asset: " + asset.uid);
+                    }
+                    if (meta) {
+                        if (!assetFunctions.deleteMetaFile(meta)) {
+                            logger.error("Could not remove asset: " + asset.uid);
+                        }
+                    }
+
+                    let assetCountResponse = await userFunctions.redoAssetCount(req.user.id);
+                    if (!assetCountResponse) {
+                        logger.error("Failed to update user asset count");
+                    }
+
+                    let batchUpdateResponse = await batchFunctions.deleteIfEmpty(asset.batch);
+                    if (!batchUpdateResponse) {
+                        logger.error("Failed to update user asset count");
+                    }
+
+                    return res.status(200).json({success: true});
+                })
+    
+            })
         })
     })
 })

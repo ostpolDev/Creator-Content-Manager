@@ -1,5 +1,6 @@
 const removeFavButton = document.getElementById("removeFavButton");
 const addFavButton = document.getElementById("addFavButton");
+const deleteAssetButton = document.getElementById("deleteAssetButton");
 
 function manageFav(type, id) {
     if (isDisabled()) {
@@ -40,3 +41,17 @@ function manageButtons(isInFavorites) {
         addFavButton.classList.remove("hidden");
     }
 }
+
+deleteAssetButton.addEventListener("click", (e) => {
+    fetch("/api/assets/delete/"+encodeURIComponent(assetId), {
+        method: "POST"
+    }).then((res) => {return res.json()}).then((json) => {
+        if (json.success === true) {
+            window.location = "/assets"
+        } else {
+            console.error(json.msg);
+        }
+    }).catch((err) => {
+        console.error(err);
+    })
+})

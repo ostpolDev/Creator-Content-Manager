@@ -108,4 +108,30 @@ const makeBoolean = function(string) {
     }
 }
 
-module.exports = {makeBoolean, getList, sorts};
+const deleteIfEmpty = function(id) {
+    return new Promise((res) => {
+        if (!isValidObjectId(id)) {
+            return res(undefined);
+        }
+
+        Asset.countDocuments({batch: id}).exec((err, count) => {
+            if (err) {
+                logger.error(err);
+                return res(undefined);
+            }
+            if (count <= 0) {
+                Batch.findByIdAndRemove(id).exec((err) => {
+                    if (err) {
+                        logger.error(err);
+                        return res(undefined);
+                    }
+                    return res(true);
+                })
+            } else {
+                return res(true);
+            }
+        })
+    })
+}
+
+module.exports = {makeBoolean, getList, sorts, deleteIfEmpty};

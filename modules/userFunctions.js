@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Asset = require('../models/asset');
 const logger = require('./logger');
 const Channel = require('../models/channel');
 const { isValidObjectId } = require('mongoose');
@@ -161,4 +162,27 @@ const getFavorites = function(username) {
     })
 }
 
-module.exports = {createSafeName, getMailCount, getUsers, userExists, getInfoForUser, updateAssetCount, modifyFavorite, userNameExists, getFavorites};
+const redoAssetCount = function(id) {
+    return new Promise((res) => {
+        if (!isValidObjectId(id)) {
+            return res(undefined);
+        }
+
+        Asset.countDocuments({createdBy: id}).exec((err, count) => {
+            if (err) {
+                logger.error(err);
+                return res(undefined);
+            }
+
+            User.findByIdAndUpdate(id, {$set: {"meta.assetCount": count}}).exec((err) => {
+                if (err) {
+                    logger.error(err);
+                    return res(undefined);
+                }
+                return res(true);
+            })
+        })
+    })
+}
+
+module.exports = {createSafeName, getMailCount, getUsers, userExists, getInfoForUser, updateAssetCount, modifyFavorite, userNameExists, getFavorites, redoAssetCount};

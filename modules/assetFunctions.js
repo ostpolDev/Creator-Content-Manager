@@ -443,6 +443,31 @@ const getList = function(req) {
     })
 }
 
+const deleteFile = function(asset) {
+    if (!asset) {
+        return false;
+    }
+    let filePath = path.join(paths.upload, asset.uuid + asset.extention);
+    if (!fs.existsSync(filePath)) {
+        return false;
+    }
+    fs.unlinkSync(filePath);
+    return true;
+}
+
+const deleteMetaFile = function(meta) {
+    if (!meta) {
+        return false;
+    }
+    let filePath = path.join(paths.meta, meta.uuid + ".json");
+    if (!fs.existsSync(filePath)) {
+        return false;
+    }
+    fs.unlinkSync(filePath);
+    return true;
+}
+
+
 const makeBoolean = function(string) {
     if (!string) {
         return undefined;
@@ -468,4 +493,4 @@ const updateDownloadCount = function(assetId) {
     })
 }
 
-module.exports = {handleFiles, makeBatch, makeMeta, cleanName, makeBoolean, fileTypes, assetTypes, licenceTypes, getList, sorts, updateDownloadCount}
+module.exports = {handleFiles, makeBatch, makeMeta, cleanName, makeBoolean, fileTypes, assetTypes, licenceTypes, getList, sorts, updateDownloadCount, deleteFile, deleteMetaFile}
