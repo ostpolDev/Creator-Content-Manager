@@ -86,4 +86,21 @@ router.get('/get/rendered', validation.ensureAuthenticated, validation.ensureCha
 
 })
 
+router.post("/delete/:id", validation.ensureAuthenticated, (req, res) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return res.status(400).json({success: false, msg: "Video not found"});
+    }
+    Video.findOneAndRemove({
+        _id: id,
+        createdBy: req.user.id
+    }).exec((err) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false, msg: "Something went wrong"});
+        }
+        return res.status(200).json({success: true});
+    })
+})
+
 module.exports = router;

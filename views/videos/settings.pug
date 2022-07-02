@@ -1,6 +1,30 @@
 extends ../layout
 
 block content
+
+    .modal#confirmDeleteModal
+        .modalBackground(data-modal="close")
+        .modalContainer
+            .modalHeader 
+                h2 Are you sure?
+                span.close(data-modal="close")
+                    i.fas.fa-times 
+            .modalContent
+                p This will remove the video titled 
+                    strong "#{video.title}"
+                    |  from this site. This cannot be undone. The video can however be re-added later.
+                p Keep in mind, that you can also 
+                    a(href="/videos/settings/"+video.id+"/change channel") move this video to another channel. 
+            .modalFooter
+                button.button.has-icon.danger#deleteVideoButton
+                    span.icon
+                        i.fas.fa-trash
+                    span Confirm
+                button.button.has-icon(data-modal="close")
+                    span.icon
+                        i.fas.fa-times
+                    span Cancel
+
     .container 
         h1.header #{video.title}
         p.subtitle 
@@ -40,4 +64,20 @@ block scripts
         const currentChannel = "#{video.channel.id}";
 
     if setting == "change channel"
-    script(src="/js/videoChannelSwitcher.js") 
+    script(src="/js/videoChannelSwitcher.js")
+
+    script.
+        const deleteVideoButton = document.getElementById("deleteVideoButton");
+        deleteVideoButton.addEventListener("click", () => {
+            fetch("/api/videos/delete/"+encodeURIComponent("#{video.id}"), {
+                method: "POST"
+            }).then((res) => {return res.json()}).then((json) => {
+                if (json.success === true) {
+                    window.location = "/videos"
+                } else {
+                    console.error(json.msg);
+                }
+            }).catch((err) => {
+                console.error(err);
+            })
+        })
