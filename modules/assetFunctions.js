@@ -493,4 +493,13 @@ const updateDownloadCount = function(assetId) {
     })
 }
 
-module.exports = {handleFiles, makeBatch, makeMeta, cleanName, makeBoolean, fileTypes, assetTypes, licenceTypes, getList, sorts, updateDownloadCount, deleteFile, deleteMetaFile}
+const deleteManyFiles = function(assets) {
+    assets.forEach(a => {
+        let filePath = path.join(paths.upload, a.uuid + a.extention);
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+    })
+}
+
+module.exports = {handleFiles, makeBatch, makeMeta, cleanName, makeBoolean, fileTypes, assetTypes, licenceTypes, getList, sorts, updateDownloadCount, deleteFile, deleteMetaFile, deleteManyFiles}

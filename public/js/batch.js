@@ -1,23 +1,14 @@
-const descriptionSegment = document.getElementById("descriptionSegment");
-
-const url = `/api/assets/getFirstInBatch/${currentBatch}`;
-
-function loadFirstAsset() {
-    if (descriptionSegment.innerText) {
-        return;
-    }
-    fetch(url).then(res => {return res.json();}).then(json => {
+const deleteBatchButton = document.getElementById("deleteBatchButton");
+deleteBatchButton.addEventListener("click", () => {
+    fetch("/api/batches/delete/"+encodeURIComponent(currentBatch), {
+        method: "POST"
+    }).then((res) => {return res.json()}).then((json) => {
         if (json.success === true) {
-            let asset = json.asset;
-            if (asset.description.rendered) {
-                descriptionSegment.innerHTML = asset.description.rendered;
-            }
+            window.location = "/assets/batches"
         } else {
             console.error(json.msg);
         }
-    }).catch(err => {
+    }).catch((err) => {
         console.error(err);
     })
-}
-
-loadFirstAsset();
+})

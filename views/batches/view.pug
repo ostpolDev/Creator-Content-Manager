@@ -1,6 +1,28 @@
 extends ../layout
 
 block content
+    .modal#confirmBatchDelete
+        .modalBackground(data-modal="close")
+        .modalContainer
+            .modalHeader 
+                h2 Are you sure?
+                span.close(data-modal="close")
+                    i.fas.fa-times 
+            .modalContent
+                p This will remove the batch named 
+                    strong "#{batch.name}"
+                    |  from this site. This cannot be undone.
+
+                p All assets within this batch will be removed from this server.
+            .modalFooter
+                button.button.has-icon.danger#deleteBatchButton
+                    span.icon
+                        i.fas.fa-trash
+                    span Confirm
+                button.button.has-icon(data-modal="close")
+                    span.icon
+                        i.fas.fa-times
+                    span Cancel
     .container
         h1.header #{batch.name}
         p.subtitle #{batch.length} assets in batch
@@ -70,6 +92,11 @@ block content
                                 i.fas.fa-cog
                             span Settings
 
+                        button.button.danger(data-modal="#confirmBatchDelete")
+                            span.icon
+                                i.fas.fa-trash
+                            span Delete
+
                     if firstAsset && firstAsset.source
                         a.button(href=firstAsset.source target="_BLANK")
                             span.icon
@@ -115,5 +142,5 @@ block content
 block scripts
     script.
         const currentBatch = "#{batch.id}";
-    //- script(src="/js/batch.js") 
+    script(src="/js/batch.js") 
     script(src="/js/assetList.js") 
