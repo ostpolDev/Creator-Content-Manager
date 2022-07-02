@@ -1,5 +1,14 @@
 extends ../layout
 
+block head
+    style.
+        .video {
+            width: 100%;
+            display: block;
+            margin: auto;
+            max-height: 500px;
+        }
+
 block content
     .container
         #headerContainer(data-context-source="getAssetContext" data-asset=asset.id data-owner=(user && asset.createdBy.id == user.id).toString())
@@ -12,7 +21,7 @@ block content
                 if type == "audio"
                     audio#audioPlayer(src="/assets/getFile/"+asset.id, controls, controlsList="nodownload", style="width: 100%; z-index: 0; display: block;" download="no")
                 else if type == "video"
-                    video(src="/assets/getFile/"+asset.id, controls, controlsList="nodownload", style="display: block; width: 100%;") 
+                    video.video(src="/assets/getFile/"+asset.id, controls, controlsList="nodownload", style="display: block; width: 100%;") 
                 else if type == "image"
                     img.img(style="display: block; width: 100%; margin-bottom: 1em;", src="/assets/getFile/"+asset.id, alt=asset.originalName)
 
