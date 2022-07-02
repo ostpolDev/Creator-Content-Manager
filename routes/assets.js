@@ -17,6 +17,7 @@ const fs = require('fs');
 
 const {body, validationResult} = require("express-validator");
 const { isValidObjectId } = require('mongoose');
+const marked = require('../modules/marked');
 
 router.use("*", (req, res, next) => {
     res.locals.fileTypes = assetFunctions.fileTypes;
@@ -215,6 +216,99 @@ router.get('/settings/:id', validation.ensureAuthenticated, (req, res, next) => 
             title: "Asset settings",
             asset
         });
+    })
+})
+
+router.post('/settings/save/:id', [
+    body("name", "Name cannot be longer than 256 characters").isLength({max: 256}),
+    body("about", "About text cannot be longer than 10,000 characters").isLength({max: 10000}),
+    body("legalInfo", "Legal information cannot be longer than 512 characters").isLength({max: 512}),
+    body("assetType", "Asset type is required").notEmpty().isLength({max: 128}),
+    body("tags", "Tags cannot be longer than 2048 characters").isLength({max: 2048}),
+    body("source", "Source has to be a valid URL").optional({checkFalsy: true}).isURL(),
+    body("price", "The price has to be a valid number").optional({checkFalsy: true}).isFloat({min: 0.0, max: 1000.0}),
+    body("licence", "Licence is too long").isLength({max: 512})
+], validation.ensureAuthenticated, async (req, res, /**@type {import('express').NextFunction} */ next) => {
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        errors.array().forEach(e => {
+            req.flash("error", e.msg)
+        })
+        return res.redirect('/assets/settings/'+encodeURIComponent(req.params.id));
+    }
+
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return next({status: 404});
+    }
+
+    Asset.findOne({
+        _id: id, createdBy: req.user.id
+    }).exec((err, asset) => {
+        if (err) {
+            return next(err);
+        }
+        if (!asset) {
+            return next({status: 404});
+        }
+
+        let name = req.body.name.trim();
+        let about = req.body.about;
+        let legalInfo = req.body.legalInfo;
+        let assetType = req.body.assetType;
+        let tags = req.body.tags;
+        let source = req.body.source;
+        let price = req.body.price;
+        let licence = req.body.licence;
+
+        let canUseVideos = req.body.videos != undefined;
+        let canUseStreaming = req.body.streaming != undefined;
+
+        let isPurchased = false;
+        if (!isNaN(price) && price > 0.0) {
+            isPurchased = true;
+        }
+
+        if (!assetFunctions.assetTypes.includes(assetType)) {
+            return res({success: false, msg: "Invalid asset type"});
+        }
+
+        if (licence && licence != "undefined" && licence != undefined) {
+            if (!Object.keys(assetFunctions.licenceTypes).includes(licence)) {
+                return res({success: false, msg: "Invalid licence"});
+            }
+        }
+
+        asset.name = name || asset.originalName;
+        asset.description = {
+            raw: about,
+            rendered: marked.markAndSanitize(about)
+        };
+        asset.legalInfo = legalInfo;
+        asset.assetType = assetType;
+        asset.tagsString = tags;
+        asset.tags = tags.split(",");
+        asset.purchase = {
+            isPurchased,
+            price,
+            purchasedBy: req.user.id
+        };
+        asset.meta.hasCustomName = name != "";
+        asset.allowedPlatforms = {
+            videos: canUseVideos,
+            streams: canUseStreaming
+        }
+        asset.source = source;
+        asset.licence = licence;
+
+        asset.save((err) => {
+            if (err) {
+                return next(err);
+            }
+            req.flash('success', "Successfully saved asset info");
+            res.redirect('/assets/v/'+asset.id);
+        })
+
     })
 })
 

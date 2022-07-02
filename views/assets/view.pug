@@ -17,6 +17,7 @@ block content
                     img.img(style="display: block; width: 100%; margin-bottom: 1em;", src="/assets/getFile/"+asset.id, alt=asset.originalName)
 
                 if asset.description.rendered
+                    br
                     .segment
                         pre!=asset.description.rendered.trim()
 
