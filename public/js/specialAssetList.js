@@ -31,8 +31,12 @@ start();
 function start() {
     switch (type) {
         case "userFav":
-            baseUrl += "?favUser="+encodeURIComponent(user)
+            baseUrl += "?favUser="+encodeURIComponent(userName)
             userType();
+            break;
+        case "globalSearch":
+            baseUrl += "?a"
+            search(true);
             break;
         default:
             console.error("Invalid Type");
@@ -42,7 +46,7 @@ function start() {
 
 function userType() {
     console.log("User fav type");
-    fetch("/api/users/getDisplayInfo/"+encodeURIComponent(user)).then((res) => {
+    fetch("/api/users/getDisplayInfo/"+encodeURIComponent(userName)).then((res) => {
         return res.json();
     }).then((json) => {
         if (json.success == true) {

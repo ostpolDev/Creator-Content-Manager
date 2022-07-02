@@ -195,7 +195,7 @@ router.get('/favorites/:name', async (req, res, next) => {
     res.render('assets/specialList', {
         title: name + "'s favorites",
         type: "userFav",
-        user: name
+        userName: name
     })
 })
 
@@ -309,6 +309,13 @@ router.post('/settings/save/:id', [
             res.redirect('/assets/v/'+asset.id);
         })
 
+    })
+})
+
+router.get("/search", (req, res) => {
+    res.render('assets/specialList', {
+        title: "Asset Search",
+        type: "globalSearch"
     })
 })
 
