@@ -43,7 +43,7 @@ function addToContainer(container, asset, removeOnClick) {
         id = asset.id;
     }
     let element = `
-        <button class="button" onclick="${removeOnClick ? "removeAsset('" + id + "')" : "addAsset('" + id + "')"}">
+        <button class="button" data-context-name="View asset" data-context-link="/assets/v/${id}" data-context-target="_BLANK" onclick="${removeOnClick ? "removeAsset('" + id + "')" : "addAsset('" + id + "')"}">
             <span>${asset.meta.hasCustomName ? asset.name : asset.cleanName}</span>
         </button>
     `;

@@ -45,19 +45,20 @@ document.addEventListener("mouseup", (e) => {
                     let linkElem = document.createElement("a");
                     linkElem.classList.add("item");
 
-                    
-                    let iconElement = document.createElement("i");
-                    iconElement.classList.add("icon");
+                    if (elem.icon) {
+                        let iconElement = document.createElement("i");
+                        iconElement.classList.add("icon");
 
-                    if (Array.isArray(elem.icon)) {
-                        elem.icon.forEach(i => {
-                            iconElement.classList.add(i);
-                        })
-                    } else {
-                        iconElement.classList.add(elem.icon);
+                        if (Array.isArray(elem.icon)) {
+                            elem.icon.forEach(i => {
+                                iconElement.classList.add(i);
+                            })
+                        } else {
+                            iconElement.classList.add(elem.icon);
+                        }
+                        linkElem.appendChild(iconElement);
                     }
 
-                    linkElem.appendChild(iconElement);
 
                     let spanElement = document.createElement("span");
                     spanElement.innerText = elem.text;
@@ -114,9 +115,10 @@ function getExtraContext(/** @type {HTMLElement} */ element , /** @type {MouseEv
     let customFunction = element.getAttribute("data-context-function");
     let customLink = element.getAttribute("data-context-link");
     let customSource = element.getAttribute("data-context-source");
+    let target = element.getAttribute("data-context-target");
     let targetElem;
 
-    if (!customName || !customSource) {
+    if (!customName && !customSource) {
         targetElem = element.closest("[data-context-name],[data-context-source]");
         if (targetElem) {
             customName = targetElem.getAttribute("data-context-name");
@@ -124,18 +126,23 @@ function getExtraContext(/** @type {HTMLElement} */ element , /** @type {MouseEv
             customFunction = targetElem.getAttribute("data-context-function");
             customLink = targetElem.getAttribute("data-context-link");
             customSource = targetElem.getAttribute("data-context-source");
+            target = element.getAttribute("data-context-target");
         }
     }
     
-    if (customName && customIcon && (customFunction || customLink)) {
+    if (customName && (customFunction || customLink)) {
         menus.push({
-            icon: customIcon.split(" "),
+            icon: customIcon ? customIcon.split(" ") : "",
             text: customName,
             event: (linkEvent, pointerEvent) => {
                 if (customFunction) {
                     executeFunctionByName(customFunction, window, linkEvent, pointerEvent);
                 } else {
-                    window.location = customLink;
+                    if (target) {
+                        window.open(customLink, target);
+                    } else {
+                        window.location = customLink;
+                    }
                 }
             }
         })
