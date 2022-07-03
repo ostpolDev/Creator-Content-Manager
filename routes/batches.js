@@ -77,6 +77,7 @@ router.post("/save/:id", [
     body("batchName", "Batch name cannot be longer than 256 characters").isLength({max: 256}),
     body("artist", "Artist name cannot be longer than 256 characters").isLength({max: 256}),
     body("about", "About text cannot be longer than 10,000 characters").isLength({max: 10000}),
+    body("price", "Price is invalid").isFloat({min: 0, max: 9999})
 ], validation.ensureAuthenticated, (req, res) => {
     let errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -96,6 +97,12 @@ router.post("/save/:id", [
     let about = req.body.about;
     let isAlbum = req.body.album !== undefined;
     let artist = req.body.artist;
+    let price = req.body.price;
+
+    let isPurchased = false;
+    if (!isNaN(price) && price > 0.0) {
+        isPurchased = true;
+    }
 
     Batch.updateOne({
         _id: id,
@@ -105,7 +112,10 @@ router.post("/save/:id", [
         "customInfo.description.raw": about,
         "customInfo.description.rendered": marked.markAndSanitize(about),
         "isAlbum": isAlbum,
-        "artist": artist
+        "artist": artist,
+        "purchase.price": price,
+        "purchase.isPurchased": isPurchased,
+        "purchase.purchasedBy": req.user.id
     }}).exec((err) => {
         if (err) {
             logger.error(err);

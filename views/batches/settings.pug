@@ -39,6 +39,13 @@ block content
                             i.fas.fa-user
 
                 .field
+                    label.label(for="price") Price
+                    .control.hasIcon
+                        input.input#price(type="number" name="price" min=0 step=0.01 placeholder="7.99" value=batch.purchase.price)
+                        span.icon
+                            i.fas.fa-money-bill-alt
+
+                .field
                     div.checkbox
                         input.checkbox#album(type="checkbox" name="album" checked=batch.isAlbum)
                         label(for="album") This batch is an album
