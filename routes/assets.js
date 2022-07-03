@@ -319,6 +319,36 @@ router.get("/search", (req, res) => {
     })
 })
 
+router.get('/random', (req, res, next) => {
+
+    Asset.countDocuments({}).exec(function (err, count) {
+
+        var random = Math.floor(Math.random() * count)
+      
+        Asset.findOne({}).select("_id").skip(random).exec((err, asset) => {
+            if (!asset) {
+                return next({status: 404})
+            }
+            res.redirect('/assets/v/'+asset._id)
+        })
+    })
+})
+
+router.get('/random/download', (req, res, next) => {
+
+    Asset.countDocuments({}).exec(function (err, count) {
+
+        var random = Math.floor(Math.random() * count)
+      
+        Asset.findOne({}).select("_id").skip(random).exec((err, asset) => {
+            if (!asset) {
+                return next({status: 404})
+            }
+            res.redirect('/assets/download/'+asset._id)
+        })
+    })
+})
+
 router.use("/batches", require('./batches'));
 
 module.exports = router;
