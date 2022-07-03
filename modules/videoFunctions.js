@@ -207,6 +207,8 @@ const getList = function(req) {
         let currentOrder = req.query.order;
         let currentQuery = req.query.q;
         let searchQuery = req.query.query;
+
+        let asset = req.query.asset;
     
         let channelId = req.query.channel;
         let user;
@@ -277,6 +279,10 @@ const getList = function(req) {
                 {youtubeId: {$regex: searchQuery, $options: "i"}}
             ]
         }
+
+        if (isValidObjectId(asset)) {
+            videoQuery.assets = asset;
+        }
     
     
         let videoSort = {}
@@ -285,7 +291,7 @@ const getList = function(req) {
     
         videoSort[field] = currentOrder;
     
-        let selects = ["title", "statistics", "isEmpty", "createdAt", "thumbnails", "meta", "status"];
+        let selects = ["title", "statistics", "isEmpty", "createdAt", "thumbnails", "meta", "status", "assets"];
         if (!field.startsWith("statistics") && !field.startsWith("meta") && !selects.includes(field) && !field.startsWith("status")) {
             selects.push(field);
         }

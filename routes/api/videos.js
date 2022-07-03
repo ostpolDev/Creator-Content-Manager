@@ -73,11 +73,18 @@ router.get('/get/rendered', validation.ensureAuthenticated, validation.ensureCha
     if (videoListResult.success === false) {
         return res.status(400).json({success: false, msg: videoListResult.msg});
     }
+
+    let sizes = ["oneThird", "oneQuarter"];
+    let customSize = req.query.size;
+    if (customSize && !sizes.includes(customSize)) {
+        customSize = undefined;
+    }
     
     let renderedResult = renderer.render("videos/videoGrid", {
         videos: videoListResult.videos,
         field: videoListResult.params.field,
-        currentSort: videoListResult.params.currentSort
+        currentSort: videoListResult.params.currentSort,
+        videoGridSize: customSize
     });
     if (!renderedResult) {
         return res.status(500).json({success: false, msg: "Something went wrong when rendering..."});

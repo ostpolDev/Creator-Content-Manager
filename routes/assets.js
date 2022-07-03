@@ -6,6 +6,7 @@ const logger = require('../modules/logger');
 
 const assetFunctions = require('../modules/assetFunctions');
 const userFunctions = require('../modules/userFunctions');
+const videoFunctions = require('../modules/videoFunctions');
 
 const Asset = require('../models/asset');
 const Meta = require('../models/meta');
@@ -80,7 +81,8 @@ router.get('/v/:id', (req, res, next) => {
                     asset,
                     dbMeta: meta,
                     meta: metaData,
-                    favoriteCount
+                    favoriteCount,
+                    sorts: videoFunctions.sorts
                 })
             })
         })
