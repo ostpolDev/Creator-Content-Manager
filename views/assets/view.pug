@@ -59,7 +59,7 @@ block content
 
                 if asset.description.rendered
                     br
-                    .segment
+                    .segment.closed
                         pre!=asset.description.rendered.trim()
 
                 if asset.legalInfo
@@ -127,7 +127,7 @@ block content
                     .tags
                         span.tag.warning(title="This asset was purchased")
                             span.icon
-                                i.fas.fa-money-bill
+                                i.fas.fa-euro-sign
                             span #{asset.batch.purchase.price.toFixed(2)}
                 .buttons.fluid
                     a.button.success(href="/assets/download/"+asset.id)

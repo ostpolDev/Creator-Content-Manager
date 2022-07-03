@@ -134,6 +134,13 @@ a.hiddenLink {
     font-size: 24px;
 }
 
+.segment.closed {
+    max-height: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: max-height var(--default-transition-time) ease;
+}
+
 pre, .segment {
     overflow-wrap: break-word;
     white-space: pre-wrap;       /* css-3 */

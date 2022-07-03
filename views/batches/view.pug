@@ -61,7 +61,7 @@ block content
 
         .columns
             .column.threeQuarter
-                .segment#descriptionSegment
+                .segment#descriptionSegment.closed
                     if batch.customInfo && batch.customInfo.description.rendered
                         pre!=batch.customInfo.description.rendered.trim()
                     else if firstAsset && firstAsset.description.rendered
@@ -139,6 +139,11 @@ block content
                         span.icon
                             i.fas.fa-download
                         span Download #{batch.length} items
+                    if firstAsset && firstAsset.source
+                        a.button(href=firstAsset.source target="_BLANK")
+                            span.icon
+                                i.fas.fa-globe
+                            span View Source 
                     if user && user.id == batch.createdBy.id
                         a.button(href="/assets/batches/settings/"+batch.id)
                             span.icon
@@ -150,11 +155,6 @@ block content
                                 i.fas.fa-trash
                             span Delete
 
-                    if firstAsset && firstAsset.source
-                        a.button(href=firstAsset.source target="_BLANK")
-                            span.icon
-                                i.fas.fa-globe
-                            span View Source 
 
                     a.user.small.fluid(href="/users/v/"+batch.createdBy.safeName)
                         .image
@@ -212,7 +212,7 @@ block content
                         .tags
                             span.tag.warning(title="This batch was purchased")
                                 span.icon
-                                    i.fas.fa-money-bill
+                                    i.fas.fa-euro-sign
                                 span #{batch.purchase.price.toFixed(2)}
 
                 if firstAsset.licence && firstAsset.licence != "None"
