@@ -103,28 +103,18 @@ router.post("/rename", validation.ensureAuthenticated, (req, res) => {
         return res.status(400).json({success: false, msg: "Invalid parameters"});
     }
 
-    Asset.findById(id).select("name cleanName meta createdBy").exec((err, asset) => {
+    Asset.findOneAndUpdate({
+        _id: id,
+        createdBy: req.user.id
+    }, {$set: {
+        "meta.hasCustomName": true,
+        "name": name
+    }}).exec((err) => {
         if (err) {
             logger.error(err);
-            return res.status(500).json({success: false});
+            return res.status(500).json({success: false, msg: "Could not save"});
         }
-        if (!asset) {
-            return res.status(404).json({success: false});
-        }
-        if (!asset.createdBy == req.user.id) {
-            return res.status(403).json({success: false, msg: "Access denied"});
-        }
-
-        asset.meta.hasCustomName = true;
-        asset.name = name;
-
-        asset.save((err) => {
-            if (err) {
-                logger.error(err);
-                return res.status(500).json({success: false, msg: "Could not save"});
-            }
-            return res.status(200).json({success: true});
-        })
+        return res.status(200).json({success: true});
     })
 })
 
