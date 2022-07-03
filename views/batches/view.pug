@@ -62,8 +62,8 @@ block content
         .columns
             .column.threeQuarter
                 .segment#descriptionSegment
-                    if batch.customInfo.hasCustomInfo
-                        pre!=batch.customInfo.description.rendered
+                    if batch.customInfo && batch.customInfo.description.rendered
+                        pre!=batch.customInfo.description.rendered.trim()
                     else if firstAsset && firstAsset.description.rendered
                         pre!=firstAsset.description.rendered.trim()
 

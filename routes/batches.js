@@ -80,7 +80,7 @@ router.post("/save/:id", [
     body("batchName", "Batch name cannot be longer than 256 characters").isLength({max: 256}),
     body("artist", "Artist name cannot be longer than 256 characters").isLength({max: 256}),
     body("about", "About text cannot be longer than 10,000 characters").isLength({max: 10000}),
-    body("price", "Price is invalid").isFloat({min: 0, max: 9999})
+    body("price", "Price is invalid").optional({checkFalsy: true}).isFloat({min: 0, max: 9999})
 ], validation.ensureAuthenticated, (req, res) => {
     let errors = validationResult(req);
     if (!errors.isEmpty()) {

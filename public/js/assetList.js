@@ -34,7 +34,7 @@ function search(forceNew) {
     let searchText = searchQuery.value || "";
 
     let url = `/api/assets/get/rendered?`;
-    let params = `batch=${encodeURIComponent(batch)}&limit=12&sort=${encodeURIComponent(sort)}&order=${encodeURIComponent(order)}`;
+    let params = `batch=${encodeURIComponent(batch)}&limit=24&sort=${encodeURIComponent(sort)}&order=${encodeURIComponent(order)}`;
 
     if (searchText && searchText.trim() != "") {
         params += "&query="+encodeURIComponent(searchText);

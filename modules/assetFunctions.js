@@ -322,7 +322,7 @@ const cleanName = function(name) {
     name = name.replace(/_/g, " ");
     name = name.replace(path.extname(name), "");
     name = name.replace(/^[_\.\*]/g, " ");
-    name = formatCamelCase(name).trim();
+    name = name.trim();
     name = name.charAt(0).toUpperCase() + name.slice(1);
     return name;
 }

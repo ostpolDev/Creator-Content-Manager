@@ -125,6 +125,12 @@ function showMusicPlayer(songInfo) {
     musicPlayerImage.src = songInfo.cover;
     playerImageLink.href = playerLink.href = songInfo.page;
 
+    if (!songInfo.artist) {
+        playerArtist.classList.add("hidden");
+    } else {
+        playerArtist.classList.remove("hidden");
+    }
+
     audio = new Audio(songInfo.url);
 
     musicPlayerTotalTime.innerText = "00:00";
