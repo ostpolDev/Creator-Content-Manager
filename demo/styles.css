@@ -441,6 +441,13 @@ table.table td.centered {
     align-items: center !important;
 }
 
+table.table td.limited {
+    max-width: 250px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 table.table td *.button {
     display: inline-block;
 }

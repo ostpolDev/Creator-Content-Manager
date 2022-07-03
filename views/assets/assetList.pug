@@ -17,7 +17,7 @@ if assets && assets.length > 0
                         i.fas.fa-image
                 button.button.iconButton.rounded(onclick="window.location = '/assets/download/"+_asset.id+"'")
                     i.fas.fa-download
-            td
+            td.limited(title=(_asset.meta.hasCustomName ? _asset.name : _asset.cleanName))
                 a.assetName.hiddenLink(href="/assets/v/"+_asset.id) 
                     if user && user.favorites.includes(_asset.id)
                         span.icon
