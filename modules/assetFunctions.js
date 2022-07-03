@@ -319,8 +319,12 @@ const cleanName = function(name) {
     commonToReplace.forEach(c => {
         name = name.replace(c, "");
     })
+
+    let re = new RegExp(path.extname(name), "gi");
+
+
     name = name.replace(/_/g, " ");
-    name = name.replace(path.extname(name), "");
+    name = name.replace(re, "");
     name = name.replace(/^[_\.\*]/g, " ");
     name = name.trim();
     name = name.charAt(0).toUpperCase() + name.slice(1);
