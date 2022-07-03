@@ -1,0 +1,50 @@
+extends ../layout
+
+block head
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css")
+    script(src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js") 
+
+block content
+    .container
+
+        .buttons
+            a.button(href="/assets/batches/v/"+batch.id)    
+                span.icon
+                    i.fas.fa-arrow-left
+                span Back 
+
+        h1.header #{batch.name}
+        p.subtitle #{title}
+
+        .segment
+            form(action="/assets/batches/save/"+batch.id, method="post") 
+                .field.required
+                    label.label(for="batchName") Batch Name
+                    .control.hasIcon
+                        input.input#batchName(type="text", name="batchName", placeholder="Album by Person", maxlength="256", autocomplete="off", value=batch.name, required)
+                        span.icon
+                            i.fas.fa-folder
+
+                .field
+                    label.label(for="aboutText") About
+                    .control
+                        textarea.textarea#aboutText(type="text", name="about", placeholder="About the batch...", autocomplete="off")
+                            | #{batch.customInfo.description.raw}
+
+                .field
+                    div.checkbox
+                        input.checkbox#album(type="checkbox" name="album" checked=batch.isAlbum)
+                        label(for="album") This batch is an album
+
+                .field
+                    button.button.success.fluid
+                        span.icon
+                            i.fas.fa-save
+                        span Save
+        .divider.light
+        p
+            small * Required
+
+block scripts
+    script.
+        const easyMDE = new EasyMDE({element: document.getElementById("aboutText")});

@@ -781,6 +781,7 @@ span.icon.right {
 
 .checkbox label {
     margin-left: var(--default-spacing);
+    cursor: pointer;
 }
 
 input[type="checkbox"].checkbox {
