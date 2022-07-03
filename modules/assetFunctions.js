@@ -153,11 +153,6 @@ const handleFiles = function(req) {
                         source,
                         tags: tags.split(","),
                         tagsString: tags,
-                        purchase: {
-                            isPurchased,
-                            price,
-                            purchasedBy: req.user.id
-                        },
                         unsafe: false,
                         meta: {
                             downloads: 0,
@@ -225,6 +220,12 @@ const handleFiles = function(req) {
                 start,
                 end,
                 time: end.getTime() - start.getTime()
+            }
+
+            batch.purchase = {
+                isPurchased,
+                price,
+                purchasedBy: req.user.id
             }
 
             await userFunctions.updateAssetCount(req.user.id, files.length - skipped);

@@ -62,15 +62,6 @@ const AssetSchema = mongoose.Schema({
     },
     tags: [String],
     tagsString: String,
-    purchase: {
-        isPurchased: Boolean,
-        price: Number,
-        purchasedBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        },
-        hidePurchaseAmount: Boolean
-    },
     allowedPlatforms: {
         videos: Boolean,
         streams: Boolean

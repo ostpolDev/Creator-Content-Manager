@@ -54,6 +54,15 @@ const BatchSchema = mongoose.Schema({
         extention: String,
         mimetype: String
     },
+    purchase: {
+        isPurchased: Boolean,
+        price: Number,
+        purchasedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        hidePurchaseAmount: Boolean
+    },
     customInfo: {
         hasCustomInfo: Boolean,
         description: {

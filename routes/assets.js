@@ -51,7 +51,7 @@ router.get('/v/:id', (req, res, next) => {
         return next({status: 404});
     }
 
-    Asset.findById(id).populate("createdBy").exec((err, asset) => {
+    Asset.findById(id).populate("createdBy").populate("batch", "purchase name").exec((err, asset) => {
         if (err) {
             return next(err);
         }

@@ -129,12 +129,12 @@ block content
                             br
                             span #{batch.uploadTime.time}ms
 
-                    if firstAsset && firstAsset.purchase.isPurchased
+                    if batch.purchase.isPurchased
                         .tags
-                            span.tag.warning(title="One or more assets in this batch were purchased")
+                            span.tag.warning(title="This batch was purchased")
                                 span.icon
                                     i.fas.fa-money-bill
-                                span #{firstAsset.purchase.price}
+                                span #{batch.purchase.price}
 
                 if firstAsset.licence && firstAsset.licence != "None"
                     -let licence = licenceTypes[firstAsset.licence]
