@@ -177,6 +177,27 @@ block content
                             b Upload duration:
                             br
                             span #{batch.uploadTime.time}ms
+                        if batch.cover.hasCover
+                            p
+                                b Cover update:
+                                br
+                                span(title=batch.cover.updatedAt.toLocaleString()) #{formatDate(batch.cover.updatedAt)}
+                            p
+                                b Cover size:
+                                br
+                                span(title=batch.cover.size) #{bytesToSize(batch.cover.size)}
+                            p
+                                b Cover extention:
+                                br
+                                span #{batch.cover.extention}
+                            p
+                                b Cover type:
+                                br
+                                span #{batch.cover.mimetype}
+                            p
+                                b Cover added by:
+                                br
+                                a(href="/users/v/"+batch.cover.createdBy.safeName)  #{batch.cover.createdBy.username}
 
                     if batch.purchase.isPurchased
                         .tags

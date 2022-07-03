@@ -31,7 +31,7 @@ router.get('/v/:id', (req, res, next) => {
         return next({status: 404});
     }
 
-    Batch.findById(req.params.id).populate("createdBy").exec((err, batch) => {
+    Batch.findById(req.params.id).populate("createdBy").populate("cover.createdBy", "username safeName").exec((err, batch) => {
         if (err) {
             return next(err);
         }
