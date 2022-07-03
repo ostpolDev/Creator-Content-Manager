@@ -15,8 +15,8 @@ async function playAsset(id) {
         let batchTitle = currentAsset.batch.name;
 
         let splits = batchTitle.split("-");
-        let artist = "";
-        if (splits.length > 1) {
+        let artist = currentAsset.batch.artist;
+        if (!artist && splits.length > 1) {
             artist = splits[1];
         }
         

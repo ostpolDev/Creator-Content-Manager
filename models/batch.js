@@ -40,6 +40,9 @@ const BatchSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    artist: {
+        type: String
+    },
     cover: {
         hasCover: {
             type: Boolean,

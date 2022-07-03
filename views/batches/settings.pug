@@ -32,6 +32,13 @@ block content
                             | #{batch.customInfo.description.raw}
 
                 .field
+                    label.label(for="artist") Artist
+                    .control.hasIcon
+                        input.input#artist(type="text", name="artist", placeholder="Person Name", maxlength="256", autocomplete="off", value=batch.artist)
+                        span.icon
+                            i.fas.fa-user
+
+                .field
                     div.checkbox
                         input.checkbox#album(type="checkbox" name="album" checked=batch.isAlbum)
                         label(for="album") This batch is an album

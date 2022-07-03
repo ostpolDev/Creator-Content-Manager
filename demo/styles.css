@@ -239,6 +239,7 @@ a.hiddenLink {
 
 .musicPlayer .playerSongName .playerArtist {
     font-weight: 100;
+    margin-left: 5px;
 }
 
 /* BUTTONS */
