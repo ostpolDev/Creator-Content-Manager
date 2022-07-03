@@ -1,6 +1,38 @@
 extends ../layout
 
 block content
+    if batch.isAlbum && (user && batch.createdBy.id == user.id)
+        .modal#uploadCoverModal
+            .modalBackground(data-modal="close")
+            .modalContainer
+                .modalHeader 
+                    h2 Upload album cover
+                    span.close(data-modal="close")
+                        i.fas.fa-times 
+                .modalContent
+                    form(action="/assets/batches/uploadCover/"+batch.id, method="post", enctype="multipart/form-data")
+                        .field.required.file
+                            .fileUploadLabel
+                                span.icon
+                                    i.fas.fa-upload
+                                label.label Select Files
+                            input.input.fileUploadName(type="text" readonly)
+                            input#fileInput(type="file" name="cover" accept="image/*")
+                        
+                        .field
+                            button.button.fluid
+                                span.icon
+                                    i.fas.fa-upload
+                                span Upload Cover
+
+                    .divider.light
+                    p
+                        small * Required
+                .modalFooter
+                    button.button.has-icon(data-modal="close")
+                        span.icon
+                            i.fas.fa-times
+                        span Cancel
     .modal#confirmBatchDelete
         .modalBackground(data-modal="close")
         .modalContainer
@@ -85,6 +117,23 @@ block content
                     span Load More
 
             .column
+                if batch.isAlbum
+                    .card.hoverable(data-modal="#uploadCoverModal")
+                        if batch.cover.hasCover
+                            .cardImage
+                                img(src="/assets/batches/cover/"+batch.id, alt=batch.name, loading="lazy") 
+                        .cardBody
+                            -
+                                let splits = batch.name.split("-");
+                                let artist = "";
+                                if (splits.length > 1) {
+                                    artist = splits[1];
+
+                                    title = splits[0];
+                                }
+                            h1.header #{batch.name}
+                            p #{artist}
+                    .emptySpace
                 .buttons.fluid
                     if user && user.id == batch.createdBy.id
                         a.button(href="/assets/batches/settings/"+batch.id)

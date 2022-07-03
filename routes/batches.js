@@ -135,4 +135,65 @@ router.get('/cover/:id', (req, res) => {
     })
 })
 
+router.post('/uploadCover/:id', validation.ensureAuthenticated, (req, res) => {
+    let id = req.params.id;
+    const re = "/assets/batches/v/"+encodeURIComponent(id);
+    if (!isValidObjectId(id)) {
+        req.flash('danger', "Invalid ID");
+        return res.redirect(re);
+    }
+
+    let file = req.files.cover;
+    if (!file || !file.mimetype.startsWith("image")) {
+        req.flash('danger', "Valid cover file required");
+        return res.redirect(re);
+    }
+
+    Batch.findOne({
+        _id: id,
+        createdBy: req.user.id
+    }).exec((err, batch) => {
+        if (err) {
+            logger.error(err);
+            req.flash('danger', "Something went wrong");
+            return res.redirect(re);
+        }
+        if (!batch) {
+            req.flash('danger', "Batch not found");
+            return res.redirect(re);
+        }
+
+        let extention = path.extname(file.name);
+        let coverPath = path.join(paths.coverPath, batch.id + extention);
+        file.mv(coverPath, (err) => {
+            if (err) {
+                logger.error(err);
+                req.flash('danger', "Something went wrong when moving");
+                return res.redirect(re);
+            }
+
+            batch.cover = {
+                hasCover: true,
+                createdBy: req.user.id,
+                updatedAt: new Date(),
+                size: file.size,
+                extention,
+                mimetype: file.mimetype
+            }
+
+            batch.save((err) => {
+                if (err) {
+                    logger.error(err);
+                    req.flash('danger', "Something went wrong when saving");
+                    return res.redirect(re);
+                }
+                req.flash('success', "Successfully uploaded cover file");
+                return res.redirect(re);
+            })
+
+        })
+
+    })
+})
+
 module.exports = router;
