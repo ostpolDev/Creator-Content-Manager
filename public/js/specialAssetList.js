@@ -76,7 +76,7 @@ function search(forceNew) {
     let searchText = searchQuery.value || "";
 
     let url = baseUrl;
-    let params = `&limit=12&sort=${encodeURIComponent(sort)}&order=${encodeURIComponent(order)}`;
+    let params = `&limit=24&sort=${encodeURIComponent(sort)}&order=${encodeURIComponent(order)}`;
 
     if (searchText && searchText.trim() != "") {
         params += "&query="+encodeURIComponent(searchText);
