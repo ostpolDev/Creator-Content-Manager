@@ -39,7 +39,7 @@ block content
             .column
                     if toView.description.rendered
                         .segment
-                            pre!=toView.description.rendered
+                            pre!=toView.description.rendered.trim()
                     else
                         p
                             i This user doesn't have an about section yet..
