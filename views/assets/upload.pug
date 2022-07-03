@@ -173,11 +173,18 @@ block scripts
         fileInput.addEventListener("change", (e) => {
             let file = e.target.files[0];
             let type = file.type;
+
+            console.log(type)
+
             if (type.startsWith("image")) {
                 assetType.value = "image";
             } else if (type.startsWith("video")) {
                 assetType.value = "video";
             } else if (type.startsWith("audio")) {
                 assetType.value = "music";
+            } else if (type.startsWith("text")) {
+                assetType.value = "text"
+            } else {
+                assetType.value = "text"
             }
         })

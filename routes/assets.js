@@ -73,6 +73,20 @@ router.get('/v/:id', (req, res, next) => {
                     metaData = JSON.parse(fs.readFileSync(metaPath));
                 }
             }
+
+            let content = "";
+            if (asset.extention == ".txt" || asset.extention == ".md") {
+                let filePath = path.join(paths.upload, asset.uuid + asset.extention);
+                if (fs.existsSync(filePath)) {
+                    content = fs.readFileSync(filePath);
+                    if (asset.extention == ".md") {
+                        content = marked.markAndSanitize(content);
+                    } else {
+                        content = marked.sanitizeFull(content);
+                    }
+                }
+            }
+
             User.countDocuments({favorites: asset.id}).exec((err, favoriteCount) => {
                 if (err) {
                     return next(err);
@@ -83,7 +97,8 @@ router.get('/v/:id', (req, res, next) => {
                     dbMeta: meta,
                     meta: metaData,
                     favoriteCount,
-                    sorts: videoFunctions.sorts
+                    sorts: videoFunctions.sorts,
+                    content
                 })
             })
         })

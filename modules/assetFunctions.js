@@ -16,8 +16,8 @@ const { isValidObjectId } = require("mongoose");
 
 const commonToReplace = ["y2matecom", "redditsavecom", "y2mate.com", "redditsave.com"];
 
-const fileTypes = [".jpg", ".png", ".mp3", ".mp4", ".wmv", ".webp", ".ogg", ".jpeg", ".pdn", ".wav"];
-const assetTypes = ["music", "soundEffect", "video", "image"];
+const fileTypes = [".jpg", ".png", ".mp3", ".mp4", ".wmv", ".webp", ".ogg", ".jpeg", ".pdn", ".wav", ".txt", ".md"];
+const assetTypes = ["music", "soundEffect", "video", "image", "text"];
 const licenceTypes = {
     "None": {},
     "Attribution": {url: "https://creativecommons.org/licenses/by/4.0", icon: "https://licensebuttons.net/l/by/3.0/88x31.png"},

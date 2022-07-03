@@ -46,6 +46,9 @@ block content
                     video.maxHeight(src="/assets/getFile/"+asset.id, controls, controlsList="nodownload", style="display: block; width: 100%;") 
                 else if type == "image"
                     img.img.maxHeight(style="display: block; width: 100%; margin-bottom: 1em;", src="/assets/getFile/"+asset.id, alt=asset.originalName)
+                else if type == "text" || asset.extention == ".md"
+                    .segment.noBackground
+                        pre!=replace_content(content)
                 else
                     .message.info
                         .messageHeader Sorry...
