@@ -65,7 +65,7 @@ block content
                     p
                             b Created at:
                             br
-                            span(title=channelToView.createdAt.toLocaleString()) #{formatDate(channelToView.createdAt)} 
+                            span(title=channelToView.createdAt.toLocaleString()) #{formatDateAndTime(channelToView.createdAt)} 
 
                     p
                         b YouTube ID
@@ -80,7 +80,7 @@ block content
                     p
                         b Last Update:
                         br
-                        span(title=channelToView.meta.requestInfo.lastRequest.toLocaleString()) #{formatDate(channelToView.meta.requestInfo.lastRequest)}
+                        span(title=channelToView.meta.requestInfo.lastRequest.toLocaleString()) #{formatDateAndTime(channelToView.meta.requestInfo.lastRequest)}
                     p
                         b Last Request Duration:
                         br

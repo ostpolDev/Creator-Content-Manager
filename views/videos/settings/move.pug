@@ -21,7 +21,7 @@ if video.meta.move && video.meta.move.lastMove
         |  to 
         a(href="/channels/v/"+video.meta.move.to.id) #{video.meta.move.to.name}
         |  on 
-        span(title=video.meta.move.lastMove.toLocaleString()) #{formatDate(video.meta.move.lastMove)}.
+        span(title=video.meta.move.lastMove.toLocaleString()) #{formatDateAndTime(video.meta.move.lastMove)}.
 
     h3.header Last moved by
     a.user.small.fluid(href="/users/v/"+video.meta.move.by.safeName)

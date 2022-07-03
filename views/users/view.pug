@@ -31,7 +31,7 @@ block content
                         span.icon 
                             i.fas.fa-list
                         span View assets
-                    if !toView.meta.preferences.hiddenFavorites
+                    if !toView.meta.preferences.hiddenFavorites || (user && user.id == toView.id)
                         a.button(href="/assets/favorites/"+encodeURIComponent(toView.safeName))
                             span.icon 
                                 i.fas.fa-star

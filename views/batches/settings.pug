@@ -1,8 +1,9 @@
 extends ../layout
 
 block head
-    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css")
-    script(src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js") 
+    if !user.meta.preferences.disableMarkdown
+        link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css")
+        script(src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js") 
 
 block content
     .container
@@ -60,5 +61,6 @@ block content
             small * Required
 
 block scripts
-    script.
-        const easyMDE = new EasyMDE({element: document.getElementById("aboutText")});
+    if !user.meta.preferences.disableMarkdown
+        script.
+            const easyMDE = new EasyMDE({element: document.getElementById("aboutText")});

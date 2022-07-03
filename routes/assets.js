@@ -190,16 +190,25 @@ router.get('/download/:id', (req, res) => {
 
 router.get('/favorites/:name', async (req, res, next) => {
     let name = req.params.name;
-    let userExists = await userFunctions.userNameExists(name);
 
-    if (!userExists) {
-        return next({status: 404});
-    }
-
-    res.render('assets/specialList', {
-        title: name + "'s favorites",
-        type: "userFav",
-        userName: name
+    User.findOne({$or: [
+        {username: name},
+        {safeName: name}
+    ]}).exec((err, user) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return next({status: 404});
+        }
+        if ((!req.user && user.meta.preferences.hiddenFavorites) || (req.user && req.user.id != user.id)) {
+            return next({status: 404});
+        }
+        res.render('assets/specialList', {
+            title: name + "'s favorites",
+            type: "userFav",
+            userName: user.username
+        })
     })
 })
 

@@ -168,7 +168,7 @@ block content
                         p
                             b Created at:
                             br
-                            span(title=batch.createdAt.toLocaleString()) #{formatDate(batch.createdAt)} 
+                            span(title=batch.createdAt.toLocaleString()) #{formatDateAndTime(batch.createdAt)} 
                         p
                             b Failed files:
                             br
@@ -191,7 +191,7 @@ block content
                             p
                                 b Cover update:
                                 br
-                                span(title=batch.cover.updatedAt.toLocaleString()) #{formatDate(batch.cover.updatedAt)}
+                                span(title=batch.cover.updatedAt.toLocaleString()) #{formatDateAndTime(batch.cover.updatedAt)}
                             p
                                 b Cover size:
                                 br

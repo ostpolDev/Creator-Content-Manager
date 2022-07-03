@@ -19,7 +19,7 @@ block content
             if !video.isEmpty
                 |  | Uploaded #{formatDate(video.meta.publishedAt)}
             else
-                |  | Added #{formatDate(video.createdAt)}
+                |  | Added #{formatDateAndTime(video.createdAt)}
         if !video.isEmpty
             .block
                 p
@@ -125,7 +125,7 @@ block content
                         p
                             b Last Update:
                             br
-                            span(title=video.meta.requestInfo.lastRequest.toLocaleString()) #{formatDate(video.meta.requestInfo.lastRequest)}
+                            span(title=video.meta.requestInfo.lastRequest.toLocaleString()) #{formatDateAndTime(video.meta.requestInfo.lastRequest)}
                         p
                             b Last Request Duration:
                             br
