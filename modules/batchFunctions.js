@@ -2,7 +2,7 @@ const Asset = require("../models/asset");
 const Batch = require('../models/batch');
 
 const logger = require('../modules/logger');
-const { isValidObjectId } = require("mongoose");
+const { isValidObjectId, default: mongoose } = require("mongoose");
 
 const path = require('path');
 const fs = require('fs');
@@ -146,4 +146,36 @@ const deleteCover = function(batch) {
     }
 }
 
-module.exports = {makeBoolean, getList, sorts, deleteIfEmpty, deleteCover};
+const uploadTotalDownloads = function(batchId) {
+    return new Promise((res) => {
+        if (!isValidObjectId(batchId)) {
+            return res(undefined);
+        }
+
+        Asset.aggregate([
+            {$match: {batch: new mongoose.Types.ObjectId(batchId)}},
+            {$group: {
+                _id: null,
+                downloads: {
+                  $sum: "$meta.downloads"
+                }
+              }}
+        ]).exec((err, result) => {
+            if (err) {
+                logger.error(err);
+                return res(undefined);
+            }
+            
+            Batch.findByIdAndUpdate(batchId, {$set: {totalDownloads: result[0].downloads}}).exec((err) => {
+                if (err) {
+                    logger.error(err);
+                    return res(undefined);
+                }
+                return res(true);
+            })
+
+        })
+    })
+}
+
+module.exports = {makeBoolean, getList, sorts, deleteIfEmpty, deleteCover, uploadTotalDownloads};

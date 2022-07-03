@@ -7,6 +7,7 @@ const logger = require('../modules/logger');
 const assetFunctions = require('../modules/assetFunctions');
 const userFunctions = require('../modules/userFunctions');
 const videoFunctions = require('../modules/videoFunctions');
+const batchFunctions = require('../modules/batchFunctions');
 
 const Asset = require('../models/asset');
 const Meta = require('../models/meta');
@@ -160,7 +161,7 @@ router.get('/download/:id', (req, res) => {
         return res.status(400).send();
     }
 
-    Asset.findById(id).select("uuid extention mimetype originalName extention").exec(async (err, asset) => {
+    Asset.findById(id).select("uuid batch extention mimetype originalName extention").exec(async (err, asset) => {
         if (err) {
             logger.error(err);
             return res.status(500).send();
@@ -175,6 +176,7 @@ router.get('/download/:id', (req, res) => {
         }
 
         await assetFunctions.updateDownloadCount(asset.id);
+        await batchFunctions.uploadTotalDownloads(asset.batch);
 
         res.setHeader('Content-disposition', 'attachment; filename=' + asset.originalName);
         res.setHeader('Content-type', asset.mimetype);

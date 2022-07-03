@@ -72,6 +72,10 @@ const BatchSchema = mongoose.Schema({
             raw: String,
             rendered: String
         }
+    },
+    totalDownloads: {
+        type: Number,
+        default: 0
     }
 }, {timestamps: true});
 
