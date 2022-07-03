@@ -26,8 +26,8 @@ if assets && assets.length > 0
                 input.input.hidden.assetRename(type="text" value=(_asset.meta.hasCustomName ? _asset.name : _asset.cleanName) placeholder=_asset.name)
             td
                 a(href="/users/v/"+_asset.meta.uploadedBy.safeName) #{_asset.meta.uploadedBy.username}
-            td(title=_asset.createdAt.toLocaleString()) #{formatDate(_asset.createdAt)}
-            td(title=_asset.tagsString) #{_asset.tags.splice(0, 3).join(", ") || "--"} 
+            //- td(title=_asset.createdAt.toLocaleString()) #{formatDate(_asset.createdAt)}
+            td(title=_asset.tagsString, style="text-overflow: ellipsis;") #{_asset.tags.splice(0, 3).join(", ") || "--"} 
                 if _asset.tags.length > 3
                     span ,...
 else 
