@@ -1,0 +1,25 @@
+form(action="/users/settings/save/preferences", method="post") 
+    .field
+        div.checkbox
+            input.checkbox#hiddenFavorites(type="checkbox" name="hiddenFavorites" checked=user.meta.preferences.hiddenFavorites)
+            label(for="hiddenFavorites") Hidden favorites
+        p.help Make your favorite assets hidden to other users
+    .field
+        div.checkbox
+            input.checkbox#disableMarkdown(type="checkbox" name="disableMarkdown" checked=user.meta.preferences.disableMarkdown)
+            label(for="disableMarkdown") Disable markdown
+        p.help Disable markdown fields and instead display the default input field
+    .field
+        div.checkbox
+            input.checkbox#ampm(type="checkbox" name="ampm" checked=user.meta.preferences.ampm)
+            label(for="ampm") 12-hour time format
+        p.help Whenever time is displayed, do it in the 12-hour format instead.
+        p.help Current: #{formatDateAndTime(new Date())}
+
+    .emptySpace
+
+    .field
+        button.button
+            span.icon
+                i.fas.fa-save
+            span Save settings

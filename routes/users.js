@@ -236,6 +236,24 @@ router.post("/settings/save/general", validation.ensureAuthenticated, [
     })
 })
 
+router.post("/settings/save/preferences", validation.ensureAuthenticated, (req, res) => {
+    let preferences = {
+        hiddenFavorites: req.body.hiddenFavorites !== undefined,
+        disableMarkdown: req.body.disableMarkdown !== undefined,
+        ampm: req.body.ampm !== undefined
+    };
+
+    User.findByIdAndUpdate(req.user.id, {$set: {"meta.preferences": preferences}}, {new: true}).exec((err) => {
+        if (err) {
+            logger.error(err);
+            req.flash('danger', "Something went wrong");
+            return res.redirect('/');
+        }
+        req.flash('success', "Successfully saved your settings");
+        res.redirect('/users/settings/preferences');
+    })
+})
+
 router.get("/search", validation.ensureAuthenticated, (req, res) => {
     let query = req.query.q;
     if (!query) {
