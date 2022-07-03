@@ -213,7 +213,7 @@ block content
                             span.tag.warning(title="This batch was purchased")
                                 span.icon
                                     i.fas.fa-money-bill
-                                span #{batch.purchase.price}
+                                span #{batch.purchase.price.toFixed(2)}
 
                 if firstAsset.licence && firstAsset.licence != "None"
                     -let licence = licenceTypes[firstAsset.licence]

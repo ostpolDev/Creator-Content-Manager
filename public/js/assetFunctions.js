@@ -11,13 +11,15 @@ async function playAsset(id) {
     currentAsset = await getAssetInfo(id);
     if (currentAsset) {
         let title = currentAsset.meta.hasCustomName ? currentAsset.name : currentAsset.cleanName;
+        
+        // let batchTitle = currentAsset.batch.name;
 
-        let batchTitle = currentAsset.batch.name;
-
-        let splits = batchTitle.split("-");
+        let splits = title.split("-");
         let artist = currentAsset.artist ? currentAsset.artist : currentAsset.batch.artist;
         if (!artist && splits.length > 1) {
-            artist = splits[1];
+            artist = splits[0];
+            splits.shift()
+            title = splits.join(" - ")
         }
         
         showMusicPlayer({
