@@ -46,7 +46,8 @@ router.get('/get/rendered', async(req, res) => {
 
     let renderedResult = renderer.render("batches/batchList", {
         batches: batchListResult.batches,
-        field: batchListResult.params.field
+        field: batchListResult.params.field,
+        user: req.user
     })
 
     if (!renderedResult) {

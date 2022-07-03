@@ -3,7 +3,7 @@ if backendRender && backendRender === true
 
 if assets && assets.length > 0
     each _asset, i in assets
-        tr(data-context-source="getAssetContext" data-asset=_asset.id data-owner=(user && _asset.createdBy == user.id).toString())
+        tr(data-context-source="getAssetContext" data-asset=_asset.id data-owner=(user && _asset.createdBy == user.id))
             td
                 -let type = getType(_asset.mimetype);
                 if type == "audio"

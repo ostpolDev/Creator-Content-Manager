@@ -18,7 +18,7 @@ function getAssetContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ e
     })
 
 
-    if (isOwner == "true") {
+    if (isOwner) {
         menus.push({
             text: "Rename",
             event: (linkEvent, pointerEvent) => {
@@ -92,6 +92,32 @@ function submitName(id, newName) {
     })
 }
 
+function submitBatchName(id, newName) {
+    return new Promise((res) => {
+        if (!id || !newName) {
+            return res();
+        }
+
+        fetch("/api/batches/rename", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({batch: id, name: newName})
+        }).then((_res) => {
+            return _res.json();
+        }).then((json) => {
+            if (!json.success === true) {
+                return res();
+            }
+            return res(true);
+        }).catch((err) => {
+            console.error(err);
+            return res();
+        })
+    })
+}
+
 function getChannelContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ element) {
     let id = element.getAttribute("data-channel");
     let selected = element.getAttribute("data-channel-selected");
@@ -120,3 +146,54 @@ function getChannelContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */
     return menus;
 }
 
+function getBatchContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ element) {
+    let id = element.getAttribute("data-batch");
+    let menus = [];
+    let isOwner = element.getAttribute("data-owner");
+
+    if (isOwner) {
+        menus.push({
+            text: "Rename",
+            event: (linkEvent, pointerEvent) => {
+                console.log("Renaming asset");
+
+                let nameElement = element.querySelector(".batchName");
+                let inputElement = element.querySelector(".batchRename");
+
+                nameElement.classList.add("hidden");
+                inputElement.classList.remove("hidden");
+
+                inputElement.focus();
+                inputElement.select();
+
+                inputElement.addEventListener("focusout", defocus);
+                inputElement.addEventListener("keydown", async (_e) => {
+                    if (_e.key == "Enter") { // SUBMIT
+                        let value = inputElement.value;
+                        if (value && value.length > 2) {
+                            let submitSuccess = await submitBatchName(id, value);
+                            if (submitSuccess) {
+                                nameElement.innerText = value;
+                                defocus();
+                            }
+                        }
+                    }
+                })
+
+                function defocus() {
+                    nameElement.classList.remove("hidden");
+                    inputElement.classList.add("hidden");
+                }
+            }
+        })
+
+        menus.push({
+            text: "Settings",
+            event: () => {
+                window.location = "/assets/batches/settings/"+encodeURIComponent(id);
+            }
+        })
+    }
+
+    return menus;
+}

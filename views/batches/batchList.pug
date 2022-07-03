@@ -3,7 +3,7 @@ if backendRender && backendRender === true
 
 if batches && batches.length > 0
     each _batch, i in batches
-        tr
+        tr(data-context-source="getBatchContext" data-batch=_batch.id data-owner=(user && _batch.createdBy.id == user.id))
             td
                 
                 button.button.iconButton.rounded(onclick="showBatch('"+_batch.id+"')")
@@ -12,7 +12,8 @@ if batches && batches.length > 0
                     else
                         i.fas.fa-eye
             td 
-                a.hiddenLink(href="/assets/batches/v/"+_batch.id) #{_batch.name}
+                a.batchName.hiddenLink(href="/assets/batches/v/"+_batch.id) #{_batch.name}
+                input.input.hidden.batchRename(type="text" value=_batch.name placeholder=_batch.name)
             td
                 a(href="/users/v/"+_batch.createdBy.safeName) #{_batch.createdBy.safeName}
             td(title=_batch.createdAt.toLocaleString()) #{formatDate(_batch.createdAt)}
