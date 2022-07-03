@@ -315,7 +315,6 @@ const cleanName = function(name) {
     if (!name) {
         return "";
     }
-    name = name.toLowerCase();
     commonToReplace.forEach(c => {
         name = name.replace(c, "");
     })

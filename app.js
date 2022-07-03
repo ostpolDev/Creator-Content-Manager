@@ -80,10 +80,10 @@ app.use(upload({
     useTempFiles: true,
     tempFileDir: "/tmp/",
     // limits: {fileSize: 5 * 1024 * 1024},
-    safeFileNames: true,
+    safeFileNames: false,
     abortOnLimit: false,
     responseOnLimit: "File upload limit has been reached",
-    preserveExtension: true
+    preserveExtension: true,
 }));
 
 app.use(cookie_parser());
