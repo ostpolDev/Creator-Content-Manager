@@ -136,6 +136,10 @@ block content
                             p #{artist}
                     .emptySpace
                 .buttons.fluid
+                    a.button(href="/assets/batches/download/"+batch.id)
+                        span.icon
+                            i.fas.fa-download
+                        span Download #{batch.length} items
                     if user && user.id == batch.createdBy.id
                         a.button(href="/assets/batches/settings/"+batch.id)
                             span.icon

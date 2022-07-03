@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const admzip = require('adm-zip');
+
 const validation = require('../modules/validation');
 const logger = require('../modules/logger');
 
@@ -17,6 +19,7 @@ const {body, validationResult} = require("express-validator");
 const { isValidObjectId } = require('mongoose');
 const batchFunctions = require('../modules/batchFunctions');
 const marked = require('../modules/marked');
+const { Stream } = require('stream');
 
 router.get('/', (req, res) => {
     res.render('batches/index', {
@@ -206,6 +209,48 @@ router.post('/uploadCover/:id', validation.ensureAuthenticated, (req, res) => {
 
         })
 
+    })
+})
+
+router.get("/download/:id", (req, res, next) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return next({status: 404});
+    }
+
+    Asset.find({batch: id}).select("uuid extention originalName batch").populate("batch", "name").exec((err, assets) => {
+        if (err) {
+            return next(err);
+        }
+        if (assets && assets.length > 0) {
+            let zip = new admzip();
+            assets.forEach(a => {
+                let filePath = path.join(paths.upload, a.uuid + a.extention);
+                if (fs.existsSync(filePath)) {
+                    let content = fs.readFileSync(filePath);
+                    zip.addFile(a.originalName, content);
+                }
+            })
+
+            let batchInfo = JSON.stringify(assets, null, "\t");
+            let batchInfoBuffer = Buffer.from(batchInfo, "utf-8");
+
+            zip.addFile("batchinfo.json", batchInfoBuffer);
+
+            let buffer = zip.toBuffer();
+            let readStream = new Stream.PassThrough();
+            readStream.end(buffer);
+
+            let outputName = assets[0].batch.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
+            res.set("Content-disposition", "attachment; filename=" + outputName + ".zip");
+            res.set("Content-Type", "application/zip");
+
+            readStream.pipe(res);
+        } else {
+            req.flash('info', "No assets found");
+            res.redirect('/assets/batches/v/'+encodeURIComponent(id));
+        }
     })
 })
 
