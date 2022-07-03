@@ -149,4 +149,27 @@ router.post("/rename", validation.ensureAuthenticated, (req, res) => {
     })
 })
 
+router.post("/deleteCover/:id", validation.ensureAuthenticated, (req, res) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return res.status(400).json({success: false});
+    }
+    Batch.findOneAndUpdate({
+        _id: id,
+        createdBy: req.user.id
+    }, {$set: {
+        "cover.hasCover": false
+    }}, {new: true}).exec((err, batch) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        if (!batch) {
+            return res.status(404).json({success: false});
+        }
+        batchFunctions.deleteCover(batch);
+        return res.status(200).json({success: true});
+    })
+})
+
 module.exports = router;
