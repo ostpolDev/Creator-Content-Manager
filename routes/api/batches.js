@@ -124,4 +124,26 @@ router.post('/delete/:id', validation.ensureAuthenticated, (req, res) => {
     })
 })
 
+router.post("/rename", validation.ensureAuthenticated, (req, res) => {
+    let name = req.body.name;
+    let id = req.body.batch;
+
+    if (!isValidObjectId(id) || !name || name.length > 256) {
+        return res.status(400).json({success: false, msg: "Invalid parameters"});
+    }
+
+    Batch.findOneAndUpdate({
+        _id: id,
+        createdBy: req.user.id
+    }, {$set: {
+        "name": name
+    }}).exec((err) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false, msg: "Could not save"});
+        }
+        return res.status(200).json({success: true});
+    })
+})
+
 module.exports = router;
