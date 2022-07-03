@@ -83,7 +83,7 @@ function search(forceNew) {
 
 function clear() {
     sortSelect.value = "name";
-    orderSelect.value = "-1";
+    orderSelect.value = "1";
     searchQuery.value = "";
     search();
     searchButton.disabled = false;
