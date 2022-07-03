@@ -27,7 +27,7 @@ if assets && assets.length > 0
             td
                 a(href="/users/v/"+_asset.meta.uploadedBy.safeName) #{_asset.meta.uploadedBy.username}
             td(title=_asset.createdAt.toLocaleString()) #{formatDate(_asset.createdAt)}
-            td #{_asset.tags.splice(0, 3).join(", ")} 
+            td(title=_asset.tagsString) #{_asset.tags.splice(0, 3).join(", ") || "--"} 
                 if _asset.tags.length > 3
                     span ,...
 else 
