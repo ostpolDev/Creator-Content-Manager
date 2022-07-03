@@ -4,6 +4,10 @@ const Batch = require('../models/batch');
 const logger = require('../modules/logger');
 const { isValidObjectId } = require("mongoose");
 
+const path = require('path');
+const fs = require('fs');
+const paths = require('./paths');
+
 const sorts = {
     "name": "name",
     "added date": "createdAt",
@@ -120,11 +124,12 @@ const deleteIfEmpty = function(id) {
                 return res(undefined);
             }
             if (count <= 0) {
-                Batch.findByIdAndRemove(id).exec((err) => {
+                Batch.findByIdAndRemove(id).exec((err, batch) => {
                     if (err) {
                         logger.error(err);
                         return res(undefined);
                     }
+                    deleteCover(batch);
                     return res(true);
                 })
             } else {
@@ -134,4 +139,13 @@ const deleteIfEmpty = function(id) {
     })
 }
 
-module.exports = {makeBoolean, getList, sorts, deleteIfEmpty};
+const deleteCover = function(batch) {
+    if (batch.cover.hasCover) {
+        let coverPath = path.join(paths.coverPath, batch.id + batch.cover.extention);
+        if (fs.existsSync(coverPath)) {
+            fs.unlinkSync(coverPath);
+        }
+    }
+}
+
+module.exports = {makeBoolean, getList, sorts, deleteIfEmpty, deleteCover};

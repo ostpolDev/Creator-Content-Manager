@@ -82,6 +82,8 @@ router.post('/delete/:id', validation.ensureAuthenticated, (req, res) => {
             return res.status(404).json({success: false, msg: "Batch not found"});
         }
 
+        batchFunctions.deleteCover(batch);
+
         Meta.findOneAndRemove({
             batch: batch.id
         }).exec(async (err, meta) => {
