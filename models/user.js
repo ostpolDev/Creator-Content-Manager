@@ -43,7 +43,8 @@ const UserSchema = mongoose.Schema({
         },
         preferences: {
             hiddenFavorites: Boolean,
-            disableMarkdown: Boolean
+            disableMarkdown: Boolean,
+            ampm: Boolean
         },
         lastRename: {
             when: Date,

@@ -1,0 +1,20 @@
+extends layout
+
+block content
+    .container 
+        h1.header Licences
+        p.subtitle(title=lastChange.toLocaleString()) Last change: #{formatDateAndTime(lastChange)}
+
+        .buttons
+            a.button(href="/")
+                span.icon
+                    i.fas.fa-home
+                span Back Home
+
+            a.button(href="/licences/download")
+                span.icon
+                    i.fas.fa-download 
+                span Download Licence  
+
+        .segment.noBackground
+            pre!=replace_content(content)

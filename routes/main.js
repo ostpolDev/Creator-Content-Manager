@@ -7,6 +7,10 @@ const logger = require('../modules/logger');
 const validation = require('../modules/validation');
 const channelFunctions = require('../modules/channelFunctions');
 const Asset = require('../models/asset');
+const path = require('path');
+const fs = require('fs');
+const paths = require('../modules/paths');
+const marked = require('../modules/marked');
 
 router.get('/', async (req, res, next) => {
     if (!req.isAuthenticated()) {
@@ -62,6 +66,30 @@ router.get('/watch', validation.ensureAuthenticated, (req, res, next) => {
 
         res.redirect('/videos/v/'+video.id);
     })
+})
+
+router.get("/licences", (req, res, next) => {
+    let licencePath = path.join(paths.root, "licence.txt");
+    if (!fs.existsSync(licencePath)) {
+        return next({status: 404});
+    }
+
+    let content = fs.readFileSync(licencePath);
+    let stats = fs.statSync(licencePath);
+    res.render('licences', {
+        content: marked.sanitizeFull(content),
+        title: "Licences",
+        lastChange: stats.ctime
+    })
+})
+
+router.get("/licences/download", (req, res, next) => {
+    let licencePath = path.join(paths.root, "licence.txt");
+    if (!fs.existsSync(licencePath)) {
+        return next({status: 404});
+    }
+
+    res.download(licencePath, "licences.txt")
 })
 
 module.exports = router;
