@@ -181,4 +181,33 @@ router.post("/delete/:id", validation.ensureAuthenticated, (req, res) => {
     })
 })
 
+router.get("/search/:videoId", validation.ensureAuthenticated, (req, res) => {
+    let id = req.params.videoId;
+    let query = req.query.q;
+    if (!isValidObjectId(id) || !query) {
+        return res.status(400).json({success: false});
+    }
+
+    Video.findOne({
+        _id: id,
+        createdBy: req.user.id
+    }).select("assets").exec((err, video) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        if (!video) {
+            return res.status(404).json({success: false});
+        }
+
+        Asset.find({_id: {$not: {$in: video.assets}}}).select("name meta cleanName").limit(25).exec((err, assets) => {
+            if (err) {
+                logger.error(err);
+                return res.status(500).json({success: false});
+            }
+            return res.status(200).json({success: true, assets});
+        })
+    })
+})
+
 module.exports = router;

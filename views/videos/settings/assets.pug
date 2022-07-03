@@ -1,0 +1,15 @@
+.field
+    label.label Search
+    .control.hasIcon
+        input.input#searchInput(type="text" placeholder="Name, tags, ...")
+        span.icon
+            i.fas.fa-search
+    p.help Type to search for new assets. Click on a name to add it to the video. Click on one of the existing names to remove it from the video.
+
+.columns
+    .column.half
+        h3.header Current assets
+        .buttons.fluid#currentAssetContainer
+    .column.half
+        h3.header New assets
+        .buttons.fluid#newAssetContainer

@@ -317,4 +317,21 @@ const getList = function(req) {
     })
 }
 
-module.exports = {categories, sorts, getCategory, createVideo, updateVideoData, replaceWithNumbers, getList}
+const videoExists = function(id) {
+    return new Promise((res) => {
+        if (!isValidObjectId(id)) {
+            return res(false);
+        }
+
+        Video.countDocuments({_id: id}).exec((err, count) => {
+            if (err) {
+                logger.error(err);
+                return res(false);
+            }
+            return res(count > 0);
+        })
+    })
+}
+
+
+module.exports = {categories, sorts, videoExists, getCategory, createVideo, updateVideoData, replaceWithNumbers, getList}

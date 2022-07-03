@@ -518,4 +518,20 @@ const updateUsername = function(userId, username, safeName) {
     })
 }
 
-module.exports = {handleFiles, makeBatch, makeMeta, cleanName, makeBoolean, fileTypes, assetTypes, licenceTypes, getList, sorts, updateDownloadCount, deleteFile, deleteMetaFile, deleteManyFiles, updateUsername}
+const assetExists = function(id) {
+    return new Promise((res) => {
+        if (!isValidObjectId(id)) {
+            return res(false);
+        }
+
+        Asset.countDocuments({_id: id}).exec((err, count) => {
+            if (err) {
+                logger.error(err);
+                return res(false);
+            }
+            return res(count > 0);
+        })
+    })
+}
+
+module.exports = {handleFiles, makeBatch, makeMeta, cleanName, assetExists, makeBoolean, fileTypes, assetTypes, licenceTypes, getList, sorts, updateDownloadCount, deleteFile, deleteMetaFile, deleteManyFiles, updateUsername}

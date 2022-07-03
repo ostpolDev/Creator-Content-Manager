@@ -49,6 +49,8 @@ block content
                     include settings/general.pug
                 else if setting == "change channel"
                     include settings/move.pug
+                else if setting == "assets"
+                    include settings/assets.pug
                 else
                     .message.danger
                         .messageHeader You shouldn't be able to see this.
@@ -64,7 +66,9 @@ block scripts
         const currentChannel = "#{video.channel.id}";
 
     if setting == "change channel"
-    script(src="/js/videoChannelSwitcher.js")
+        script(src="/js/videoChannelSwitcher.js")
+    if setting == "assets"
+        script(src="/js/videoAssetManager.js") 
 
     script.
         const deleteVideoButton = document.getElementById("deleteVideoButton");
