@@ -225,3 +225,22 @@ function getCoverSource(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ el
 
     return menus;
 }
+
+const settings = ["general", "email", "password", "preferences"]
+
+function getUserSettings(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ element) {
+    let menus = [];
+
+    settings.forEach(s => {
+        menus.push({
+            text: s,
+            event: (linkEvent, pointerEvent) => {
+                window.location = "/users/settings/"+encodeURIComponent(s.toLowerCase());
+            }
+        })
+
+    })
+
+
+    return menus;
+}

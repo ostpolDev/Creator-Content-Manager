@@ -23,7 +23,7 @@ block content
 
                 .buttons.fluid
                     if user && toView.id === user.id
-                        a.button(href="/users/settings")
+                        a.button(href="/users/settings" data-context-source="getUserSettings")
                             span.icon 
                                 i.fas.fa-cog
                             span Settings 
