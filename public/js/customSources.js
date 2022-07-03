@@ -197,3 +197,31 @@ function getBatchContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ e
 
     return menus;
 }
+
+function getCoverSource(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ element) {
+    let menus = [];
+    let owner = element.getAttribute("data-owner");
+    let id = element.getAttribute("data-batch");
+    console.log(element, id, owner);
+    if (owner != undefined) {
+        menus.push({
+            text: "Delete Cover Image",
+            event: (linkEvent, pointerEvent) => {
+                fetch("/api/batches/deleteCover/"+encodeURIComponent(id), {
+                    method: "POST"
+                }).then(res => {
+                    return res.json();
+                }).then(json => {
+                    if (json.success === true) {
+                        window.location.reload();
+                    }
+                }).catch((err) => {
+                    console.error(err);
+                })
+            }
+        })
+    }
+
+
+    return menus;
+}

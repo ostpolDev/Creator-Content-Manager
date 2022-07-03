@@ -118,7 +118,7 @@ block content
 
             .column
                 if batch.isAlbum
-                    .card.hoverable(data-modal="#uploadCoverModal")
+                    .card.hoverable(data-modal="#uploadCoverModal", data-context-source="getCoverSource", data-batch=batch.id, data-owner=(user && user.id == batch.createdBy.id))
                         if batch.cover.hasCover
                             .cardImage
                                 img(src="/assets/batches/cover/"+batch.id, alt=batch.name, loading="lazy") 

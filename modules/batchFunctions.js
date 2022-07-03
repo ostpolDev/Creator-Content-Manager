@@ -140,11 +140,9 @@ const deleteIfEmpty = function(id) {
 }
 
 const deleteCover = function(batch) {
-    if (batch.cover.hasCover) {
-        let coverPath = path.join(paths.coverPath, batch.id + batch.cover.extention);
-        if (fs.existsSync(coverPath)) {
-            fs.unlinkSync(coverPath);
-        }
+    let coverPath = path.join(paths.coverPath, batch.id + batch.cover.extention);
+    if (fs.existsSync(coverPath)) {
+        fs.unlinkSync(coverPath);
     }
 }
 
