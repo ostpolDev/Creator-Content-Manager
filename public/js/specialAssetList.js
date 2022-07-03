@@ -24,6 +24,9 @@ let previousParams;
 let totalSkip = 0;
 let reachedEnd = false;
 
+let defaultSort = "";
+let defaultOrder = "";
+
 let baseUrl = "/api/assets/get/rendered";
 
 start();
@@ -32,10 +35,16 @@ function start() {
     switch (type) {
         case "userFav":
             baseUrl += "?favUser="+encodeURIComponent(userName)
+            defaultSort = "name";
+            defaultOrder = "-1";
+            updateDropdowns();
             userType();
             break;
         case "globalSearch":
             baseUrl += "?a"
+            defaultSort = "added date";
+            defaultOrder = "-1";
+            updateDropdowns();
             search(true);
             break;
         default:
@@ -122,9 +131,13 @@ function search(forceNew) {
     })
 }
 
+function updateDropdowns() {
+    sortSelect.value = defaultSort;
+    orderSelect.value = defaultOrder;
+}
+
 function clear() {
-    sortSelect.value = "name";
-    orderSelect.value = "-1";
+    updateDropdowns();
     searchQuery.value = "";
     search();
     searchButton.disabled = false;
