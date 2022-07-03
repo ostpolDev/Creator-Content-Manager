@@ -68,6 +68,12 @@ block content
                             h1.header #{asset.licence}
 
             .column
+                if asset.purchase.isPurchased
+                    .tags
+                        span.tag.warning(title="This asset was purchased")
+                            span.icon
+                                i.fas.fa-money-bill
+                            span #{asset.purchase.price}
                 .buttons.fluid
                     a.button.success(href="/assets/download/"+asset.id)
                         span.icon
