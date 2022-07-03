@@ -46,6 +46,13 @@ block content
                     video.maxHeight(src="/assets/getFile/"+asset.id, controls, controlsList="nodownload", style="display: block; width: 100%;") 
                 else if type == "image"
                     img.img.maxHeight(style="display: block; width: 100%; margin-bottom: 1em;", src="/assets/getFile/"+asset.id, alt=asset.originalName)
+                else
+                    .message.info
+                        .messageHeader Sorry...
+                        .messageBody
+                            p Assets of type "
+                                strong #{type} (#{asset.extention})
+                                | " cannot be displayed. They can still be downloaded and used in videos.
 
                 if asset.description.rendered
                     br
