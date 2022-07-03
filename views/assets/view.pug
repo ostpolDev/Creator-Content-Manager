@@ -129,7 +129,7 @@ block content
                                 i.fas.fa-globe 
                             span View source 
                     if asset.batchSize > 1
-                        a.button(href="/assets/batches/v/"+asset.batch) 
+                        a.button(href="/assets/batches/v/"+asset.batch.id) 
                             span.icon
                                 i.fas.fa-folder
                             span View Batch
@@ -191,7 +191,7 @@ block content
                     p
                         b Batch Size:
                         br
-                        a.hiddenLink(href="/assets/batches/v/"+asset.batch)  #{asset.batchSize} 
+                        a.hiddenLink(href="/assets/batches/v/"+asset.batch.id)  #{asset.batchSize} 
                     p
                         b Original Name:
                         br

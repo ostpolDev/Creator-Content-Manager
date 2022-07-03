@@ -59,7 +59,7 @@ const getList = function(req) {
     
         currentOrder = parseInt(currentOrder);
     
-        let batchQuery = {};
+        let batchQuery = {length: {$gt: 1}};
 
         if (searchQuery && searchQuery.trim() != "") {
             batchQuery.$or = [
