@@ -124,6 +124,7 @@ block content
                                 img(src="/assets/batches/cover/"+batch.id, alt=batch.name, loading="lazy") 
                         .cardBody
                             -
+                                let title = batch.name;
                                 let splits = batch.name.split("-");
                                 let artist = "";
                                 if (splits.length > 1) {
@@ -131,7 +132,7 @@ block content
 
                                     title = splits[0];
                                 }
-                            h1.header #{batch.name}
+                            h1.header #{title}
                             p #{artist}
                     .emptySpace
                 .buttons.fluid
