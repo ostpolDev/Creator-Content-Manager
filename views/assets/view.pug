@@ -145,6 +145,14 @@ block content
                                 i.fas.fa-folder
                             span View Batch
                     if user
+                        -let _index = user.favorites.indexOf(asset.id);
+                        button.button.warning#removeFavButton(class=(_index == -1 ? "hidden" : ""), onclick="manageFav('remove', '"+asset.id+"')")
+                            span.icon
+                                i.fas.fa-star
+
+                        button.button#addFavButton(class=(_index != -1 ? "hidden" : ""), onclick="manageFav('add', '"+asset.id+"')")
+                            span.icon
+                                i.far.fa-star
                         if user.id == asset.createdBy.id
                             a.button(href="/assets/settings/"+asset.id) 
                                 span.icon
@@ -154,14 +162,6 @@ block content
                                 span.icon
                                     i.fas.fa-trash
                                 span Delete Asset
-                        -let _index = user.favorites.indexOf(asset.id);
-                        button.button.warning#removeFavButton(class=(_index == -1 ? "hidden" : ""), onclick="manageFav('remove', '"+asset.id+"')")
-                            span.icon
-                                i.fas.fa-star
-
-                        button.button#addFavButton(class=(_index != -1 ? "hidden" : ""), onclick="manageFav('add', '"+asset.id+"')")
-                            span.icon
-                                i.far.fa-star
 
                 a.user.small.fluid(href="/users/v/"+asset.createdBy.safeName)
                     .image
