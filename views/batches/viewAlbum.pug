@@ -85,6 +85,8 @@ block content
                     span Load More
 
             .column
+                if batch.cover.hasCover
+                    
                 .buttons.fluid
                     if user && user.id == batch.createdBy.id
                         a.button(href="/assets/batches/settings/"+batch.id)

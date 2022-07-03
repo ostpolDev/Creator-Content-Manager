@@ -9,6 +9,10 @@ const assetFunctions = require('../modules/assetFunctions');
 const Asset = require('../models/asset');
 const Batch = require('../models/batch');
 
+const path = require('path');
+const paths = require('../modules/paths');
+const fs = require('fs');
+
 const {body, validationResult} = require("express-validator");
 const { isValidObjectId } = require('mongoose');
 const batchFunctions = require('../modules/batchFunctions');
@@ -107,6 +111,27 @@ router.post("/save/:id", [
             req.flash('success', "Successfully updated batch information");
         }
         res.redirect('/assets/batches/settings/'+encodeURIComponent(id));
+    })
+})
+
+router.get('/cover/:id', (req, res) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return res.status(400).send();
+    }
+    Batch.findOne({_id: id, isAlbum: true, "cover.hasCover": true}).select("cover isAlbum").exec((err, batch) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).send();
+        }
+        if (!batch) {
+            return res.status(404).send();
+        }
+        let filePath = path.join(paths.coverPath, batch.id + batch.cover.extention);
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).send();
+        }
+        return res.status(200).sendFile(filePath);
     })
 })
 
