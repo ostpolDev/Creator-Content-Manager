@@ -15,7 +15,7 @@ if assets && assets.length > 0
                 else if type == "image"
                     button.button.iconButton.rounded(onclick="showImage('"+_asset.id+"')")
                         i.fas.fa-image
-                button.button.iconButton.rounded(onclick="download('"+_asset.id+"')")
+                button.button.iconButton.rounded(onclick="window.location = '/assets/download/"+_asset.id+"'")
                     i.fas.fa-download
             td
                 a.assetName.hiddenLink(href="/assets/v/"+_asset.id) 

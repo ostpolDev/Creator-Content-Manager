@@ -55,6 +55,23 @@ block content
                         .tags
                             each tag, i in video.youtubeTags
                                 span.tag #{tag}
+
+                    if assets && assets.length > 0
+                        h2.header Assets (#{assets.length})
+                        if user && user.id == video.createdBy.id
+                            a.button(href="/videos/settings/"+video.id+"/assets")
+                                span.icon
+                                    i.fas.fa-file-circle-check 
+                                span Manage assets 
+                        table.table.striped.hoverable
+                            thead 
+                                th Action
+                                th Name
+                                th Uploader
+                                th Date
+                                th Tags
+                            tbody#assetTableBody
+                                include ../assets/assetList.pug
             .column.oneQuarter
                 if !video.isEmpty
                     .buttons.fluid

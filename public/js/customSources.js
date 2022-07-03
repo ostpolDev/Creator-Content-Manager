@@ -18,7 +18,7 @@ function getAssetContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ e
     })
 
 
-    if (isOwner) {
+    if (isOwner != undefined) {
         menus.push({
             text: "Rename",
             event: (linkEvent, pointerEvent) => {
@@ -151,7 +151,7 @@ function getBatchContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ e
     let menus = [];
     let isOwner = element.getAttribute("data-owner");
 
-    if (isOwner) {
+    if (isOwner != undefined) {
         menus.push({
             text: "Rename",
             event: (linkEvent, pointerEvent) => {

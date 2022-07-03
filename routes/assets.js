@@ -174,7 +174,7 @@ router.get('/download/:id', (req, res) => {
 
         await assetFunctions.updateDownloadCount(asset.id);
 
-        res.setHeader('Content-disposition', 'attachment; filename=' + asset.originalName + asset.extention);
+        res.setHeader('Content-disposition', 'attachment; filename=' + asset.originalName);
         res.setHeader('Content-type', asset.mimetype);
 
         var filestream = fs.createReadStream(filePath);
