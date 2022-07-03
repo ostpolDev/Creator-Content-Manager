@@ -502,4 +502,20 @@ const deleteManyFiles = function(assets) {
     })
 }
 
-module.exports = {handleFiles, makeBatch, makeMeta, cleanName, makeBoolean, fileTypes, assetTypes, licenceTypes, getList, sorts, updateDownloadCount, deleteFile, deleteMetaFile, deleteManyFiles}
+const updateUsername = function(userId, username, safeName) {
+    return new Promise((res) => {
+        if (!isValidObjectId(userId)) {
+            return res(undefined);
+        }
+
+        Asset.updateMany({createdBy: userId}, {$set: {"meta.uploadedBy.username": username, "meta.uploadedBy.safeName": safeName}}).exec((err) => {
+            if (err) {
+                logger.error(err);
+                return res(undefined);
+            }
+            return res(true);
+        })
+    })
+}
+
+module.exports = {handleFiles, makeBatch, makeMeta, cleanName, makeBoolean, fileTypes, assetTypes, licenceTypes, getList, sorts, updateDownloadCount, deleteFile, deleteMetaFile, deleteManyFiles, updateUsername}

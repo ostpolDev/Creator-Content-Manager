@@ -770,6 +770,7 @@ span.icon.right {
     font-weight: 100;
     font-size: 14px;
     line-height: 5px;
+    padding-bottom: 15px;
 }
 
 .checkbox {

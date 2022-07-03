@@ -1,12 +1,29 @@
 form(action="/users/settings/save/general", method="post") 
-
-    .field
-        label.label Username
-        .control.hasIcon
-            input.input(type="text" readonly value=user.username disabled)
-            span.icon
-                i.fas.fa-user
-        p.help To change your username, please contact support. 
+    -
+        let canRename = true;
+        if (user.meta.lastRename && user.meta.lastRename.when) {
+            let diff = new Date().getTime() - user.meta.lastRename.when.getTime()
+            diff = diff / 1000 / 60 / 60 / 24;
+            if (diff < 30) {
+                canRename = false;
+            }
+        }
+    if canRename
+        .field
+            label.label Username
+            .control.hasIcon
+                input.input(type="text" value=user.username name="username")
+                span.icon
+                    i.fas.fa-user
+            p.help Your username can be changed once every 30 days
+    else
+        .field
+            label.label Username
+            .control.hasIcon
+                input.input(type="text" readonly value=user.username disabled)
+                span.icon
+                    i.fas.fa-user
+            p.help Your username can be changed once every 30 days
 
     .field.required
         label.label(for="name") Name

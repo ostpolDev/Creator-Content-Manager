@@ -12,6 +12,7 @@ const marked = require('../modules/marked');
 const User = require('../models/user');
 const Channel = require('../models/channel');
 const logger = require('../modules/logger');
+const assetFunctions = require('../modules/assetFunctions');
 
 const userFunctions = require('../modules/userFunctions');
 const validation = require('../modules/validation');
@@ -166,7 +167,6 @@ router.get('/settings/:setting', validation.ensureAuthenticated, (req, res, next
         next({status: 404});
         return;
     }
-
     res.render("users/settings", {
         title: "Settings",
         settings,
@@ -176,19 +176,23 @@ router.get('/settings/:setting', validation.ensureAuthenticated, (req, res, next
 
 router.post("/settings/save/general", validation.ensureAuthenticated, [
     body("name", "Name has to be between 1 and 128 characters").isLength({min: 1, max: 128}),
-    body("about", "Your about text cannot be longer than 4096 characters").optional().isLength({max: 4096})
-], (req, res, next) => {
+    body("about", "Your about text cannot be longer than 4096 characters").optional().isLength({max: 4096}),
+    body("username", "Username has to be between 3 and 128 characters").optional({checkFalsy: true}).isLength({min: 3, max: 128})
+], async (req, res, next) => {
     let errors = validationResult(req);
     if (!errors.isEmpty()) {
         errors.array().forEach(e => {
             req.flash("danger", e.msg);
         })
-        res.redirect('/users/register');
+        res.redirect('/users/settings/general');
         return;
     }
 
     let name = req.body.name;
     let about = req.body.about;
+    let username = req.body.username;
+
+    let oldName = req.user.username;
 
     let rendered_description = marked.markAndSanitize(about);
 
@@ -196,6 +200,30 @@ router.post("/settings/save/general", validation.ensureAuthenticated, [
     req.user.description = {
         raw: about,
         rendered: rendered_description
+    }
+
+    if (username && username != "" && username.trim() != req.user.username.trim()) {
+
+        let canRename = true;
+        if (req.user.meta.lastRename && req.user.meta.lastRename.when) {
+            let diff = new Date().getTime() - req.user.meta.lastRename.when.getTime()
+            diff = diff / 1000 / 60 / 60 / 24;
+            if (diff < 30) {
+                canRename = false;
+            }
+        }
+        
+        if (canRename) {
+            req.user.username = username.trim();
+            req.user.safeName = userFunctions.createSafeName(username);
+            req.user.meta.lastRename = {
+                when: new Date(),
+                from: oldName,
+                to: username
+            }
+
+            await assetFunctions.updateUsername(req.user.id, username.trim(), userFunctions.createSafeName(username));
+        }
     }
 
     req.user.save((err) => {

@@ -24,6 +24,21 @@ block content
                         span.icon
                             i.fas.fa-arrow-left
                         span Back 
+
+                if user.meta.lastRename && user.meta.lastRename.when
+                    .segment
+                        p
+                            b Last Rename:
+                            br
+                            span(title=user.meta.lastRename.when.toLocaleString()) #{formatDate(user.meta.lastRename.when)} (#{formatAgo(user.meta.lastRename.when)})
+                        p
+                            b From:
+                            br
+                            | #{user.meta.lastRename.from}
+                        p
+                            b To:
+                            br
+                            | #{user.meta.lastRename.to}
             .column
                 if setting == "general"
                     include settings/general.pug

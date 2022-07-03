@@ -72,16 +72,16 @@
         let returnString = "";
 
         if (days <= 1) {
-            return __("general.today")
+            return "Today"
         } else if (days > 365) {
-            returnString = __("general.years", Math.round(days / 365));
+            returnString = Math.round(days / 365) + " years";
             if (days % 365 != 0) {
-                returnString += " " + __("general.andDays", Math.round(days % 365))
+                returnString += " and " + Math.round(days % 365) + " days"
             }
 
-            returnString += " " + __("general.ago");
+            returnString += " ago";
         } else {
-            returnString = __("general.daysAgo", Math.round(days));
+            returnString = Math.round(days) + " days ago";
         }
 
         return returnString;
