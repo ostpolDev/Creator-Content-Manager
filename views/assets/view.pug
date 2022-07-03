@@ -33,7 +33,7 @@ block content
                         i.fas.fa-times
                     span Cancel
     .container
-        #headerContainer(data-context-source="getAssetContext" data-asset=asset.id data-owner=(user && asset.createdBy.id == user.id).toString())
+        #headerContainer(data-context-source="getAssetContext" data-asset=asset.id data-owner=(user && asset.createdBy.id == user.id))
             h1.header.assetName #{asset.meta.hasCustomName ? asset.name : asset.cleanName}
             p.subtitle.capitalized #{asset.assetType}
             input.input.hidden.assetRename(type="text" value=(asset.meta.hasCustomName ? asset.name : asset.cleanName) placeholder=asset.name)
@@ -76,50 +76,51 @@ block content
                             img(src=licence.icon, alt=asset.licence)
                         .content
                             h1.header #{asset.licence}
-                .divider.light
-                h2.header Videos
-                p.subtitle Videos of yours that use this asset
-                #sortContainer
-                    .field 
-                        label.label(for="channelSelect") Sort by
-                        .control
-                            select.input.capitalized#sortSelect
-                                each sort, i in Object.keys(sorts)
-                                    option.capitalized(value=sort,selected=(sort == "upload date"))=sort
+                if user && channel
+                    .divider.light
+                    h2.header Videos
+                    p.subtitle Videos of yours that use this asset
+                    #sortContainer
+                        .field 
+                            label.label(for="channelSelect") Sort by
+                            .control
+                                select.input.capitalized#sortSelect
+                                    each sort, i in Object.keys(sorts)
+                                        option.capitalized(value=sort,selected=(sort == "upload date"))=sort
 
-                    .field 
-                        label.label(for="channelSelect") Order
-                        .control
-                            select.input#orderSelect
-                                option(value=1) Acending
-                                option(value=-1 selected) Decending
+                        .field 
+                            label.label(for="channelSelect") Order
+                            .control
+                                select.input#orderSelect
+                                    option(value=1) Acending
+                                    option(value=-1 selected) Decending
 
-                    .field
-                        label.label(for="searchQuery") Search Query
-                        .control.hasIcon
-                            input.input#searchQuery(type="url" name="searchQuery" placeholder="Title, description, tags, ...") 
-                            span.icon
-                                i.fas.fa-search
-
-                    .field
-                        .buttons.equal
-                            button.button.fluid#clearButton
-                                span.icon
-                                    i.fas.fa-trash
-                                span Clear Filter
-                            button.button.fluid#searchButton
+                        .field
+                            label.label(for="searchQuery") Search Query
+                            .control.hasIcon
+                                input.input#searchQuery(type="url" name="searchQuery" placeholder="Title, description, tags, ...") 
                                 span.icon
                                     i.fas.fa-search
-                                span Search
 
-                    .divider.light
+                        .field
+                            .buttons.equal
+                                button.button.fluid#clearButton
+                                    span.icon
+                                        i.fas.fa-trash
+                                    span Clear Filter
+                                button.button.fluid#searchButton
+                                    span.icon
+                                        i.fas.fa-search
+                                    span Search
 
-                .columns.multiline#videoGridContainer
+                        .divider.light
 
-                button.button.link.fluid.hidden#loadMoreButton
-                    span.icon
-                        i.fas.fa-plus
-                    span Load More
+                    .columns.multiline#videoGridContainer
+
+                    button.button.link.fluid.hidden#loadMoreButton
+                        span.icon
+                            i.fas.fa-plus
+                        span Load More
 
             .column
                 if asset.batch.purchase.isPurchased
