@@ -251,11 +251,21 @@ pre, .segment {
 
 .musicPlayer .playerSongName {
     font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .musicPlayer .playerSongName .playerArtist {
     font-weight: 100;
     margin-left: 5px;
+}
+
+#playerSongTitle {
+    max-width: 60%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* BUTTONS */
