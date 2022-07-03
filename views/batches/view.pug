@@ -126,8 +126,8 @@ block content
                             -
                                 let title = batch.name;
                                 let splits = batch.name.split("-");
-                                let artist = "";
-                                if (splits.length > 1) {
+                                let artist = batch.artist;
+                                if (!artist && splits.length > 1) {
                                     artist = splits[1];
 
                                     title = splits[0];
