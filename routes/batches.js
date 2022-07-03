@@ -42,7 +42,7 @@ router.get('/v/:id', (req, res, next) => {
             if (err) {
                 return next(err);
             }
-            res.render(batch.isAlbum ? 'batches/viewAlbum' : "batches/view", {
+            res.render("batches/view", {
                 title: batch.name,
                 batch,
                 firstAsset

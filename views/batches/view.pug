@@ -131,7 +131,7 @@ block content
 
                     if firstAsset && firstAsset.purchase.isPurchased
                         .tags
-                            span.tag.warning
+                            span.tag.warning(title="One or more assets in this batch were purchased")
                                 span.icon
                                     i.fas.fa-money-bill
                                 span #{firstAsset.purchase.price}
