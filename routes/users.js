@@ -241,7 +241,13 @@ router.post("/settings/save/preferences", validation.ensureAuthenticated, (req, 
         hiddenFavorites: req.body.hiddenFavorites !== undefined,
         disableMarkdown: req.body.disableMarkdown !== undefined,
         ampm: req.body.ampm !== undefined,
-        autoplay: req.body.autoplay !== undefined
+        autoplay: req.body.autoplay !== undefined,
+        hideAssetVideoList: req.body.hideAssetVideoList !== undefined,
+        mainPage: {
+            showVideos: req.body.showVideos !== undefined,
+            showAssets: req.body.showAssets !== undefined,
+            randomTip: req.body.randomTip !== undefined
+        }
     };
 
     User.findByIdAndUpdate(req.user.id, {$set: {"meta.preferences": preferences}}, {new: true}).exec((err) => {

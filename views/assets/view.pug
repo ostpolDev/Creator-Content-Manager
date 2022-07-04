@@ -79,7 +79,7 @@ block content
                             img(src=licence.icon, alt=asset.licence)
                         .content
                             h1.header #{asset.licence}
-                if user && channel
+                if user && channel && !user.meta.preferences.hideAssetVideoList
                     .divider.light
                     h2.header Videos
                     p.subtitle Videos of yours that use this asset
@@ -267,4 +267,5 @@ block scripts
         const assetId = "#{asset.id}";
     
     script(src="/js/asset.js")
-    script(src="/js/assetVideos.js") 
+    if user && channel && !user.meta.preferences.hideAssetVideoList
+        script(src="/js/assetVideos.js") 

@@ -11,13 +11,19 @@ block content
 
         .emptySpace
 
-        if videos && videos.length > 0
+        if user.meta.preferences.mainPage.randomTip && hint
+            .segment
+                p
+                    strong Tip: 
+                    | #{hint}
+
+        if user.meta.preferences.mainPage.showVideos && videos && videos.length > 0
             h2.header Latest videos
             p.subtitle #{videos.length} latest videos across all of your channels
             .columns.multiline
                 include videos/videoGrid.pug
 
-        if assets && assets.length > 0
+        if user.meta.preferences.mainPage.showAssets && assets && assets.length > 0
             h2.header Recent assets
             p.subtitle The 10 most recent assets uploaded
 

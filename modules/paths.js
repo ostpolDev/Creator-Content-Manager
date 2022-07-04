@@ -8,7 +8,8 @@ const tmp = path.join(root, "tmp");
 const upload = path.join(root, "uploads");
 const meta = path.join(upload, "_meta");
 const coverPath = path.join(upload, "_covers");
+const res = path.join(public, "res");
 
 module.exports = {
-    root, views, routes, public, tmp, upload, meta, coverPath
+    root, views, routes, public, tmp, upload, meta, coverPath, res
 }

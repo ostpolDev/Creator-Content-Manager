@@ -11,6 +11,7 @@ const path = require('path');
 const fs = require('fs');
 const paths = require('../modules/paths');
 const marked = require('../modules/marked');
+const hints = require('../modules/hints');
 
 router.get('/', async (req, res, next) => {
     if (!req.isAuthenticated()) {
@@ -38,7 +39,8 @@ router.get('/', async (req, res, next) => {
                 }
                 res.render("index", {
                     videos,
-                    assets
+                    assets,
+                    hint: hints.getHint()
                 })
             });
         })

@@ -45,7 +45,22 @@ const UserSchema = mongoose.Schema({
             hiddenFavorites: Boolean,
             disableMarkdown: Boolean,
             ampm: Boolean,
-            autoplay: Boolean
+            autoplay: Boolean,
+            hideAssetVideoList: Boolean,
+            mainPage: {
+                showVideos: {
+                    type: Boolean,
+                    default: true
+                },
+                showAssets: {
+                    type: Boolean,
+                    default: true
+                },
+                randomTip: {
+                    type: Boolean,
+                    default: true
+                }
+            }
         },
         lastRename: {
             when: Date,
