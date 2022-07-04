@@ -20,6 +20,10 @@ block content
                         b Assets:
                         br
                         | #{toView.meta.assetCount}
+                    p
+                        b Favorites:
+                        br
+                        | #{toView.favorites.length}
 
                 .buttons.fluid
                     if user && toView.id === user.id

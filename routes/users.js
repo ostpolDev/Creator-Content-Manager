@@ -125,7 +125,7 @@ router.get('/v/:name', (req, res, next) => {
         {safeName: name}
     ]};
 
-    User.findOne(query).select("name username safeName mailHash description createdAt meta").exec((err, user) => {
+    User.findOne(query).select("name username safeName mailHash description createdAt favorites meta").exec((err, user) => {
         if (err) {
             return next(err);
         }
