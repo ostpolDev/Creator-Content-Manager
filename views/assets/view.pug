@@ -3,7 +3,7 @@ extends ../layout
 block head
     style.
         .maxHeight {
-            width: 100%;
+            width: auto;
             display: block;
             margin: auto;
             max-height: 500px;
@@ -48,7 +48,7 @@ block content
                 else if type == "video"
                     video.maxHeight(src="/assets/getFile/"+asset.id, controls, controlsList="nodownload", style="display: block; width: 100%;", autoplay=autoplay) 
                 else if type == "image"
-                    img.img.maxHeight(style="display: block; width: 100%; margin-bottom: 1em;", src="/assets/getFile/"+asset.id, alt=asset.originalName)
+                    img.img.maxHeight(style="margin-bottom: 1em;", src="/assets/getFile/"+asset.id, alt=asset.originalName)
                 else if type == "text" || asset.extention == ".md"
                     .segment.noBackground
                         pre!=replace_content(content)
