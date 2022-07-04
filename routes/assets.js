@@ -38,11 +38,27 @@ router.get('/', (req, res, next) => {
             if (err) {
                 return next(err);
             }
-            res.render('assets/index', {
-                title: "Assets",
-                count,
-                assets
+
+            Asset.aggregate([
+                {$match: {}},
+                {$group: {
+                    _id: null,
+                    totalSize: {
+                        $sum: "$size"
+                    }
+                }}
+            ]).exec((err, result) => {
+                if (err) {
+                    logger.error(err);
+                }
+                res.render('assets/index', {
+                    title: "Assets",
+                    count,
+                    assets,
+                    totalSize: result[0] ? result[0].totalSize : -1
+                })
             })
+
         })
     })
 })

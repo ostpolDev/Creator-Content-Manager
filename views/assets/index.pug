@@ -3,7 +3,9 @@ extends ../layout
 block content
     .container
         h1.header Assets
-        p.subtitle #{numberWithCommas(count)} assets have been uploaded so far
+        p.subtitle #{numberWithCommas(count)} assets have been uploaded so far 
+            if totalSize && totalSize != -1
+                span(title=totalSize) (~#{bytesToSize(totalSize)})
 
         .buttons.equal
             a.button(href="/assets/batches")
