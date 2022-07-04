@@ -14,7 +14,8 @@ form(action="/users/settings/save/preferences", method="post")
             input.checkbox#ampm(type="checkbox" name="ampm" checked=user.meta.preferences.ampm)
             label(for="ampm") 12-hour time format
         p.help Whenever time is displayed, do it in the 12-hour format instead.
-        p.help Current: 
+            br
+            | Current: 
             strong #{formatDateAndTime(new Date())}
 
     .field
