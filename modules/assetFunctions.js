@@ -89,8 +89,13 @@ const handleFiles = function(req) {
         
         let meta;
         if (source) {
-            meta = await makeMeta(source, batch.id);
-            if (!meta) {
+            try {
+                meta = await makeMeta(source, batch.id);
+                if (!meta) {
+                    return res({success: false, msg: "Could not get meta information"});
+                }
+            } catch (e) {
+                logger.error(e);
                 return res({success: false, msg: "Could not get meta information"});
             }
         }
@@ -279,7 +284,7 @@ const makeMeta = function(url, batchId) {
                 return res();
             }
 
-            let fileInfo = fs.stat(metaPath, (err, stats) => {
+            fs.stat(metaPath, (err, stats) => {
                 if (err) {
                     logger.error(err);
                     return res();
