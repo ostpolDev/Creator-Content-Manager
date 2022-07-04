@@ -41,6 +41,12 @@ block content
                 span.icon
                     i.fas.fa-download
                 span Download Random
+
+            if user
+                a.button(href="/assets/user/"+encodeURIComponent(user.safeName))
+                    span.icon
+                        i.fas.fa-user
+                    span My assets
         
         .buttons.fluid
             a.button.link(href="/assets/search")

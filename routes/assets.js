@@ -241,7 +241,7 @@ router.get('/user/:name', async (req, res, next) => {
             return next({status: 404});
         }
         res.render('assets/specialList', {
-            title: user.username + "'s favorites",
+            title: user.username + "'s assets",
             type: "user",
             userName: user.username
         })
