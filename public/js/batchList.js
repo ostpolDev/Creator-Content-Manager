@@ -33,7 +33,7 @@ function search(forceNew) {
     let searchText = searchQuery.value;
 
     let url = `/api/batches/get/rendered?`;
-    let params = `&limit=12&sort=${encodeURIComponent(sort)}&order=${encodeURIComponent(order)}`;
+    let params = `&limit=32&sort=${encodeURIComponent(sort)}&order=${encodeURIComponent(order)}`;
 
     if (searchText && searchText.trim() != "") {
         params += "&query="+encodeURIComponent(searchText);
