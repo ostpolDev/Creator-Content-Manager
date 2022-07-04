@@ -126,6 +126,24 @@ block content
                         span Load More
 
             .column
+                if asset.batch.isAlbum
+                    a.card.hoverable(href="/assets/batches/v/"+asset.batch.id)
+                        if asset.batch.cover.hasCover
+                            .cardImage
+                                img(src="/assets/batches/cover/"+asset.batch.id, alt=asset.batch.name, loading="lazy") 
+                        .cardBody
+                            -
+                                let title = asset.batch.name;
+                                let splits = asset.batch.name.split("-");
+                                let artist = asset.batch.artist;
+                                if (!artist && splits.length > 1) {
+                                    artist = splits[1];
+
+                                    title = splits[0];
+                                }
+                            h1.header #{title}
+                            p #{artist}
+                    .emptySpace
                 if asset.batch.purchase.isPurchased
                     .tags
                         span.tag.warning(title="This asset was purchased")
