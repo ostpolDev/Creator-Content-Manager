@@ -63,7 +63,8 @@ block content
         .message.info
             .messageHeader Quick Info
             .messageBody
-                p Please make sure that the asset is freely useable on video or live-streaming platforms, and that if there are special permissons that need to be given, that you add them accordingly.
+                p Most of the settings can be changed here. However, some settings that are missing here, can be found in 
+                    a(href="/assets/batches/settings/"+asset.batch) this asset's batch settings
 
         .segment
             form(action="/assets/settings/save/"+asset.id, method="post")
