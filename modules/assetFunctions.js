@@ -354,6 +354,7 @@ const getList = function(req) {
         let limit = req.query.limit;
 
         let favUser = req.query.favUser;
+        let user = req.query.user;
 
         let allowedVideos = makeBoolean(req.query.videos);
         let allowedStreams = makeBoolean(req.query.streams);
@@ -420,6 +421,14 @@ const getList = function(req) {
                 return res({success: false, msg: "Could not find favorites of user"});
             }
             assetQuery._id = {$in: favorites};
+        }
+
+        if (user) {
+            user = await userFunctions.getInfoForUser(user, "_id username safeName");
+            if (!user) {
+                return res({success: false, msg: "Could not find user"});
+            }
+            assetQuery.createdBy = user._id;
         }
     
         let assetSort = {}

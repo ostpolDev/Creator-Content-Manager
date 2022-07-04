@@ -47,6 +47,13 @@ function start() {
             updateDropdowns();
             search(true);
             break;
+        case "user":
+            baseUrl += "?user="+encodeURIComponent(userName),
+            defaultSort = "added date";
+            defaultOrder = "-1";
+            updateDropdowns();
+            userType();
+            break;
         default:
             console.error("Invalid Type");
             break;

@@ -227,6 +227,27 @@ router.get('/favorites/:name', async (req, res, next) => {
     })
 })
 
+router.get('/user/:name', async (req, res, next) => {
+    let name = req.params.name;
+
+    User.findOne({$or: [
+        {username: name},
+        {safeName: name}
+    ]}).exec((err, user) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return next({status: 404});
+        }
+        res.render('assets/specialList', {
+            title: user.username + "'s favorites",
+            type: "user",
+            userName: user.username
+        })
+    })
+})
+
 router.get('/settings/:id', validation.ensureAuthenticated, (req, res, next) => {
     let id = req.params.id;
     if (!isValidObjectId(id)) {
