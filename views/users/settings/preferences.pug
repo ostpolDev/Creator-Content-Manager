@@ -17,6 +17,12 @@ form(action="/users/settings/save/preferences", method="post")
         p.help Current: 
             strong #{formatDateAndTime(new Date())}
 
+    .field
+        div.checkbox
+            input.checkbox#autoplay(type="checkbox" name="autoplay" checked=user.meta.preferences.autoplay)
+            label(for="autoplay") Autoplay assets
+        p.help When viewing an asset, automatically play it
+
     .emptySpace
 
     .field

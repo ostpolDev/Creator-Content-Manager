@@ -39,11 +39,14 @@ block content
             input.input.hidden.assetRename(type="text" value=(asset.meta.hasCustomName ? asset.name : asset.cleanName) placeholder=asset.name)
         .columns
             .column.threeQuarter
+                -let autoplay = (user && user.meta.preferences.autoplay)
                 -let type = getType(asset.mimetype);
                 if type == "audio"
-                    audio#audioPlayer(src="/assets/getFile/"+asset.id, controls, controlsList="nodownload", style="width: 100%; z-index: 0; display: block;" download="no")
+                    audio(controls autoplay=autoplay, controlsList="nodownload", style="width: 100%; z-index: 0; display: block;") 
+                        source(src="/assets/getFile/"+asset.id, type=asset.mimetype)
+                    //- audio#audioPlayer(src=, controls,  download="no")
                 else if type == "video"
-                    video.maxHeight(src="/assets/getFile/"+asset.id, controls, controlsList="nodownload", style="display: block; width: 100%;") 
+                    video.maxHeight(src="/assets/getFile/"+asset.id, controls, controlsList="nodownload", style="display: block; width: 100%;", autoplay=autoplay) 
                 else if type == "image"
                     img.img.maxHeight(style="display: block; width: 100%; margin-bottom: 1em;", src="/assets/getFile/"+asset.id, alt=asset.originalName)
                 else if type == "text" || asset.extention == ".md"

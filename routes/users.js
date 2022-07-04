@@ -240,7 +240,8 @@ router.post("/settings/save/preferences", validation.ensureAuthenticated, (req, 
     let preferences = {
         hiddenFavorites: req.body.hiddenFavorites !== undefined,
         disableMarkdown: req.body.disableMarkdown !== undefined,
-        ampm: req.body.ampm !== undefined
+        ampm: req.body.ampm !== undefined,
+        autoplay: req.body.autoplay !== undefined
     };
 
     User.findByIdAndUpdate(req.user.id, {$set: {"meta.preferences": preferences}}, {new: true}).exec((err) => {
