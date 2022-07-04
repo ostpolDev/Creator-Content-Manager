@@ -1,6 +1,9 @@
 const userElement = document.getElementById("userElement");
 const userElementImage = document.getElementById("userElementImage");
 const userElementName = document.getElementById("userElementName");
+const extentionSelect = document.getElementById("extentionSelect");
+
+const invalidMessage = document.getElementById("invalidMessage");
 
 let sortSelect = document.getElementById("sortSelect");
 let orderSelect = document.getElementById("orderSelect");
@@ -48,13 +51,21 @@ function start() {
             search(true);
             break;
         case "user":
-            baseUrl += "?user="+encodeURIComponent(userName),
+            baseUrl += "?user="+encodeURIComponent(userName);
             defaultSort = "added date";
             defaultOrder = "-1";
             updateDropdowns();
             userType();
             break;
+        case "assetType":
+            baseUrl += "?type="+encodeURIComponent(assetType);
+            defaultSort = "added date";
+            defaultOrder = "-1";
+            updateDropdowns();
+            search(true);
+            break;
         default:
+            invalidMessage.classList.remove("hidden");
             console.error("Invalid Type");
             break;
     }
@@ -90,12 +101,20 @@ function search(forceNew) {
     let order = orderSelect.value || "-1";
     let sort = sortSelect.value || "name";
     let searchText = searchQuery.value || "";
+    let extention = extentionSelect.value;
+    if (extention == "null") {
+        extention = undefined;
+    }
 
     let url = baseUrl;
     let params = `&limit=24&sort=${encodeURIComponent(sort)}&order=${encodeURIComponent(order)}`;
 
     if (searchText && searchText.trim() != "") {
         params += "&query="+encodeURIComponent(searchText);
+    }
+
+    if (extention) {
+        params += "&extention="+encodeURIComponent(extention);
     }
     
     if (params != previousParams) { // This is a new search. Not a "load more" request

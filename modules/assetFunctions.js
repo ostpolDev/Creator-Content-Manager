@@ -355,6 +355,8 @@ const getList = function(req) {
 
         let favUser = req.query.favUser;
         let user = req.query.user;
+        let type = req.query.type;
+        let extention = req.query.extention;
 
         let allowedVideos = makeBoolean(req.query.videos);
         let allowedStreams = makeBoolean(req.query.streams);
@@ -430,6 +432,14 @@ const getList = function(req) {
             }
             assetQuery.createdBy = user._id;
         }
+
+        if (type && assetTypes.includes(type)) {
+            assetQuery.assetType = type;
+        }
+
+        if (extention && fileTypes.includes(extention)) {
+            assetQuery.extention = extention;
+        }
     
         let assetSort = {}
     
@@ -437,7 +447,7 @@ const getList = function(req) {
     
         assetSort[field] = currentOrder;
     
-        let selects = ["name", "cleanName", "fileType", "mimetype", "createdBy", "meta", "createdAt", "tags", "tagsString"];
+        let selects = ["name", "cleanName", "fileType", "mimetype", "createdBy", "meta", "createdAt", "tags", "extention", "tagsString"];
         if (!field.startsWith("meta") && !selects.includes(field)) {
             selects.push(field);
         }

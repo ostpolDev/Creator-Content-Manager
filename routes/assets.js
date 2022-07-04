@@ -248,6 +248,19 @@ router.get('/user/:name', async (req, res, next) => {
     })
 })
 
+router.get("/category/:cat", (req, res, next) => {
+    let category = req.params.cat;
+    if (!assetFunctions.assetTypes.includes(category)) {
+        return next({status: 404});
+    }
+    res.render('assets/specialList', {
+        title: category + " assets",
+        capitalized: true,
+        type: "assetType",
+        assetType: category
+    })
+})
+
 router.get('/settings/:id', validation.ensureAuthenticated, (req, res, next) => {
     let id = req.params.id;
     if (!isValidObjectId(id)) {
