@@ -176,6 +176,11 @@ block content
                             b Total Size:
                             br
                             span(title=batch.fileSize) #{bytesToSize(batch.fileSize)}
+
+                        p
+                            b Average Size:
+                            br
+                            span(title=(batch.fileSize / batch.length)) #{bytesToSize(batch.fileSize / batch.length)}
                         
                         p
                             b Total downloads:
