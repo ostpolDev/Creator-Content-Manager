@@ -401,7 +401,8 @@ const getList = function(req) {
                 {name: {$regex: searchQuery, $options: "i"}},
                 {cleanName: {$regex: searchQuery, $options: "i"}},
                 {"description.raw": {$regex: searchQuery, $options: "i"}},
-                {uuid: {$regex: searchQuery, $options: "i"}}
+                {uuid: {$regex: searchQuery, $options: "i"}},
+                {tags: {$regex: searchQuery, $options: "i"}}
             ]
         }
 
