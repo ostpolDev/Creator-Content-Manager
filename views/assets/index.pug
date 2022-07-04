@@ -3,7 +3,7 @@ extends ../layout
 block content
     .container
         h1.header Assets
-        p.subtitle #{count} assets have been uploaded so far
+        p.subtitle #{numberWithCommas(count)} assets have been uploaded so far
 
         .buttons.equal
             a.button(href="/assets/batches")
