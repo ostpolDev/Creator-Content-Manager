@@ -3,11 +3,11 @@ if backendRender && backendRender === true
 
 if assets && assets.length > 0
     each _asset, i in assets
-        tr(data-context-source="getAssetContext" data-asset=_asset.id data-owner=(user && _asset.createdBy == user.id))
+        tr(data-context-source="getAssetContext" data-asset=_asset.id data-owner=(user && _asset.createdBy == user.id), id="assetItem-"+_asset.id)
             td
                 -let type = getType(_asset.mimetype);
                 if type == "audio"
-                    button.button.iconButton.rounded(onclick="playAsset('"+_asset.id+"')")
+                    button.button.iconButton.rounded.playButton(onclick="playAsset('"+_asset.id+"')")
                         i.fas.fa-play
                 else if type == "video"
                     button.button.iconButton.rounded(onclick="showVideo('"+_asset.id+"')")

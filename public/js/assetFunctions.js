@@ -27,10 +27,40 @@ async function playAsset(id) {
             artist,
             title,
             cover: currentAsset.batch.cover.hasCover ? "/assets/batches/cover/"+encodeURIComponent(currentAsset.batch._id) : undefined,
-            page: "/assets/v/"+encodeURIComponent(currentAsset._id)
+            page: "/assets/v/"+encodeURIComponent(currentAsset._id),
+            id
         })
     }
 }
+
+let prev;
+
+document.addEventListener("musicPlayerClosed", (e) => {
+    setButtonActive(e.detail.previous.id, false)
+})
+
+document.addEventListener("musicPlayerOpened", (e) => {
+    if (prev && prev != e.detail.song.id) {
+        setButtonActive(prev, false);
+    }
+    prev = e.detail.song.id;
+    setButtonActive(e.detail.song.id, true)
+})
+
+function setButtonActive(id, isActive) {
+    let object = document.getElementById("assetItem-"+id);
+    if (object) {
+        let buttonObject = object.querySelector(".playButton");
+        if (buttonObject) {
+            if (isActive) {
+                buttonObject.classList.add("warning");
+            } else {
+                buttonObject.classList.remove("warning");
+            }
+        }
+    }
+}
+
 
 function playRandomAsset() {
     playAsset();
