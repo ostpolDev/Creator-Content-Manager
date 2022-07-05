@@ -87,6 +87,8 @@ musicPlayerPause.addEventListener("click", pause);
 musicPlayerReplay.addEventListener("click", replay);
 musicPlayerClose.addEventListener("click", () => {showMusicPlayer()});
 
+let previousInfo;
+
 function showMusicPlayer(songInfo) {
     let show = true;
     if (!songInfo) {
@@ -111,9 +113,12 @@ function showMusicPlayer(songInfo) {
 
     if (show == false) {
         audio = undefined;
-        document.dispatchEvent(new CustomEvent("musicPlayerClosed"));
+        document.dispatchEvent(new CustomEvent("musicPlayerClosed", {detail: {
+            previous: previousInfo
+        }}));
         return;
     } else {
+        previousInfo = songInfo;
         document.dispatchEvent(new CustomEvent("musicPlayerOpened", {detail: {
             song: songInfo
         }}))
