@@ -1,9 +1,12 @@
-let hoverElements = document.querySelectorAll("[data-hover]");
+let hoverElements = document.querySelectorAll("[data-hover],img[alt]");
 let hoverTag = document.getElementById("hoverTag");
 let hoverTagText = document.getElementById("hoverTagText");
 
 hoverElements.forEach(/** @type {HTMLElement} */ e => {
     let text = e.getAttribute("data-hover");
+    if (!text) {
+        text = e.getAttribute("alt") || e.alt;
+    }
     if (text.trim() != "") {
         e.addEventListener("mouseenter", (event) => {
             popup(event, e, text);
