@@ -135,7 +135,7 @@ a.hiddenLink {
 }
 
 .segment.closed {
-    max-height: 250px;
+    max-height: 300px;
     overflow: hidden;
     text-overflow: ellipsis;
     transition: max-height var(--default-transition-time) ease;
