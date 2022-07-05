@@ -1410,7 +1410,7 @@ a.user {
 
 /* RESPONSIVE STUFFS */
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 820px) {
     .buttons.equal {
         flex-wrap: wrap;
     }
@@ -1430,8 +1430,12 @@ a.user {
 
     .navbar .navToggle {
         position: absolute;
-        top: 10px;
+        top: 0px;
         right: 10px;
+    }
+
+    .navbar .navContainer {
+        position: relative;
     }
 
     .navbar:not(.active) .navButtons {
@@ -1487,6 +1491,14 @@ a.user {
     .navItem.dropdown .navItem.chevron::after {
         content: "";
     }
+
+    .column.threeQuarter {
+        width: 100% !important;
+    }
+
+    .column .card:not(.fluid) {
+        max-width: 60%;
+    }
     
 }
 
@@ -1509,4 +1521,15 @@ a.user {
         border-bottom: 1px solid var(--default-border-color);
     }
 
+    .column .card:not(.fluid) {
+        width: 100% !important;
+        max-width: 100%;
+    }
+
+}
+
+@media only screen and (max-width: 1344px) {
+    .container {
+        padding: var(--default-padding) 2em;
+    }
 }
