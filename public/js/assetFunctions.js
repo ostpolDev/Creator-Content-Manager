@@ -32,6 +32,10 @@ async function playAsset(id) {
     }
 }
 
+function playRandomAsset() {
+    playAsset();
+}
+
 async function showVideo(id) {
     currentAsset = await getAssetInfo(id);
     if (currentAsset) {
@@ -67,14 +71,18 @@ function setModal(type) {
 }
 
 function getAssetInfo(id) {
-    if (!id) {
-        return;
-    }
+    console.log("Getting asset info");
     return new Promise((res) => {
-        fetch("/api/assets/get/info/"+encodeURIComponent(id)).then((res) => {
+        let query = "/api/assets/get/info/"+encodeURIComponent(id);
+        if (!id) {
+            console.log("No ID provided. Playing random asset");
+            query = "/api/assets/get/random/info/music"
+        }
+        fetch(query).then((res) => {
             return res.json();
         }).then(json => {
             if (json.success === true) {
+                console.log(`Found info for asset ${json.asset._id} ("${json.asset.name}")`);
                 return res(json.asset);
             }
             return res(undefined);

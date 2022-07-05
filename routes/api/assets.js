@@ -95,6 +95,30 @@ router.get('/get/info/:id', (req, res) => {
     })
 })
 
+router.get('/get/random/info/:category', (req, res) => {
+
+    let category = req.params.category;
+    if (!category || !assetFunctions.assetTypes.includes(category)) {
+        return res.status(400).json({success: false, msg: "Invalid params"});
+    }
+
+    let query = {
+        assetType: category
+    }
+
+    Asset.countDocuments(query).exec(function (err, count) {
+
+        var random = Math.floor(Math.random() * count)
+      
+        Asset.findOne(query).select("_id").skip(random).exec((err, asset) => {
+            if (!asset) {
+                return res.status(404).json({success: false, msg: "No assets found"});
+            }
+            res.redirect("/api/assets/get/info/"+asset.id);
+        })
+    })
+})
+
 router.post("/rename", validation.ensureAuthenticated, (req, res) => {
     let name = req.body.name;
     let id = req.body.asset;

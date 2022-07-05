@@ -37,12 +37,17 @@ block content
             a.button(href="/assets/random")
                 span.icon
                     i.fas.fa-shuffle
-                span Random
+                span View Random
 
             a.button(href="/assets/random/download")
                 span.icon
                     i.fas.fa-download
                 span Download Random
+
+            button.button(onclick="playRandomAsset()")
+                span.icon
+                    i.fas.fa-music
+                span Play Random
 
             if user
                 a.button(href="/assets/user/"+encodeURIComponent(user.safeName))
