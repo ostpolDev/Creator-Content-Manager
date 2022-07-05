@@ -39,7 +39,7 @@ function start() {
         case "userFav":
             baseUrl += "?favUser="+encodeURIComponent(userName)
             defaultSort = "name";
-            defaultOrder = "-1";
+            defaultOrder = "1";
             updateDropdowns();
             userType();
             break;
