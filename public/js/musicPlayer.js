@@ -25,7 +25,7 @@ let wasPaused = false;
 
 document.addEventListener("keyup", (e) => {
     if (e.key === "Escape") {
-        showMusicPlayer();
+        stopMusicPlayer();
     }
 
     // if (e.key === "e") {
@@ -49,6 +49,10 @@ document.addEventListener("keyup", (e) => {
         }
     }
 })
+
+function stopMusicPlayer() {
+    showMusicPlayer();
+}
 
 musicPlayerProgress.addEventListener("change", (e) => {
     hasChanged = true;

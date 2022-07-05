@@ -41,6 +41,7 @@ async function showVideo(id) {
     if (currentAsset) {
         setModal("video")
         toggleModalQuery("#mediaModal");
+        stopMusicPlayer();
     }
 }
 
@@ -49,6 +50,7 @@ async function showImage(id) {
     if (currentAsset) {
         setModal("image")
         toggleModalQuery("#mediaModal");
+        stopMusicPlayer();
     }
 }
 
