@@ -111,7 +111,12 @@ function showMusicPlayer(songInfo) {
 
     if (show == false) {
         audio = undefined;
+        document.dispatchEvent(new CustomEvent("musicPlayerClosed"));
         return;
+    } else {
+        document.dispatchEvent(new CustomEvent("musicPlayerOpened", {detail: {
+            song: songInfo
+        }}))
     }
 
     if (songInfo.cover) {
