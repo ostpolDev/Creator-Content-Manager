@@ -232,7 +232,8 @@ router.get('/favorites/:name', async (req, res, next) => {
         if (!user) {
             return next({status: 404});
         }
-        if ((!req.user && user.meta.preferences.hiddenFavorites) || (req.user && req.user.id != user.id)) {
+
+        if ((!req.user && user.meta.preferences.hiddenFavorites) || (req.user && user.meta.preferences.hiddenFavorites && req.user.id != user.id)) {
             return next({status: 404});
         }
         res.render('assets/specialList', {
