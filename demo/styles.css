@@ -1354,7 +1354,7 @@ a.user {
     transform-origin: top left;
     pointer-events: none;
     transition: opacity var(--default-transition-time) ease;
-    scale: 0;
+    /* scale: 0; */
     opacity: 0;
     z-index: 99999;
 
