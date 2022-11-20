@@ -36,7 +36,7 @@ db.on("error", (err) => {
     logger.error(err);
 })
 
-app.use(helmet({contentSecurityPolicy: false}));
+// app.use(helmet({contentSecurityPolicy: false}));
 
 
 app.set("views", paths.views);
