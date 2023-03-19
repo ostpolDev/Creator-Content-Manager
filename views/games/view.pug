@@ -1,0 +1,32 @@
+extends ../layout
+
+block content
+    .container
+        .block
+            a.button(href="/games")
+                span.icon
+                    i.fas.fa-arrow-left 
+                span Back
+
+        h1 #{game.name} 
+        p.subtitle Developed by #{game.developers.join(" ")}
+
+        .columns
+            .column.twoThird
+                if game.videos.length > 0
+                    -let video = game.videos[Math.floor(Math.random() * game.videos.length)]
+                    video#videoPlayer(src=video.mp4.max || video.mp4["480"], controls, style="width: 100%; height: auto;", autoplay=user.meta.preferences.autoplay)
+
+                .columns.multiline
+                    each image, i in game.screenshots.splice(0, 4)
+                        .column.oneFifth
+                            .card.hoverable(onclick="openImage('" + image.full + "')")
+                                .cardImage
+                                    img(src=image.thumbnail)
+
+                    .column.oneFifth
+                        .card.hoverable.hasOverlay(onclick="window.location = '/games/v/" + game.id + "/images'")
+                            .cardImage
+                                img(src=game.screenshots[0].thumbnail)
+                            .cardOverlay
+                                p View All
