@@ -70,7 +70,11 @@ const GameSchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
-        lastUpdate: Date
+        lastUpdate: Date,
+        isCustom: {
+            type: Boolean,
+            default: false
+        }
     }
 }, {timestamps: true})
 
