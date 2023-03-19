@@ -165,4 +165,98 @@ router.get("/settings/:id/:setting", validation.ensureAuthenticated, validation.
     })
 })
 
+router.post('/settings/:id/save/general', [
+    body("id", "ID has to be 11 characters long").optional({checkFalsy: true}).isLength({min: 11, max: 11}),
+    body("editor", "Editor cannot be longer than 256 characters").isLength({max: 256}).optional(),
+    body("starring", "Starring members cannot be longer than 1024 characters").isLength({max: 1024}).optional(),
+    body("title", "Title cannot be longer than 70 characters").isLength({max: 70}).optional(),
+    body("channel", "Channel is required").notEmpty()
+], validation.ensureAuthenticated, async (req, res, next) => {
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        errors.array().forEach(e => {
+            req.flash("danger", e.msg);
+        })
+        res.redirect('/videos/add');
+        return;
+    }
+
+    let videoId = req.params.id;
+
+    let youtubeId = req.body.id;
+    let channel = req.body.channel;
+
+    if (!isValidObjectId(channel)) {
+        req.flash('danger', "Invalid channel");
+        res.redirect('/');
+        return;
+    }
+
+    if (!isValidObjectId(videoId)) {
+        req.flash('danger', "The internal video id is invalid");
+        return res.redirect("/videos");
+    }
+
+    let channelAccessResponse = await channelFunctions.hasAccessToChannel(channel, req.user.id);
+    if (channelAccessResponse.success === false || channelAccessResponse.hasAccess === false) {
+        req.flash('danger', "Invalid channel");
+        res.redirect('/');
+        return;
+    }
+
+    Video.findById(videoId).exec(async (err, video) => {
+        if (err) {
+            return next(err);
+        }
+        if (!video) {
+            req.flash('danger', "Video not found");
+            return res.redirect("/videos");
+        }
+
+        try {
+            if (youtubeId && youtubeId.trim() != "") {
+                await videoFunctions.addYoutubeInfoToVideoModel(video, youtubeId, req);
+            } else {
+                video.title = req.body.title;
+            }
+
+            let editor = req.body.editor;
+            let starring = req.body.starring;
+
+            let editorString, starringString;
+            if (editor) {
+                let editorResponse = await userFunctions.getUsers(editor, "username");
+                if (editorResponse.users) {
+                    let editorNameArray = editorResponse.users.map(x => x.username);
+                    editorString = editorNameArray.join(", ");
+                }
+            }
+
+            if (starring) {
+                let starringResponse = await userFunctions.getUsers(starring, "username");
+                if (starringResponse.users) {
+                    let starringNameArray = starringResponse.users.map(x => x.username);
+                    starringString = starringNameArray.join(", ");
+                }
+            }
+
+            video.editor = editor;
+            video.starring = starring;
+            video.meta.editorsString = editorString;
+            video.meta.starringString = starringString;
+
+            video.save((err) => {
+                if (err) {
+                    return next(err);
+                }
+                req.flash('success', "Successfully saved video settings");
+                return res.redirect("/videos/settings/"+video.id+"/general");
+            })
+        } catch (e) {
+            return next(e);
+        }
+    })
+
+})
+
 module.exports = router;

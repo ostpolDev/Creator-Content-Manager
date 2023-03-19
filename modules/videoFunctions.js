@@ -39,8 +39,6 @@ const getCategory = function(index) {
 const createVideo = function(youtubeId, channel, req) {
     return new Promise(async (res) => {
 
-        let start = new Date();
-
         let editor = req.body.editor;
         let starring = req.body.starring;
         let title = req.body.title;
@@ -84,43 +82,8 @@ const createVideo = function(youtubeId, channel, req) {
                 return res({success: true, msg: "Successfully created a placeholder video", video});
             })
         } else {
-            let videoInfo = await youtube.getVideoInfo(youtubeId);
-            if (!videoInfo || !videoInfo.items) {
-                return res({success: false, msg: "The video was not found"});
-            }
-        
-            let item = videoInfo.items[0];
-            if (!item) {
-                return res({success: false, msg: "The video was not found"});
-            }
-    
-            let snippet = item.snippet;
-            let stats = item.statistics;
-            let status = item.status;
-
-            let end = new Date();
-            let diff = end.getTime() - start.getTime();
-    
-            newVideo.isEmpty = false;
-            newVideo.youtubeId = item.id;
-            newVideo.title = snippet.title;
-            newVideo.description = snippet.description;
-            newVideo.thumbnails = snippet.thumbnails;
-            newVideo.youtubeTags = snippet.tags;
-            newVideo.categoryId = snippet.categoryId;
-            newVideo.category = getCategory(snippet.categoryId);
-            newVideo.status = status;
-            newVideo.statistics = replaceWithNumbers(stats);
-            newVideo.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
-            newVideo.youtubeChannelId = snippet.channelId;
-            newVideo.meta.publishedAt = new Date(snippet.publishedAt);
-            newVideo.meta.requestInfo = {
-                lastRequest: start,
-                start,
-                end,
-                time: diff,
-                by: req.user.id
-            }
+            
+            await addYoutubeInfoToVideoModel(newVideo, youtubeId, req);
     
             newVideo.save((err, video) => {
                 if (err) {
@@ -145,8 +108,6 @@ const updateVideoData = function(videoId, req) {
                 logger.error(err);
                 return res({success: false, msg: "Something went wrong."});
             }
-
-            let start = new Date();
     
             if (video.meta && video.meta.requestInfo && video.meta.requestInfo.lastRequest) {
                 let diff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime();
@@ -156,43 +117,7 @@ const updateVideoData = function(videoId, req) {
                 }
             }
     
-            let videoInfo = await youtube.getVideoInfo(video.youtubeId);
-            if (!videoInfo || !videoInfo.items) {
-                return res({success: false, msg: "The video was not found"});
-            }
-        
-            let item = videoInfo.items[0];
-            if (!item) {
-                return res({success: false, msg: "The video was not found"});
-            }
-    
-            let snippet = item.snippet;
-            let stats = item.statistics;
-            let status = item.status;
-    
-            let end = new Date();
-            let diff = end.getTime() - start.getTime();
-    
-            video.isEmpty = false;
-            video.youtubeId = item.id;
-            video.title = snippet.title;
-            video.description = snippet.description;
-            video.thumbnails = snippet.thumbnails;
-            video.youtubeTags = snippet.tags;
-            video.categoryId = snippet.categoryId;
-            video.category = getCategory(snippet.categoryId);
-            video.status = status;
-            video.statistics = replaceWithNumbers(stats);
-            video.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
-            video.youtubeChannelId = snippet.channelId;
-            video.meta.publishedAt = new Date(snippet.publishedAt);
-            video.meta.requestInfo = {
-                lastRequest: start,
-                start,
-                end,
-                time: diff,
-                by: req.user.id
-            }
+            await addYoutubeInfoToVideoModel(video, video.youtubeId, req);
     
             video.save((err, video) => {
                 if (err) {
@@ -357,5 +282,48 @@ const videoExists = function(id) {
     })
 }
 
+const addYoutubeInfoToVideoModel = async (newVideo, youtubeId, req) => {
+    let start = new Date();
+    let videoInfo = await youtube.getVideoInfo(youtubeId);
+    if (!videoInfo || !videoInfo.items) {
+        return res({success: false, msg: "The video was not found"});
+    }
 
-module.exports = {categories, sorts, videoExists, getCategory, createVideo, updateVideoData, replaceWithNumbers, getList}
+    let item = videoInfo.items[0];
+    if (!item) {
+        return res({success: false, msg: "The video was not found"});
+    }
+
+    let snippet = item.snippet;
+    let stats = item.statistics;
+    let status = item.status;
+
+    let end = new Date();
+    let diff = end.getTime() - start.getTime();
+
+    newVideo.isEmpty = false;
+    newVideo.youtubeId = item.id;
+    newVideo.title = snippet.title;
+    newVideo.description = snippet.description;
+    newVideo.thumbnails = snippet.thumbnails;
+    newVideo.youtubeTags = snippet.tags;
+    newVideo.categoryId = snippet.categoryId;
+    newVideo.category = getCategory(snippet.categoryId);
+    newVideo.status = status;
+    newVideo.statistics = replaceWithNumbers(stats);
+    newVideo.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
+    newVideo.youtubeChannelId = snippet.channelId;
+    newVideo.meta.publishedAt = new Date(snippet.publishedAt);
+    newVideo.meta.requestInfo = {
+        lastRequest: start,
+        start,
+        end,
+        time: diff,
+        by: req.user.id
+    }
+
+    return newVideo;
+}
+
+
+module.exports = {categories, sorts, videoExists, getCategory, createVideo, updateVideoData, replaceWithNumbers, getList, addYoutubeInfoToVideoModel}
