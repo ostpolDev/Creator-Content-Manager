@@ -1,6 +1,13 @@
 extends ../layout
 
 block content
+    .modal.large.fluid#imageModal
+        .modalBackground(data-modal="close")
+        .modalContainer
+            .modalContent.noBackground
+                a#imageLink(href="")
+                    img.image.picture#imageModalImage(style="margin: auto; display: block;")
+
     .container
         .block
             a.button(href="/games/v/"+game.id)
@@ -10,4 +17,13 @@ block content
         h1 #{game.name}
         p.subtitle Images
 
+        .columns.multiline
+            each image, i in game.screenshots
+                .column.oneThird
+                    .card.hoverable(onclick="openImage('" + image.full + "')")
+                        .cardImage
+                            img(src=image.thumbnail)
+
         
+block scripts
+    script(src="/js/imageModal.js") 

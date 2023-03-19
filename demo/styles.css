@@ -584,6 +584,22 @@ table.table td *.button:not(:last-child) {
     overflow-y: hidden;
 }
 
+.modal.large .modalContainer {
+    max-width: 1500px !important;
+}
+
+.modal.fluid .modalContainer {
+    width: 100% !important;
+}
+
+.modal .modalContainer .modalContent:only-child {
+    border-radius: var(--default-border-radius) !important;
+}
+
+.modal .modalContent.noBackground {
+    background-color: transparent !important;
+}
+
 .modal .modalContainer .modalHeader {
     background-color: var(--background-white);
     padding: var(--default-padding) 1em var(--default-padding) 1em;
@@ -1470,6 +1486,18 @@ a.user {
 
 .contextMenu .item span {
     width: 100%;
+}
+
+img.image {
+    max-width: 100%;
+    display: block;
+    margin: auto;
+    height: auto;
+}
+
+img.image.picture {
+    border: 5px solid white;
+    border-radius: var(--default-border-radius);
 }
 
 /* HIGHLIGHTED STUFF */
