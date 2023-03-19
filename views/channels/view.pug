@@ -67,8 +67,13 @@ block content
                             b Created by:
                             br
                             a(href="/users/v/"+channelToView.createdBy.safeName)=channelToView.createdBy.username 
+                    if channelToView.publishedAt
+                        p
+                                b(data-hover="When this channel was created on YouTube") Created at:
+                                br
+                                span(title=channelToView.publishedAt.toLocaleString()) #{formatDateAndTime(channelToView.publishedAt)}
                     p
-                            b Created at:
+                            b(data-hover="When this channel was added to this site") Added at:
                             br
                             span(title=channelToView.createdAt.toLocaleString()) #{formatDateAndTime(channelToView.createdAt)} 
 
