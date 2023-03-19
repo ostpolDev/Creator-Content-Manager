@@ -101,10 +101,14 @@ app.get('*', (req, res, next) => {
     let channelQuery;
 
     if (req.user) {
-        channelQuery = {$or: [
-            {createdBy: req.user.id},
-            {access: req.user.id}
-        ]}
+        if (req.user.meta.preferences.defaultChannel) {
+            channelQuery = {_id: req.user.meta.preferences.defaultChannel}
+        } else {
+            channelQuery = {$or: [
+                {createdBy: req.user.id},
+                {access: req.user.id}
+            ]}
+        }
     }
     
     if (req.cookies.channel && mongoose.isValidObjectId(req.cookies.channel) && req.user) {

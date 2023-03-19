@@ -48,6 +48,10 @@ const UserSchema = mongoose.Schema({
             autoplay: Boolean,
             hideAssetVideoList: Boolean,
             showGameDescriptions: Boolean,
+            defaultChannel: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Channel'
+            },
             mainPage: {
                 showVideos: {
                     type: Boolean,
