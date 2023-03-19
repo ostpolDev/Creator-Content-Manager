@@ -16,5 +16,6 @@ router.use("/videos", require('./videos'));
 router.use("/assets", require('./assets'));
 router.use("/batches", require('./batches'));
 router.use("/users", require('./users'));
+router.use("/games", require('./games'));
 
 module.exports = router;

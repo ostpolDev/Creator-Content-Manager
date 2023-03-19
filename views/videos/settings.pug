@@ -45,12 +45,16 @@ block content
                             i.fas.fa-arrow-left
                         span Back 
             .column
+                h2.title #{capitalize(setting)}
+                .divider.light
                 if setting == "general"
                     include settings/general.pug
                 else if setting == "change channel"
                     include settings/move.pug
                 else if setting == "assets"
                     include settings/assets.pug
+                else if setting == "games"
+                    include settings/games.pug
                 else
                     .message.danger
                         .messageHeader You shouldn't be able to see this.
@@ -69,6 +73,8 @@ block scripts
         script(src="/js/videoChannelSwitcher.js")
     if setting == "assets"
         script(src="/js/videoAssetManager.js") 
+    if setting == "games"
+        script(src="/js/videoGameManager.js") 
 
     script.
         const deleteVideoButton = document.getElementById("deleteVideoButton");

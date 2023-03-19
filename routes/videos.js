@@ -127,13 +127,13 @@ router.get('/update/:id', validation.ensureAuthenticated, rateLimiter.apiRequest
     res.redirect('/videos/v/'+id);
 })
 
-let settings = ["general", "assets", "change channel"];
+let settings = ["general", "assets", "games", "change channel"];
 
 router.get('/settings/:id', validation.ensureAuthenticated, validation.ensureChannel, (req, res, next) => {
     res.redirect('/videos/settings/'+encodeURIComponent(req.params.id)+"/"+encodeURIComponent(settings[0]));
 })
 
-router.get("/settings/:id/:setting", (req, res, next) => {
+router.get("/settings/:id/:setting", validation.ensureAuthenticated, validation.ensureChannel, (req, res, next) => {
     let id = req.params.id;
     if (!isValidObjectId(id)) {
         return next({status: 404});

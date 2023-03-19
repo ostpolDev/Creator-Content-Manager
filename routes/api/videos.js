@@ -128,6 +128,23 @@ router.get("/getAssets/:id", validation.ensureAuthenticated, (req, res) => {
     })
 })
 
+router.get("/getGames/:id", validation.ensureAuthenticated, (req, res) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return res.status(400).json({success: false});
+    }
+    Video.findOne({_id: id, createdBy: req.user.id}).select("games").populate("games", "name id").exec((err, video) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false})
+        }
+        if (!video) {
+            return res.status(404).json({success: false});
+        }
+        return res.status(200).json({success: true, assets: video.games})
+    })
+})
+
 router.post('/addAsset', validation.ensureAuthenticated, async (req, res) => {
     let asset = req.body.asset;
     let video = req.body.video;
@@ -194,7 +211,68 @@ router.post('/removeAsset', validation.ensureAuthenticated, async (req, res) => 
                 logger.error(err);
                 return res.status(500).json({success: false});
             }
-            return res.status(200).json({success: true, msg: "Asset added to video"});
+            return res.status(200).json({success: true, msg: "Asset removed from video"});
+        })
+    })
+})
+
+router.post('/addGame', validation.ensureAuthenticated, async (req, res) => {
+    let game = req.body.game;
+    let video = req.body.video;
+
+    if (!isValidObjectId(game)) {
+        return res.status(400).json({success: false, msg: "Invalid asset id"});
+    }
+
+    Video.findOne({_id: video, createdBy: req.user.id}).select("games name id").exec((err, video) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        if (!video) {
+            return res.status(404).json({success: false, msg: "Video not found"});
+        }
+        if (video.games.includes(game)) {
+            return res.status(200).json({success: true, msg: "Asset already used"});
+        }
+        video.games.push(game);
+        video.save((err) => {
+            if (err) {
+                logger.error(err);
+                return res.status(500).json({success: false});
+            }
+            return res.status(200).json({success: true, msg: "Game added to video"});
+        })
+    })
+})
+
+router.post('/removeGame', validation.ensureAuthenticated, async (req, res) => {
+    let game = req.body.game;
+    let video = req.body.video;
+
+    if (!isValidObjectId(game)) {
+        return res.status(400).json({success: false, msg: "Invalid asset id"});
+    }
+
+    Video.findOne({_id: video, createdBy: req.user.id}).select("name games id").exec((err, video) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        if (!video) {
+            return res.status(404).json({success: false, msg: "Video not found"});
+        }
+        let index = video.games.indexOf(game);
+        if (index === -1) {
+            return res.status(200).json({success: true, msg: "Asset not found in video"});
+        }
+        video.games.splice(index, 1);
+        video.save((err) => {
+            if (err) {
+                logger.error(err);
+                return res.status(500).json({success: false});
+            }
+            return res.status(200).json({success: true, msg: "Game removed from video"});
         })
     })
 })
