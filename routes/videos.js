@@ -127,7 +127,7 @@ router.get('/update/:id', validation.ensureAuthenticated, rateLimiter.apiRequest
     res.redirect('/videos/v/'+id);
 })
 
-let settings = ["general", "assets", "games", "change channel"];
+let settings = ["general", "assets", "games", "change channel", "delete"];
 
 router.get('/settings/:id', validation.ensureAuthenticated, validation.ensureChannel, (req, res, next) => {
     res.redirect('/videos/settings/'+encodeURIComponent(req.params.id)+"/"+encodeURIComponent(settings[0]));

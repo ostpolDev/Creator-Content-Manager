@@ -55,6 +55,8 @@ block content
                     include settings/assets.pug
                 else if setting == "games"
                     include settings/games.pug
+                else if setting == "delete"
+                    include settings/delete.pug
                 else
                     .message.danger
                         .messageHeader You shouldn't be able to see this.
