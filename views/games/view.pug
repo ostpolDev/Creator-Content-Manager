@@ -116,6 +116,12 @@ block content
                                     i.fas.fa-globe
                                 span Website 
 
+                if game.meta.isCustom && (game.meta.addedBy && game.meta.addedBy.id == user.id)
+                    a.button.fluid(href="/games/edit/"+game.id) 
+                        span.icon
+                            i.fas.fa-pencil
+                        span Edit
+
                     br
                 if !game.meta.isCustom
                     .buttons.fluid
@@ -163,10 +169,11 @@ block content
                         b Added:
                         br
                         span(title=game.createdAt.toLocaleString())=formatDate(game.createdAt)
-                    p
-                        b Added by:
-                        br
-                        a(href="/users/v/"+game.meta.addedBy.safeName)=game.meta.addedBy.username
+                    if game.meta.addedBy
+                        p
+                            b Added by:
+                            br
+                            a(href="/users/v/"+game.meta.addedBy.safeName)=game.meta.addedBy.username
                     p
                         b Last Update:
                         br

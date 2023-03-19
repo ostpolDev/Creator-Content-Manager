@@ -63,6 +63,9 @@ const GameSchema = mongoose.Schema({
         ids: [String],
         notes: String
     },
+    rawDescription: {
+        type: String
+    },
     meta: {
         addedBy: {
             type: mongoose.Schema.Types.ObjectId,

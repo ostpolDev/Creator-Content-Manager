@@ -1,0 +1,78 @@
+extends ../layout
+
+block head
+    if !user.meta.preferences.disableMarkdown
+        link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css")
+        script(src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js") 
+
+
+block content
+    .container
+        .block
+            a.button(href="/games/v/"+game.id)
+                span.icon
+                    i.fas.fa-arrow-left 
+                span Back
+
+
+        h1.title #{game.name}
+        p.subtitle Edit
+
+        form(action="/games/edit/"+game.id, method="post") 
+
+            .field.required
+                label.label(for="name") Name
+                .control.hasIcon
+                    input.input#name(type="text", name="name", placeholder="Game Name" value=game.name required)
+                    span.icon
+                        i.fas.fa-file-signature
+
+            .field
+                label.label(for="headerImage") Header Image URL
+                .control.hasIcon
+                    input.input#headerImage(type="text", name="headerImage", placeholder="https://..." value=game.header)
+                    span.icon
+                        i.fas.fa-globe
+            
+            .field
+                label.label(for="tags") Tags
+                .control.hasIcon
+                    input.input#tags(type="text", name="tags", placeholder="Tags" value=game.categories.map(x => x.description).join(", "))
+                    span.icon
+                        i.fas.fa-tags
+
+            .field
+                label.label(for="developers") Developers
+                .control.hasIcon
+                    input.input#developers(type="text", name="developers", placeholder="Developers" value=game.developers.join(", "))
+                    span.icon
+                        i.fas.fa-signature
+
+            .field
+                label.label(for="publishers") Publishers
+                .control.hasIcon
+                    input.input#publishers(type="text", name="publishers", placeholder="Publishers" value=game.publishers.join(", "))
+                    span.icon
+                        i.fas.fa-signature
+
+            .field
+                label.label(for="about") Description
+                .control
+                    textarea.textarea(name="about", id="about", placeholder="About the game... \n(optional)", maxlength="4096")
+                        | #{game.rawDescription || game.description.detailed}
+
+
+            .field
+                button.button.is-link
+                    span.icon
+                        i.fas.fa-save
+                    span Save
+
+        .divider.light
+        p
+            small * Required
+
+block scripts
+    if !user.meta.preferences.disableMarkdown
+        script.
+            const easyMDE = new EasyMDE({element: document.getElementById("about")});

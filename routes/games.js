@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { body, validationResult } = require('express-validator');
+const { isValidObjectId } = require('mongoose');
 const Game = require('../models/game');
 const logger = require('../modules/logger');
 
@@ -101,6 +102,7 @@ router.post("/new", [
         },
         developers,
         publishers,
+        rawDescription: req.body.about,
         meta: {
             addedBy: req.user.id,
             lastUpdate: new Date(),
@@ -116,6 +118,120 @@ router.post("/new", [
         return res.redirect("/games/v/"+game._id);
     })
 
+})
+
+router.post("/edit/:id", [
+    body("name", "Game name is required").notEmpty(),
+    body("name", "Name cannot be longer than 1024 characters").isLength({max: 1024}),
+    body("headerImage", "Header image url cannot be longer than 2048 characters").isLength({max: 2048}).optional(),
+    body("tags", "Tags cannot be longer than 2048 characters").isLength({max: 2048}).optional(),
+    body("developers", "Developers cannot be longer than 2048 characters").isLength({max: 2048}).optional(),
+    body("publishers", "Publishers cannot be longer than 2048 characters").isLength({max: 2048}).optional(),
+    body("about", "Description cannot be longer than 4096 characters").isLength({max: 4096}).optional()
+], (req, res, next) => {
+
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        req.flash('danger', "Invalid ID");
+        return res.redirect("/games");
+    }
+
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        errors.array().forEach(err => {
+            req.flash('danger', err.msg);
+        })
+        return res.redirect("/games/new");
+    }
+
+    let name = req.body.name;
+    let headerImage = req.body.headerImage;
+    let tags = req.body.tags;
+    let description = req.body.about;
+    let developers = req.body.developers;
+    let publishers = req.body.publishers;
+
+    let rendered, short;
+
+    if (description) {
+        rendered = markAndSanitize(description);
+        let stripped = sanitizeFull(rendered);
+        if (stripped.length > 512) {
+            short = stripped.substring(0, 512) + "...";
+        } else {
+            short = stripped;
+        }
+    }
+
+
+    if (tags) {
+        tags = tags.split(", ");
+        if (!Array.isArray(tags)) {
+            tags = [tags];
+        }
+        tags = tags.map(x => {return {description: x}})
+
+    }
+    if (developers) {
+        developers = developers.split(", ");
+        if (!Array.isArray(developers)) {
+            developers = [developers];
+        }
+    }
+    if (publishers) {
+        publishers = publishers.split(", ");
+        if (!Array.isArray(publishers)) {
+            publishers = [publishers];
+        }
+    }
+
+    Game.findByIdAndUpdate(id, {
+        $set: {
+            name,
+            header: headerImage,
+            categories: tags,
+            description: {
+                detailed: rendered,
+                short
+            },
+            developers,
+            publishers,
+            rawDescription: req.body.about,
+            meta: {
+                lastUpdate: new Date(),
+                isCustom: true,
+                addedBy: req.user.id
+            }
+        }
+    }).exec((err) => {
+        if (err) {
+            return next(err);
+        }
+        req.flash('success', "Successfully saved game settings");
+        return res.redirect("/games/v/"+encodeURIComponent(id));
+    })
+
+})
+
+router.get("/edit/:id", (req, res, next) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        req.flash('danger', "Invalid ID");
+        return res.redirect("/games");
+    }
+
+    Game.findById(id).exec((err, game) => {
+        if (err) {
+            return next(err);
+        }
+        if (!game) {
+            return next();
+        }
+        res.render("games/edit", {
+            title: "Edit game",
+            game
+        })
+    })
 })
 
 router.get('/v/:id', (req, res) => {
