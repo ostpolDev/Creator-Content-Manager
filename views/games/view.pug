@@ -30,3 +30,88 @@ block content
                                 img(src=game.screenshots[0].thumbnail)
                             .cardOverlay
                                 p View All
+
+                .divider.light
+
+                .content
+                    if game.description.about && (game.description.detailed.trim() != game.description.about.trim())
+                        p!=game.description.about
+                        .divider
+                    if game.description.detailed
+                        p!=game.description.detailed
+
+            .column
+                if game.description.short
+                    .notification
+                        .content
+                            p=game.description.short
+
+                .buttons.fluid
+                    a.button.fluid(href="https://store.steampowered.com/app/"+game.appId target="_BLANK")
+                        span.icon
+                            i.fab.fa-steam
+                        span View on Steam 
+                    if game.website
+                        a.button.fluid(href=game.website target="_BLANK" data-hover=game.website)
+                            span.icon
+                                i.fas.fa-globe
+                            span Website 
+
+                br
+
+                .buttons.fluid
+                    a.button.fluid(href="/games/v/"+game.id+"/images")
+                        span.icon
+                            i.fas.fa-image
+                        span View all images (#{game.screenshots.length})
+                    
+                    a.button.fluid(href="/games/v/"+game.id+"/videos")
+                        span.icon
+                            i.fas.fa-video
+                        span View all videos (#{game.videos.length})
+
+                .divider.light
+
+                .segment
+                    p
+                        b Developers:
+                        br
+                        span=game.developers.join(", ")
+                    p
+                        b Publishers:
+                        br
+                        span=game.publishers.join(", ")
+                    p
+                        b Platforms:
+                        br
+                        -
+                            let platforms = [];
+                            for (let [key, value] of game.platforms) {
+                                if (value === true) {
+                                    platforms.push(capitalize(key));
+                                }
+                            }
+                        span=platforms.join(", ")
+
+                .segment
+                    p
+                        b Added:
+                        br
+                        span(title=game.createdAt.toLocaleString())=formatDate(game.createdAt)
+                    p
+                        b Added by:
+                        br
+                        a(href="/users/v/"+game.meta.addedBy.safeName)=game.meta.addedBy.username
+                    p
+                        b Last Update:
+                        br
+                        span(title=game.meta.lastUpdate.toLocaleString())=formatDate(game.meta.lastUpdate)
+
+                if game.contentDescription && game.contentDescription.notes
+                    p=game.contentDescription.notes
+
+
+                .tags
+                    each tag, i in game.categories
+                        span.tag(titel=tag.id) #{tag.description}
+                

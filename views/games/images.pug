@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+    .container
+        .block
+            a.button(href="/games/v/"+game.id)
+                span.icon
+                    i.fas.fa-arrow-left
+                span Back 
+        h1 #{game.name}
+        p.subtitle Images
+
+        
