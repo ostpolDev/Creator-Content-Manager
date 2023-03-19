@@ -80,7 +80,7 @@ block content
                             br
                             span(title=channelToView.createdAt.toLocaleString()) #{formatDateAndTime(channelToView.createdAt)} 
 
-                    if channelToView.countryInfo
+                    if channelToView.countryInfo && channelToView.countryInfo.name.common
                         p
                             b Country:
                             br
