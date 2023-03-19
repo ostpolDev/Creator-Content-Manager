@@ -164,7 +164,7 @@ app.use("/users", require('./routes/users'));
 app.use("/channels", require('./routes/channels'));
 app.use("/videos", require("./routes/videos"));
 app.use("/assets", require('./routes/assets'));
-
+app.use("/games", require('./routes/games'));
 
 app.listen(PORT, () => {
     logger.info(`Server listening on port ${PORT}`);
