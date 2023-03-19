@@ -75,6 +75,45 @@ block scripts
         script(src="/js/videoAssetManager.js") 
     if setting == "games"
         script(src="/js/videoGameManager.js") 
+    if setting == "general"
+        script.
+
+            async function loadUserList() {
+                let res = await fetch("/api/users/getUsernames");
+                let json = await res.json();
+                
+                if (!json.success) {
+                    console.error(json.msg || "Something went wrong...");
+                    return;
+                }
+
+                let _res = await fetch("/api/videos/getPeople/#{video.id}")
+                let _json = await _res.json();
+
+                if (!_json.success) {
+                    console.error(_json.msg || "Something went wrong...");
+                    return;
+                }
+
+                const editorSelect = document.getElementById("editorSelect");
+                const editorCheckboxes = document.getElementById("editorCheckboxes");
+
+                let peopleData = _json.video;
+
+                json.users.forEach(u => {
+                    editorSelect.innerHTML += `<option value='${u._id}' ${peopleData.editor == u._id ? "selected" : ""}>${u.username}</option>`;
+                    editorCheckboxes.innerHTML += `
+                        <div class="checkbox">
+                            <input type="checkbox" id='${u._id}' value='${u._id}' name="starring" ${peopleData.starring.includes(u._id) ? "checked" : ""}>
+                            <label for="${u._id}">${u.username}</label>
+                        </div>
+                    `;
+                })
+
+                document.querySelector("#saveButton").classList.remove("loading");
+            }
+
+            loadUserList();
 
     script.
         const deleteVideoButton = document.getElementById("deleteVideoButton");

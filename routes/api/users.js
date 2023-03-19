@@ -53,4 +53,14 @@ router.get('/getDisplayInfo/:name', (req, res) => {
     })
 })
 
+router.get("/getUsernames", validation.ensureAuthenticated, (req, res) => {
+    User.find({}).select("username id").exec((err, users) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false, msg: "Something went wrong"});
+        }
+        return res.status(200).json({success: true, users});
+    })
+})
+
 module.exports = router;

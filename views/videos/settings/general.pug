@@ -1,5 +1,54 @@
-.buttons.fluid
-    button.button.danger(data-modal="#confirmDeleteModal")  
-        span.icon
-            i.fas.fa-trash
-        span Remove video
+form(action="/videos/settings/" + video.id + "/save/general/", method="post") 
+    .field
+        label.label(for="youtube") YouTube ID
+        .control.hasIcon
+            input.input(type="text", name="id", placeholder="EOTyLqJWhZQ", id="youtube", maxlength="128" value=video.youtubeId)
+            span.icon
+                i.fab.fa-youtube
+        p.help This is optional for now. If no id is given, an empty placeholder will be created.
+
+    .field
+        label.label(for="editorSelect") Editor
+        .control
+            select#editorSelect.input(name="editor")
+                option(value=undefined) None given 
+        p.help Who Edited the video?
+
+    .field
+        legend Starring
+        #editorCheckboxes
+            //- div.checkbox
+            //-     input.checkbox(type="checkbox" id=u.id name="starring" value=u.id)
+            //-     label(for=u.id)=u.username 
+
+    .emptySpace
+
+    .field
+        label.label(for="title") Title
+        .control.hasIcon
+            input.input(type="text", name="title", placeholder="How to display anything | Fallout 76", id="title", maxlength="128" value=video.title)
+            span.icon
+                i.fas.fa-heading
+        p.help This optional title will be replaced with the actual YouTube title if an ID is given.
+
+    input(type="hidden" name="channel" value=channel._id)
+
+    .field
+        button.button.fluid.loading#saveButton
+            span.icon
+                i.fas.fa-save
+            span Save video settings
+
+.divider
+
+br
+
+.block
+    h1.title Danger Zone
+br
+.block
+    .buttons.fluid
+        button.button.danger(data-modal="#confirmDeleteModal")  
+            span.icon
+                i.fas.fa-trash
+            span Remove video
