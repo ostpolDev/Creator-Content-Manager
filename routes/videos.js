@@ -215,7 +215,9 @@ router.post('/settings/:id/save/general', [
 
         try {
             if (youtubeId && youtubeId.trim() != "") {
-                await videoFunctions.addYoutubeInfoToVideoModel(video, youtubeId, req);
+                if (!video.youtubeId || video.youtubeId != youtubeId) {
+                    await videoFunctions.addYoutubeInfoToVideoModel(video, youtubeId, req);
+                }
             } else {
                 video.title = req.body.title;
             }
