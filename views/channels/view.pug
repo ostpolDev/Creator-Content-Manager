@@ -7,18 +7,20 @@ block content
     -let isSelectedChannel = channelToView.id == channel.id;
 
     .container
-        .user.fluid.noBorder
-            .image
-                img.rounded(src=channelToView.thumbnails.default.url)
-            .content
-                h1.header
-                    if isSelectedChannel
-                        span.icon(data-hover=(isSelectedChannel ? "Selected channel" : ""))
-                    | #{channelToView.name}
-                p #{channelToView.statistics.subscriberCount} #{channelToView.statistics.subscriberCount == 1 ? "subscriber" : "subscribers"}
-
         .columns
             .column
+                .user.fluid.noBorder
+                    .image
+                        img.rounded(src=channelToView.thumbnails.default.url)
+                    .content
+                        h1.header
+                            if isSelectedChannel
+                                span.icon(data-hover=(isSelectedChannel ? "Selected channel" : ""))
+                            | #{channelToView.name}
+                        p #{channelToView.statistics.subscriberCount} #{channelToView.statistics.subscriberCount == 1 ? "subscriber" : "subscribers"}
+
+                br
+                
                 if channelToView.description
                     .segment
                         pre=channelToView.description
