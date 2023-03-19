@@ -6,7 +6,10 @@ each video, i in videos
         a.card.hoverable(href="/videos/v/"+video.id)
             if !video.isEmpty
                 .cardImage
-                    img(src=video.thumbnails.medium.url, alt=video.title, loading="lazy") 
+                    img(src=video.thumbnails.medium.url, loading="lazy") 
+            else 
+                .cardImage 
+                    img(src="/img/NoThumbnail.png", loading="lazy")
             .cardBody
                 h1.header #{video.title}
                     if video.status.privacyStatus == "unlisted"
