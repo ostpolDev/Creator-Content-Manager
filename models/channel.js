@@ -24,6 +24,9 @@ const ChannelSchema = mongoose.Schema({
     description: {
         type: String
     },
+    customUrl: {
+        type: String
+    },
     meta: {
         requestInfo: {
             lastRequest: Date,
@@ -52,6 +55,12 @@ const ChannelSchema = mongoose.Schema({
         type: Boolean,
         default: false,
         required: true
+    },
+    publishedAt: {
+        type: Date
+    },
+    country: {
+        type: String
     }
 }, {timestamps: true});
 

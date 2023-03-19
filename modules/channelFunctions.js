@@ -64,7 +64,10 @@ const createFromId = function(id, checkExistence, req) {
                 }
             },
             statistics: stats,
-            status
+            status,
+            customUrl: snippet.customUrl,
+            publishedAt: snippet.publishedAt ? new Date(snippet.publishedAt) : undefined,
+            country: snippet.country
         })
 
         newChannel.save((err, channel) => {
@@ -124,6 +127,9 @@ const updateChannel = function(id, req) {
             channel.description = snippet.localized.description;
             channel.statistics = stats;
             channel.status = status;
+            channel.customUrl = snippet.customUrl;
+            channel.publishedAt = snippet.publishedAt ? new Date(snippet.publishedAt) : undefined;
+            channel.country = snippet.country;
 
             channel.meta.requestInfo = {
                 lastRequest: start,
