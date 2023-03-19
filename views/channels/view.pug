@@ -1,10 +1,11 @@
 extends ../layout
 
 block content
-    -let lastUpdateDiff = new Date().getTime() - channelToView.meta.requestInfo.lastRequest.getTime()
-    -let diffHours = lastUpdateDiff / 3.6e+6;
-    -let canUpdate = diffHours >= 12;
-    -let isSelectedChannel = channelToView.id == channel.id;
+    if channelToView.meta.requestInfo.lastRequest
+        -let lastUpdateDiff = new Date().getTime() - channelToView.meta.requestInfo.lastRequest.getTime()
+        -let diffHours = lastUpdateDiff / 3.6e+6;
+        -let canUpdate = diffHours >= 12;
+        -let isSelectedChannel = channelToView.id == channel.id;
 
     .container
         .columns
@@ -77,6 +78,16 @@ block content
                             br
                             span(title=channelToView.createdAt.toLocaleString()) #{formatDateAndTime(channelToView.createdAt)} 
 
+                    if channelToView.countryInfo
+                        p
+                            b Country:
+                            br
+                            span(data-hover=channelToView.countryInfo.name.native.official) #{channelToView.countryInfo.name.common} #{channelToView.countryInfo.flag}
+                    else if channelToView.country
+                        p
+                            b Country:
+                            br
+                            span #{channelToView.country}
                     p
                         b YouTube ID
                         br
@@ -87,18 +98,20 @@ block content
                             br
                             | #{channelToView.statistics[thing]}
 
-                    p
-                        b Last Update:
-                        br
-                        span(title=channelToView.meta.requestInfo.lastRequest.toLocaleString()) #{formatDateAndTime(channelToView.meta.requestInfo.lastRequest)}
+                    if channelToView.meta.requestInfo.lastRequest
+                        p
+                            b Last Update:
+                            br
+                            span(title=channelToView.meta.requestInfo.lastRequest.toLocaleString()) #{formatDateAndTime(channelToView.meta.requestInfo.lastRequest)}
                     p
                         b Last Request Duration:
                         br
                         span #{channelToView.meta.requestInfo.time}ms
-                    p
-                        b Hours Since Last Request:
-                        br
-                        span(title=diffHours data-hover=diffHours) #{diffHours.toFixed(1)}
+                    if diffHours
+                        p
+                            b Hours Since Last Request:
+                            br
+                            span(title=diffHours data-hover=diffHours) #{diffHours.toFixed(1)}
                     if channelToView.meta.requestInfo.by
                         p
                             b Last Request made by:
@@ -111,7 +124,7 @@ block content
                             i.fab.fa-youtube
                         span View on YouTube
                     
-                    if canUpdate
+                    if canUpdate || !channelToView.meta.requestInfo.lastRequest
                         a.button(href="/channels/update/"+channelToView.id)
                             span.icon
                                 i.fas.fa-sync

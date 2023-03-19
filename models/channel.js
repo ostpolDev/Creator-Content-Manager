@@ -61,6 +61,18 @@ const ChannelSchema = mongoose.Schema({
     },
     country: {
         type: String
+    },
+    countryInfo: {
+        lastUpdate: Date,
+        name: {
+            common: String,
+            official: String,
+            native: {
+                official: String,
+                common: String
+            }
+        },
+        flag: String
     }
 }, {timestamps: true});
 

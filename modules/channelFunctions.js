@@ -6,6 +6,8 @@ const Channel = require('../models/channel');
 const User = require('../models/user');
 const { isValidObjectId } = require('mongoose');
 
+const { GetCountryInfo } = require('./countryFunctions');
+
 const getChannelCount = function(id) {
     return new Promise((res) => {
         Channel.countDocuments({youtubeId: id}).exec((err, count) => {
@@ -46,6 +48,26 @@ const createFromId = function(id, checkExistence, req) {
         let snippet = item.snippet;
         let stats = item.statistics;
         let status = item.status;
+
+        let countryData = undefined;
+
+        if (snippet.country) {
+            let countryInfo = await GetCountryInfo(snippet.country);
+            if (countryInfo) {
+                countryData = {
+                    lastUpdate: new Date(),
+                    name: {
+                        common: countryInfo.name.common,
+                        official: countryInfo.name.official,
+                        native: {
+                            official: countryInfo.name.nativeName.bar.official,
+                            common: countryInfo.name.nativeName.bar.common
+                        }
+                    },
+                    flag: countryInfo.flag
+                }
+            }
+        }
     
         let newChannel = new Channel({
             createdBy: req.user.id,
@@ -69,6 +91,10 @@ const createFromId = function(id, checkExistence, req) {
             publishedAt: snippet.publishedAt ? new Date(snippet.publishedAt) : undefined,
             country: snippet.country
         })
+
+        if (countryData) {
+            newChannel.countryInfo = countryData;
+        }
 
         newChannel.save((err, channel) => {
             if (err) {
@@ -96,13 +122,14 @@ const updateChannel = function(id, req) {
             if (!channel) {
                 return res({success: false, msg: "No channel found"});
             }
-    
-            let lastUpdateDiff = new Date().getTime() - channel.meta.requestInfo.lastRequest.getTime()
-            let diffHours = lastUpdateDiff / 3.6e+6;
-            let canUpdate = diffHours >= 12;
-    
-            if (!canUpdate) {
-                return res({success: false, msg: "Cannot update yet. Please try again later."});
+            
+            if (channel.meta.requestInfo.lastRequest) {
+                let lastUpdateDiff = new Date().getTime() - channel.meta.requestInfo.lastRequest.getTime()
+                let diffHours = lastUpdateDiff / 3.6e+6;
+                let canUpdate = diffHours >= 12;
+                if (!canUpdate) {
+                    return res({success: false, msg: "Cannot update yet. Please try again later."});
+                }
             }
 
             let channelInfo = await youtube.getChannelInfo(encodeURIComponent(channel.youtubeId));
@@ -130,6 +157,24 @@ const updateChannel = function(id, req) {
             channel.customUrl = snippet.customUrl;
             channel.publishedAt = snippet.publishedAt ? new Date(snippet.publishedAt) : undefined;
             channel.country = snippet.country;
+
+            if (snippet.country) {
+                let countryInfo = await GetCountryInfo(snippet.country);
+                if (countryInfo) {
+                    channel.countryInfo = {
+                        lastUpdate: new Date(),
+                        name: {
+                            common: countryInfo.name.common,
+                            official: countryInfo.name.official,
+                            native: {
+                                official: countryInfo.name.nativeName.bar.official,
+                                common: countryInfo.name.nativeName.bar.common
+                            }
+                        },
+                        flag: countryInfo.flag
+                    }
+                }
+            }
 
             channel.meta.requestInfo = {
                 lastRequest: start,
