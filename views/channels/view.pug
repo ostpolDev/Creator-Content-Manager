@@ -7,12 +7,15 @@ block content
     -let isSelectedChannel = channelToView.id == channel.id;
 
     .container
-        h1.header
-            if isSelectedChannel
-                span.icon(data-hover=(isSelectedChannel ? "Selected channel" : ""))
-                    i.fas.fa-star
-            | #{channelToView.name}
-        p.subtitle #{channelToView.statistics.subscriberCount} subscribers
+        .user.fluid.noBorder
+            .image
+                img.rounded(src=channelToView.thumbnails.default.url)
+            .content
+                h1.header
+                    if isSelectedChannel
+                        span.icon(data-hover=(isSelectedChannel ? "Selected channel" : ""))
+                    | #{channelToView.name}
+                p #{channelToView.statistics.subscriberCount} #{channelToView.statistics.subscriberCount == 1 ? "subscriber" : "subscribers"}
 
         .columns
             .column
