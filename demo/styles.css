@@ -385,6 +385,44 @@ button.button {
     font-size: 16px;
 }
 
+.button.loading * {
+    opacity: 0;
+}
+
+.button.loading {
+    filter: brightness(.95);
+    background-color: rgba(0, 0, 0, 0.094);
+    cursor: default;
+    position: relative;
+    border: 1px solid #0000000a;
+    pointer-events: none;
+}
+
+.button.loading::after, .imageSearchWindow.loading::after, .imgCard .card.loading::after {
+    content: "";
+    display: block;
+    width: 1em;
+    height: 1em;
+    position: absolute !important;
+    left: calc(50% - (1em * .5));
+    top: calc(50% - (1em * .5));
+    border: 3px solid white;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-radius: 9999px;
+    animation: spin .5s infinite linear;
+    transform-origin: center center;
+}
+
+@keyframes spin {
+    from {rotate: 0deg;}
+    to {rotate: 360deg;}
+}
+
+.button.loading:hover {
+    filter: brightness(.9);
+}
+
 /* HOVER TAG */
 
 .hoverTag {

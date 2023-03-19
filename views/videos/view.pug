@@ -60,12 +60,18 @@ block content
                                 span.tag #{tag}
 
                     if assets && assets.length > 0
+                        br
                         h2.header Assets (#{assets.length})
-                        if user && user.id == video.createdBy.id
-                            a.button(href="/videos/settings/"+video.id+"/assets")
+                        .buttons
+                            if user && user.id == video.createdBy.id
+                                a.button(href="/videos/settings/"+video.id+"/assets")
+                                    span.icon
+                                        i.fas.fa-file-circle-check 
+                                    span Manage assets 
+                            button.button#viewLegalInfoButtons
                                 span.icon
-                                    i.fas.fa-file-circle-check 
-                                span Manage assets 
+                                    i.fas.fa-file-contract
+                                span View legal information
                         table.table.striped.hoverable
                             thead 
                                 th Action
@@ -145,3 +151,6 @@ block content
                             span.icon
                                 i.fas.fa-sync
                             span(disabled data-hover="Only available every 12 hours") Request Update 
+
+block scripts
+    script(src="/js/videoLegalModal.js")
