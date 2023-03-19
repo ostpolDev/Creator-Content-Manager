@@ -306,6 +306,7 @@ const getList = function(req) {
     
         let field = sorts[currentSort];
     
+        videoSort["isEmpty"] = -1;
         videoSort[field] = currentOrder;
     
         let selects = ["title", "statistics", "isEmpty", "createdAt", "thumbnails", "meta", "status", "assets"];
