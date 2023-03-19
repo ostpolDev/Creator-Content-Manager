@@ -11,7 +11,7 @@ const getAndCreate = function(id, req) {
     let finalPath = apiPath + id;
     return new Promise((res) => {
         axios.get(finalPath).then((json) => {
-            let data = json[id].data;
+            let data = json.data[id].data;
             SteamGame.findOne({"appId": id}).exec((err, game) => {
                 if (err) {
                     logger.error(err);
