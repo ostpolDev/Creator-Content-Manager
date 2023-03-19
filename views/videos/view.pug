@@ -95,6 +95,26 @@ block content
                                 th Tags
                             tbody#assetTableBody
                                 include ../assets/assetList.pug
+
+                    if video.games && video.games.length > 0
+                        br
+                        h2.header Games (#{video.games.length})
+                        if user && user.id == video.createdBy.id
+                            a.button(href="/videos/settings/"+video.id+"/games")
+                                span.icon
+                                    i.fas.fa-gamepad
+                                span Manage games
+
+                        each game, i in video.games
+                            .column.oneThird
+                                a.card.hoverable(href="/games/v/"+game.id)
+                                    .cardImage
+                                        img(src=game.header) 
+                                    .cardBody
+                                        h1.header #{game.name}
+                                        p #{game.developers.join(", ")}
+                                        if user && user.meta.preferences.showGameDescriptions
+                                            small #{game.description.short} 
             .column.oneQuarter
                 if !video.isEmpty
                     .buttons.fluid
