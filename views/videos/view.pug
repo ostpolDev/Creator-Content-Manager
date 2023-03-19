@@ -1,6 +1,21 @@
 extends ../layout
 
 block content
+    .modal#legalInfoModal
+        .modalBackground(data-modal="close")
+        .modalContainer
+            .modalHeader 
+                h2 Legal Information
+                span.close(data-modal="close")
+                    i.fas.fa-times
+            .modalContent
+                p Put this into the videos description to not get a copy-right claim.
+                pre#legalInfoContent
+            .modalFooter
+                button.button.has-icon(data-modal="close")
+                    span.icon
+                        i.fas.fa-times
+                    span Close
     -let lastUpdateDiff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime()
     -let diffHours = lastUpdateDiff / 3.6e+6;
     -let canUpdate = diffHours >= 2;
@@ -153,4 +168,6 @@ block content
                             span(disabled data-hover="Only available every 12 hours") Request Update 
 
 block scripts
+    script.
+        const VIDEO_ID = "#{video.id}";
     script(src="/js/videoLegalModal.js")

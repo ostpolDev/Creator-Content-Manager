@@ -199,4 +199,18 @@ router.post('/removeAsset', validation.ensureAuthenticated, async (req, res) => 
     })
 })
 
+router.get("/legalInfo/:id", (req, res) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        return res.status(400).json({success: false, msg: "Invalid id"});
+    }
+    Video.findById(id).select("assets").populate("assets", "legalInfo cleanName").exec((err, video) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false, msg: "Something went wrong"});
+        }
+        return res.status(200).json({success: true, info: video});
+    })
+})
+
 module.exports = router;
