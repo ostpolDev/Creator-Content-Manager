@@ -47,6 +47,7 @@ const UserSchema = mongoose.Schema({
             ampm: Boolean,
             autoplay: Boolean,
             hideAssetVideoList: Boolean,
+            showGameDescriptions: Boolean,
             mainPage: {
                 showVideos: {
                     type: Boolean,

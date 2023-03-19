@@ -220,6 +220,7 @@ const getList = function(req) {
         let currentQuery = req.query.q;
         let searchQuery = req.query.query;
 
+        let game = req.query.game;
         let asset = req.query.asset;
     
         let channelId = req.query.channel;
@@ -294,6 +295,10 @@ const getList = function(req) {
 
         if (isValidObjectId(asset)) {
             videoQuery.assets = asset;
+        }
+
+        if (isValidObjectId(game)) {
+            videoQuery.games = game;
         }
     
     

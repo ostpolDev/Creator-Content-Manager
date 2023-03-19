@@ -1,0 +1,46 @@
+extends ../layout
+
+block content
+    .modal.large.fluid#videoModal
+        .modalBackground(data-modal="close")
+        .modalContainer
+            .modalContent.noBackground
+                video.video#videoPlayer(controls)
+    
+    .container
+        .block
+            a.button(href="/games/v/"+game.id)
+                span.icon
+                    i.fas.fa-arrow-left
+                span Back
+
+        h1.title=game.name
+        p.subtitle Videos
+
+        .columns.multiline
+            each video, i in game.videos
+                .column.oneQuarter
+                    .card.hoverable(onclick="openVideo('" + (video.mp4.max || video.mp4["480"]) + "')")
+                        .cardImage
+                            img(src=video.thumbnail)
+                        .cardBody
+                            h1.header=video.name
+
+block scripts
+    script.
+
+        const videoPlayer = document.getElementById("videoPlayer");
+        let modalClose = document.querySelectorAll("[data-modal='close']");
+
+        modalClose.forEach(e => {
+            e.addEventListener("click", () => {
+                videoPlayer.pause();
+            })
+        })
+
+        function openVideo(src) {
+            videoPlayer.src = src;
+            videoPlayer.play();
+
+            toggleModalQuery("#videoModal");
+        }

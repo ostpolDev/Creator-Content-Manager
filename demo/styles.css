@@ -584,6 +584,22 @@ table.table td *.button:not(:last-child) {
     overflow-y: hidden;
 }
 
+.modal.large .modalContainer {
+    max-width: 1500px !important;
+}
+
+.modal.fluid .modalContainer {
+    width: 100% !important;
+}
+
+.modal .modalContainer .modalContent:only-child {
+    border-radius: var(--default-border-radius) !important;
+}
+
+.modal .modalContent.noBackground {
+    background-color: transparent !important;
+}
+
 .modal .modalContainer .modalHeader {
     background-color: var(--background-white);
     padding: var(--default-padding) 1em var(--default-padding) 1em;
@@ -739,6 +755,10 @@ input.input, textarea.textarea, select.input {
     border-radius: var(--default-border-radius);
 
     transition: border var(--default-transition-time) ease;
+}
+
+select.input {
+    background-color: var(--background-white);
 }
 
 input.input:focus, textarea.textarea:focus, select.input:focus {
@@ -1198,6 +1218,14 @@ div.hoverable:hover, a.card.hoverable:hover {
     vertical-align: top;
 }
 
+.card .cardImage:only-child img, .card.hasOverlay .cardImage img {
+    border-radius: var(--default-border-radius) !important;
+}
+
+.card.hasOverlay .cardImage img {
+    filter: grayscale(.8);
+}
+
 .card .cardImage {
     height: min-content;
 }
@@ -1243,6 +1271,25 @@ div.hoverable:hover, a.card.hoverable:hover {
 
 .card .cardBody .buttons:last-child {
     margin-bottom: 0;
+}
+
+.card.hasOverlay {
+    position: relative;
+}
+
+.card.hasOverlay .cardOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.25);
+    color: white;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--default-border-radius) !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
 }
 
 img.grayscale {
@@ -1357,6 +1404,10 @@ a.user {
     display: block;
 }
 
+.content.game img {
+    width: 100%;
+}
+
 .user .image img {
     width: 128px;
     height: 128px;
@@ -1439,6 +1490,25 @@ a.user {
 
 .contextMenu .item span {
     width: 100%;
+}
+
+img.image {
+    max-width: 100%;
+    display: block;
+    margin: auto;
+    height: auto;
+}
+
+img.image.picture {
+    border: 5px solid white;
+    border-radius: var(--default-border-radius);
+}
+
+video.video {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-inline: auto;
 }
 
 /* HIGHLIGHTED STUFF */

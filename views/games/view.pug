@@ -1,0 +1,180 @@
+extends ../layout
+
+block content
+    .modal.large.fluid#imageModal
+        .modalBackground(data-modal="close")
+        .modalContainer
+            .modalContent.noBackground
+                a#imageLink(href="")
+                    img.image.picture#imageModalImage(style="margin: auto; display: block;")
+    .container
+        .block
+            a.button(href="/games")
+                span.icon
+                    i.fas.fa-arrow-left 
+                span Back
+
+        h1 #{game.name} 
+        p.subtitle Developed by #{game.developers.join(" ")}
+
+        .columns
+            .column.twoThird
+                if game.videos.length > 0
+                    -let video = game.videos[Math.floor(Math.random() * game.videos.length)]
+                    video#videoPlayer(src=video.mp4.max || video.mp4["480"], controls, style="width: 100%; height: auto;", autoplay=user.meta.preferences.autoplay)
+
+                .columns.multiline
+                    each image, i in game.screenshots.splice(0, 4)
+                        .column.oneFifth
+                            .card.hoverable(onclick="openImage('" + image.full + "')")
+                                .cardImage
+                                    img(src=image.thumbnail)
+
+                    .column.oneFifth
+                        .card.hoverable.hasOverlay(onclick="window.location = '/games/v/" + game.id + "/images'")
+                            .cardImage
+                                img(src=game.screenshots[0].thumbnail)
+                            .cardOverlay
+                                p View All
+
+                .divider.light
+
+                .content.game
+                    if game.description.about && (game.description.detailed.trim() != game.description.about.trim())
+                        p!=game.description.about
+                        .divider
+                    if game.description.detailed
+                        p!=game.description.detailed
+
+                if user && channel && !user.meta.preferences.hideAssetVideoList
+                    .divider.light
+                    h2.header Videos
+                    p.subtitle Videos of yours that contain this game
+                    #sortContainer
+                        .field 
+                            label.label(for="channelSelect") Sort by
+                            .control
+                                select.input.capitalized#sortSelect
+                                    each sort, i in Object.keys(sorts)
+                                        option.capitalized(value=sort,selected=(sort == "upload date"))=sort
+
+                        .field 
+                            label.label(for="channelSelect") Order
+                            .control
+                                select.input#orderSelect
+                                    option(value=1) Acending
+                                    option(value=-1 selected) Decending
+
+                        .field
+                            label.label(for="searchQuery") Search Query
+                            .control.hasIcon
+                                input.input#searchQuery(type="url" name="searchQuery" placeholder="Title, description, tags, ...") 
+                                span.icon
+                                    i.fas.fa-search
+
+                        .field
+                            .buttons.equal
+                                button.button.fluid#clearButton
+                                    span.icon
+                                        i.fas.fa-trash
+                                    span Clear Filter
+                                button.button.fluid#searchButton
+                                    span.icon
+                                        i.fas.fa-search
+                                    span Search
+
+                        .divider.light
+
+                    .columns.multiline#videoGridContainer
+
+                    button.button.link.fluid.hidden#loadMoreButton
+                        span.icon
+                            i.fas.fa-plus
+                        span Load More
+
+            .column
+                if game.description.short
+                    .notification
+                        .content
+                            p=game.description.short
+
+                .buttons.fluid
+                    a.button.fluid(href="https://store.steampowered.com/app/"+game.appId target="_BLANK")
+                        span.icon
+                            i.fab.fa-steam
+                        span View on Steam 
+                    if game.website
+                        a.button.fluid(href=game.website target="_BLANK" data-hover=game.website)
+                            span.icon
+                                i.fas.fa-globe
+                            span Website 
+
+                br
+
+                .buttons.fluid
+                    a.button.fluid(href="/games/v/"+game.id+"/images")
+                        span.icon
+                            i.fas.fa-image
+                        span View all images (#{game.screenshots.length})
+                    
+                    a.button.fluid(href="/games/v/"+game.id+"/videos")
+                        span.icon
+                            i.fas.fa-video
+                        span View all videos (#{game.videos.length})
+
+                .divider.light
+
+                .segment
+                    p
+                        b Developers:
+                        br
+                        span=game.developers.join(", ")
+                    p
+                        b Publishers:
+                        br
+                        span=game.publishers.join(", ")
+                    p
+                        b Platforms:
+                        br
+                        -
+                            let platforms = [];
+                            for (let [key, value] of game.platforms) {
+                                if (value === true) {
+                                    platforms.push(capitalize(key));
+                                }
+                            }
+                        span=platforms.join(", ")
+                    if game.dlc
+                        p
+                            b Dlc:
+                            br
+                            span=game.dlc.length
+
+                .segment
+                    p
+                        b Added:
+                        br
+                        span(title=game.createdAt.toLocaleString())=formatDate(game.createdAt)
+                    p
+                        b Added by:
+                        br
+                        a(href="/users/v/"+game.meta.addedBy.safeName)=game.meta.addedBy.username
+                    p
+                        b Last Update:
+                        br
+                        span(title=game.meta.lastUpdate.toLocaleString())=formatDate(game.meta.lastUpdate)
+
+                if game.contentDescription && game.contentDescription.notes
+                    p=game.contentDescription.notes
+
+
+                .tags
+                    each tag, i in game.categories
+                        span.tag(titel=tag.id) #{tag.description}
+                
+block scripts
+    script.
+        const gameId = "#{game.id}";
+    if user && channel && !user.meta.preferences.hideAssetVideoList
+        script(src="/js/gameVideos.js")
+    script(src="/js/imageModal.js") 

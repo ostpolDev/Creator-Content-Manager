@@ -1,0 +1,58 @@
+extends ../layout
+
+block content
+    .modal#addGameModal
+        .modalBackground(data-modal="close")
+        .modalContainer
+            .modalHeader 
+                h2 Add a Game
+                span.close(data-modal="close")
+                    i.fas.fa-times
+            .modalContent
+                form(action="/games/add", method="post") 
+                    .field
+                        label.label(for="youtube") Steam ID
+                        .control.hasIcon
+                            input.input(type="text", name="id", placeholder="440")
+                            span.icon
+                                i.fab.fa-steam
+
+                    .field
+                        button.button.is-link
+                            span.icon
+                                i.fas.fa-plus
+                            span Add Game
+                
+            .modalFooter
+                button.button.has-icon(data-modal="close")
+                    span.icon
+                        i.fas.fa-times
+                    span Close
+
+    .container
+        h1.title #{title}
+
+
+        .message.info
+            .messageHeader
+                p Actions
+            .messageBody
+                button.button(href="/games/add" data-modal="#addGameModal")
+                    span.icon
+                        i.fas.fa-plus
+                    span Add Game
+
+
+        .columns.multiline
+            each game, i in games
+                .column.oneQuarter
+                    a.card.hoverable(href="/games/v/"+game.id)
+                        .cardImage
+                            img(src=game.header) 
+                        .cardBody
+                            h1.header #{game.name}
+                            p #{game.developers.join(", ")}
+                            if user && user.meta.preferences.showGameDescriptions
+                                small #{game.description.short}
+
+        

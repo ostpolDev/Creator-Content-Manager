@@ -11,6 +11,10 @@ const VideoSchema = mongoose.Schema({
         ref: 'Channel',
         required: true
     },
+    games: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Game'
+    }],
     url: {
         type: String,
         required: false

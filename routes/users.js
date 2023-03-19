@@ -243,6 +243,7 @@ router.post("/settings/save/preferences", validation.ensureAuthenticated, (req, 
         ampm: req.body.ampm !== undefined,
         autoplay: req.body.autoplay !== undefined,
         hideAssetVideoList: req.body.hideAssetVideoList !== undefined,
+        showGameDescriptions: req.body.showGameDescriptions !== undefined,
         mainPage: {
             showVideos: req.body.showVideos !== undefined,
             showAssets: req.body.showAssets !== undefined,
