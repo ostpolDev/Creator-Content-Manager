@@ -82,7 +82,7 @@ router.post('/add', [
         errors.array().forEach(e => {
             req.flash('danger', e.msg);
         })
-        res.redirect('/games/add');
+        res.redirect('/games');
         return;
     }
     let id = req.body.id;
@@ -93,13 +93,7 @@ router.post('/add', [
         logger.error(data);
         req.flash('danger', "Something went wrong...");    
     }
-    res.redirect("/games/add");
-})
-
-router.get('/add', (req, res) => {
-    res.render('games/add', {
-        title: "Add game"
-    })
+    res.redirect("/games");
 })
 
 router.post('/update', async (req, res) => {
