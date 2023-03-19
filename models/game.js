@@ -73,7 +73,7 @@ const GameSchema = mongoose.Schema({
         lastUpdate: Date,
         isCustom: {
             type: Boolean,
-            default: false
+            default: false  
         }
     }
 }, {timestamps: true})
