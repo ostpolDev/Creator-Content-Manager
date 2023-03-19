@@ -22,7 +22,9 @@ block content
                 if game.videos.length > 0
                     -let video = game.videos[Math.floor(Math.random() * game.videos.length)]
                     video#videoPlayer(src=video.mp4.max || video.mp4["480"], controls, style="width: 100%; height: auto;", autoplay=user.meta.preferences.autoplay)
-
+                else if game.screenshots.length > 0
+                    img.image(src=game.screenshots[Math.floor(Math.random() * game.screenshots.length)].full, alt="")
+                    br
                 .columns.multiline
                     each image, i in game.screenshots.splice(0, 4)
                         .column.oneFifth
