@@ -224,7 +224,13 @@ router.get("/search/:videoId", validation.ensureAuthenticated, (req, res) => {
             return res.status(404).json({success: false});
         }
 
-        Asset.find({_id: {$not: {$in: video.assets}}}).select("name meta cleanName").limit(25).exec((err, assets) => {
+        Asset.find({
+            _id: {$not: {$in: video.assets}},
+            $or: [
+                {name: {$regex: query, $options: "i"}},
+                {tagsString: {$regex: query, $options: "i"}}
+            ]
+        }).select("name meta cleanName").limit(25).exec((err, assets) => {
             if (err) {
                 logger.error(err);
                 return res.status(500).json({success: false});
