@@ -17,6 +17,10 @@ searchQuery.addEventListener("keyup", (e) => {
     }
 })
 
+channelSelect.addEventListener("change", () => {
+    search(true);
+})
+
 function getChannels() {
     searchButton.disabled = channelSelect.disabled = true;
     channelSelect.innerHTML = "";
