@@ -78,7 +78,7 @@ block scripts
                 let current = "#{user.meta.preferences.defaultChannel}";
 
                 json.channels.forEach(channel => {
-                    channelSelect.innerHTML += `<option value="${channel._id}" ${channel._id == current ? "selected" : ""}>${channel.name}</option>`;
+                    channelSelect.innerHTML += `<option value="${channel._id}" ${channel._id == current ? "selected" : ""}>${channel.name} (${channel.customUrl ? channel.customUrl : ""})</option>`;
                 })
             }
 

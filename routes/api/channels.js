@@ -177,7 +177,7 @@ router.get('/getWithAccess', validation.ensureAuthenticated, (req, res) => {
         query._id = {$ne: except};
     }
 
-    Channel.find(query).select("name _id").exec((err, channels) => {
+    Channel.find(query).select("name _id customUrl").exec((err, channels) => {
         if (err) {
             logger.error(err);
             return res.status(500).json({success: false});
