@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const GameSchema = mongoose.Schema({
     appType: {
         type: String,
-        required: true
     },
     name: {
         type: String,
@@ -12,7 +11,6 @@ const GameSchema = mongoose.Schema({
     },
     appId: {
         type: String,
-        required: true
     },
     description: {
         detailed: String,

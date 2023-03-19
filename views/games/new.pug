@@ -34,11 +34,25 @@ block content
                         i.fas.fa-globe
             
             .field
-                label.label(for="name") Tags
+                label.label(for="tags") Tags
                 .control.hasIcon
-                    input.input#name(type="text", name="name", placeholder="Tags")
+                    input.input#tags(type="text", name="tags", placeholder="Tags")
                     span.icon
                         i.fas.fa-tags
+
+            .field
+                label.label(for="developers") Developers
+                .control.hasIcon
+                    input.input#developers(type="text", name="developers", placeholder="Developers")
+                    span.icon
+                        i.fas.fa-signature
+
+            .field
+                label.label(for="publishers") Publishers
+                .control.hasIcon
+                    input.input#publishers(type="text", name="publishers", placeholder="Publishers")
+                    span.icon
+                        i.fas.fa-signature
 
             .field
                 label.label(for="about") Description

@@ -3,6 +3,8 @@ const { body, validationResult } = require('express-validator');
 const Game = require('../models/game');
 const logger = require('../modules/logger');
 
+const { markAndSanitize, sanitizeFull } = require('../modules/marked');
+
 const steamGameHelper = require('../modules/steamGameHelper');
 
 const { ensureAuthenticated } = require('../modules/validation');
@@ -28,6 +30,92 @@ router.get("/new", (req, res) => {
     res.render("games/new", {
         title: "New Game"
     })
+})
+
+router.post("/new", [
+    body("name", "Game name is required").notEmpty(),
+    body("name", "Name cannot be longer than 1024 characters").isLength({max: 1024}),
+    body("headerImage", "Header image url cannot be longer than 2048 characters").isLength({max: 2048}).optional(),
+    body("tags", "Tags cannot be longer than 2048 characters").isLength({max: 2048}).optional(),
+    body("developers", "Developers cannot be longer than 2048 characters").isLength({max: 2048}).optional(),
+    body("publishers", "Publishers cannot be longer than 2048 characters").isLength({max: 2048}).optional(),
+    body("about", "Description cannot be longer than 4096 characters").isLength({max: 4096}).optional()
+], (req, res, next) => {
+
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        errors.array().forEach(err => {
+            req.flash('danger', err.msg);
+        })
+        return res.redirect("/games/new");
+    }
+
+    let name = req.body.name;
+    let headerImage = req.body.headerImage;
+    let tags = req.body.tags;
+    let description = req.body.about;
+    let developers = req.body.developers;
+    let publishers = req.body.publishers;
+
+    let rendered, short;
+
+    if (description) {
+        rendered = markAndSanitize(description);
+        let stripped = sanitizeFull(rendered);
+        if (stripped.length > 512) {
+            short = stripped.substring(0, 512) + "...";
+        } else {
+            short = stripped;
+        }
+    }
+
+
+    if (tags) {
+        tags = tags.split(", ");
+        if (!Array.isArray(tags)) {
+            tags = [tags];
+        }
+        tags = tags.map(x => {return {description: x}})
+
+    }
+    if (developers) {
+        developers = developers.split(", ");
+        if (!Array.isArray(developers)) {
+            developers = [developers];
+        }
+    }
+    if (publishers) {
+        publishers = publishers.split(", ");
+        if (!Array.isArray(publishers)) {
+            publishers = [publishers];
+        }
+    }
+
+    let newGame = new Game({
+        name,
+        header: headerImage,
+        categories: tags,
+        description: {
+            detailed: rendered,
+            short
+        },
+        developers,
+        publishers,
+        meta: {
+            addedBy: req.user.id,
+            lastUpdate: new Date(),
+            isCustom: true
+        }
+    })
+
+    newGame.save((err, game) => {
+        if (err) {
+            return next(err);
+        }
+        req.flash('success', "Successfully created a custom game");
+        return res.redirect("/games/v/"+game._id);
+    })
+
 })
 
 router.get('/v/:id', (req, res) => {

@@ -19,27 +19,30 @@ block content
 
         .columns
             .column.twoThird
-                if game.videos.length > 0
-                    -let video = game.videos[Math.floor(Math.random() * game.videos.length)]
-                    video#videoPlayer(src=video.mp4.max || video.mp4["480"], controls, style="width: 100%; height: auto;", autoplay=user.meta.preferences.autoplay)
-                else if game.screenshots.length > 0
-                    img.image(src=game.screenshots[Math.floor(Math.random() * game.screenshots.length)].full, alt="")
-                    br
-                .columns.multiline
-                    each image, i in game.screenshots.splice(0, 4)
+                if !game.meta.isCustom
+                    if game.videos.length > 0
+                        -let video = game.videos[Math.floor(Math.random() * game.videos.length)]
+                        video#videoPlayer(src=video.mp4.max || video.mp4["480"], controls, style="width: 100%; height: auto;", autoplay=user.meta.preferences.autoplay)
+                    else if game.screenshots.length > 0
+                        img.image(src=game.screenshots[Math.floor(Math.random() * game.screenshots.length)].full, alt="")
+                        br
+                    .columns.multiline
+                        each image, i in game.screenshots.splice(0, 4)
+                            .column.oneFifth
+                                .card.hoverable(onclick="openImage('" + image.full + "')")
+                                    .cardImage
+                                        img(src=image.thumbnail)
+
                         .column.oneFifth
-                            .card.hoverable(onclick="openImage('" + image.full + "')")
+                            .card.hoverable.hasOverlay(onclick="window.location = '/games/v/" + game.id + "/images'")
                                 .cardImage
-                                    img(src=image.thumbnail)
-
-                    .column.oneFifth
-                        .card.hoverable.hasOverlay(onclick="window.location = '/games/v/" + game.id + "/images'")
-                            .cardImage
-                                img(src=game.screenshots[0].thumbnail)
-                            .cardOverlay
-                                p View All
-
-                .divider.light
+                                    img(src=game.screenshots[0].thumbnail)
+                                .cardOverlay
+                                    p View All
+                    .divider.light
+                else if game.header
+                    img.image(src=game.header, alt="")
+                    .divider.light
 
                 .content.game
                     if game.description.about && (game.description.detailed.trim() != game.description.about.trim())
@@ -95,36 +98,38 @@ block content
                         span Load More
 
             .column
-                if game.description.short
+                if game.description.short && !game.meta.isCustom
                     .notification
                         .content
                             p=game.description.short
 
-                .buttons.fluid
-                    a.button.fluid(href="https://store.steampowered.com/app/"+game.appId target="_BLANK")
-                        span.icon
-                            i.fab.fa-steam
-                        span View on Steam 
-                    if game.website
-                        a.button.fluid(href=game.website target="_BLANK" data-hover=game.website)
+                if game.website || !game.meta.isCustom
+                    .buttons.fluid
+                        if !game.meta.isCustom && game.appId
+                            a.button.fluid(href="https://store.steampowered.com/app/"+game.appId target="_BLANK")
+                                span.icon
+                                    i.fab.fa-steam
+                                span View on Steam 
+                        if game.website
+                            a.button.fluid(href=game.website target="_BLANK" data-hover=game.website)
+                                span.icon
+                                    i.fas.fa-globe
+                                span Website 
+
+                    br
+                if !game.meta.isCustom
+                    .buttons.fluid
+                        a.button.fluid(href="/games/v/"+game.id+"/images")
                             span.icon
-                                i.fas.fa-globe
-                            span Website 
+                                i.fas.fa-image
+                            span View all images (#{game.screenshots.length})
+                        
+                        a.button.fluid(href="/games/v/"+game.id+"/videos")
+                            span.icon
+                                i.fas.fa-video
+                            span View all videos (#{game.videos.length})
 
-                br
-
-                .buttons.fluid
-                    a.button.fluid(href="/games/v/"+game.id+"/images")
-                        span.icon
-                            i.fas.fa-image
-                        span View all images (#{game.screenshots.length})
-                    
-                    a.button.fluid(href="/games/v/"+game.id+"/videos")
-                        span.icon
-                            i.fas.fa-video
-                        span View all videos (#{game.videos.length})
-
-                .divider.light
+                    .divider.light
 
                 .segment
                     p
@@ -135,22 +140,23 @@ block content
                         b Publishers:
                         br
                         span=game.publishers.join(", ")
-                    p
-                        b Platforms:
-                        br
-                        -
-                            let platforms = [];
-                            for (let [key, value] of game.platforms) {
-                                if (value === true) {
-                                    platforms.push(capitalize(key));
-                                }
-                            }
-                        span=platforms.join(", ")
-                    if game.dlc
+                    if !game.meta.isCustom
                         p
-                            b Dlc:
+                            b Platforms:
                             br
-                            span=game.dlc.length
+                            -
+                                let platforms = [];
+                                for (let [key, value] of game.platforms) {
+                                    if (value === true) {
+                                        platforms.push(capitalize(key));
+                                    }
+                                }
+                            span=platforms.join(", ")
+                        if game.dlc
+                            p
+                                b Dlc:
+                                br
+                                span=game.dlc.length
 
                 .segment
                     p
@@ -172,7 +178,7 @@ block content
 
                 .tags
                     each tag, i in game.categories
-                        span.tag(titel=tag.id) #{tag.description}
+                        span.tag(titel=tag.id ? tag.id : "") #{tag.description}
                 
 block scripts
     script.
