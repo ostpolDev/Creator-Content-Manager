@@ -6,6 +6,7 @@ const logger = require('../modules/logger');
 const steamGameHelper = require('../modules/steamGameHelper');
 
 const { ensureAuthenticated } = require('../modules/validation');
+const { sorts } = require('../modules/videoFunctions');
 
 router.get('*', ensureAuthenticated, (req, res, next) => {
     next();
@@ -31,7 +32,8 @@ router.get('/v/:id', (req, res) => {
         if (game) {
             res.render('games/view', {
                 game,
-                title: game.name
+                title: game.name,
+                sorts: sorts
             })
         } else {
             req.flash('danger', "Game not found");
