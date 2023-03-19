@@ -1404,6 +1404,10 @@ a.user {
     display: block;
 }
 
+.content.game img {
+    width: 100%;
+}
+
 .user .image img {
     width: 128px;
     height: 128px;
