@@ -1,11 +1,11 @@
 extends ../layout
 
 block content
-    if channelToView.meta.requestInfo.lastRequest
-        -let lastUpdateDiff = new Date().getTime() - channelToView.meta.requestInfo.lastRequest.getTime()
-        -let diffHours = lastUpdateDiff / 3.6e+6;
-        -let canUpdate = diffHours >= 12;
-        -let isSelectedChannel = channelToView.id == channel.id;
+    -
+        let lastUpdateDiff = new Date().getTime() - channelToView.meta.requestInfo.lastRequest.getTime()
+        let diffHours = lastUpdateDiff / 3.6e+6;
+        let canUpdate = diffHours >= 12;
+        let isSelectedChannel = channelToView.id == channel.id;
 
     .container
         .columns
