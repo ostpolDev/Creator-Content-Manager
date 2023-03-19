@@ -6,7 +6,8 @@ block content
         p.subtitle Welcome #{user.name}! This is your overview.
             if channel && channel.name
                 span  Your currently using the channel 
-                    strong #{channel.name}
+                    strong 
+                        a.hiddenLink(href="/channels/v/"+channel.id) #{channel.name}
                     | .
 
         .emptySpace
