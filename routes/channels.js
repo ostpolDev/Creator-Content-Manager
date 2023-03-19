@@ -18,7 +18,7 @@ router.get('/', validation.ensureAuthenticated, (req, res) => {
     Channel.find({$or: [
         {createdBy: req.user.id},
         {access: req.user.id}
-    ]}).select("name id thumbnails statistics createdBy").populate("createdBy").exec((err, channels) => {
+    ]}).select("name id thumbnails statistics createdBy customUrl").populate("createdBy").exec((err, channels) => {
         if (err) {
             logger.error(err);
         }

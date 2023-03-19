@@ -1,11 +1,6 @@
 extends ../layout
 
 block content
-    -
-        let lastUpdateDiff = new Date().getTime() - channelToView.meta.requestInfo.lastRequest.getTime()
-        let diffHours = lastUpdateDiff / 3.6e+6;
-        let canUpdate = diffHours >= 12;
-        let isSelectedChannel = channelToView.id == channel.id;
 
     .container
         .columns
@@ -125,17 +120,30 @@ block content
                         span.icon
                             i.fab.fa-youtube
                         span View on YouTube
+
+                    if channelToView.meta.requestInfo.lastRequest
+                        -
+                            let lastUpdateDiff = new Date().getTime() - channelToView.meta.requestInfo.lastRequest.getTime()
+                            let diffHours = lastUpdateDiff / 3.6e+6;
+                            let canUpdate = diffHours >= 12;
+                            let isSelectedChannel = channelToView.id == channel.id;
                     
-                    if canUpdate || !channelToView.meta.requestInfo.lastRequest
+                        if canUpdate || !channelToView.meta.requestInfo.lastRequest
+                            a.button(href="/channels/update/"+channelToView.id)
+                                span.icon
+                                    i.fas.fa-sync
+                                span Request Update
+                        else
+                            button.button(disabled title="Only available every 12 hours")
+                                span.icon
+                                    i.fas.fa-sync
+                                span(disabled data-hover="Only available every 12 hours") Request Update 
+                    else
                         a.button(href="/channels/update/"+channelToView.id)
                             span.icon
                                 i.fas.fa-sync
                             span Request Update
-                    else
-                        button.button(disabled title="Only available every 12 hours")
-                            span.icon
-                                i.fas.fa-sync
-                            span(disabled data-hover="Only available every 12 hours") Request Update 
+
 
 block scripts
     script(src="/js/channelSwitcher.js") 

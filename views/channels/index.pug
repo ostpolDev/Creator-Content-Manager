@@ -3,14 +3,14 @@ extends ../layout
 block content
     .container
         h1.header Channels
-        p.subtitle #{channels.length || 0} found
+        p.subtitle You have access to #{channels.length || 0} #{channels.length ? channels.length == 1 ? "channel" : "channels" : "channels"}
 
         .columns.multiline
             each c, i in channels
                 .column.oneQuarter(data-context-source="getChannelContext" data-channel=c.id, data-channel-selected=(c.id == channel.id).toString())
                     a.card.hoverable.circular(href="/channels/v/"+c.id)
                         .cardImage
-                            img(src=c.thumbnails.default.url, alt=c.name, class=(c.id == channel.id?"":"grayscale"))
+                            img(src=c.thumbnails.default.url, alt=c.name + " (" + c.customUrl + ")", class=(c.id == channel.id?"":"grayscale"))
                         .cardBody.centerText
                             h1.header 
                                 if c.id == channel.id
