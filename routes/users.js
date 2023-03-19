@@ -13,9 +13,11 @@ const User = require('../models/user');
 const Channel = require('../models/channel');
 const logger = require('../modules/logger');
 const assetFunctions = require('../modules/assetFunctions');
+const channelFunctions = require('../modules/channelFunctions');
 
 const userFunctions = require('../modules/userFunctions');
 const validation = require('../modules/validation');
+const { isValidObjectId } = require('mongoose');
 
 router.get('/', validation.ensureAuthenticated, (req, res, next) => {
     User.find({}).select("meta name safeName username mailHash createdAt").sort({username: 1}).exec((err, users) => {
@@ -236,7 +238,7 @@ router.post("/settings/save/general", validation.ensureAuthenticated, [
     })
 })
 
-router.post("/settings/save/preferences", validation.ensureAuthenticated, (req, res) => {
+router.post("/settings/save/preferences", validation.ensureAuthenticated, async (req, res) => {
     let preferences = {
         hiddenFavorites: req.body.hiddenFavorites !== undefined,
         disableMarkdown: req.body.disableMarkdown !== undefined,
@@ -250,6 +252,16 @@ router.post("/settings/save/preferences", validation.ensureAuthenticated, (req, 
             randomTip: req.body.randomTip !== undefined
         }
     };
+
+    let defaultChannel = req.body.defaultChannel;
+    if (isValidObjectId(defaultChannel)) {
+        let accessResponse = await channelFunctions.hasAccessToChannel(defaultChannel, req.user.id);
+        if (accessResponse.success === true && accessResponse.hasAccess === true) {
+            preferences.defaultChannel = defaultChannel;
+        }
+    } else {
+        preferences.defaultChannel = undefined;
+    }
 
     User.findByIdAndUpdate(req.user.id, {$set: {"meta.preferences": preferences}}, {new: true}).exec((err) => {
         if (err) {

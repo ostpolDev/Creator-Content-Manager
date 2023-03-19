@@ -57,6 +57,15 @@ form(action="/users/settings/save/preferences", method="post")
                 label(for="showGameDescriptions") Show game descriptions
             p.help Show short descriptions for games in the game list
 
+    .segment.noBackground
+        h2.header Defaults
+        .field
+            label.label(for="defaultChannelSelect") Default Channel
+            .control
+                select#defaultChannelSelect.input(name="defaultChannel")
+                    option(value=undefined) None
+            p.help When you login, which channel should automatically be selected
+
     .emptySpace
 
     .field

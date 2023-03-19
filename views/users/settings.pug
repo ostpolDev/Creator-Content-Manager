@@ -62,3 +62,24 @@ block scripts
     if setting == "general" && (user && !user.meta.preferences.disableMarkdown)
         script.
             const easyMDE = new EasyMDE();
+
+    if setting == "preferences"
+        script.
+            async function loadChannels() {
+                let res = await fetch("/api/channels/getWithAccess");
+                let json = await res.json();
+
+                if (!json.success) {
+                    console.error(json.msg || "Something went wrong...");
+                    return;
+                }
+
+                let channelSelect = document.querySelector("#defaultChannelSelect");
+                let current = "#{user.meta.preferences.defaultChannel}";
+
+                json.channels.forEach(channel => {
+                    channelSelect.innerHTML += `<option value="${channel._id}" ${channel._id == current ? "selected" : ""}>${channel.name}</option>`;
+                })
+            }
+
+            loadChannels();

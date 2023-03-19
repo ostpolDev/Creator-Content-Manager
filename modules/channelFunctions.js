@@ -201,7 +201,7 @@ const hasAccessToChannel = function(channelId, userId) {
         Channel.findOne({_id: channelId, $or: [
             {createdBy: userId},
             {access: userId}
-        ]}).exec((err, channel) => {
+        ]}).select("_id").exec((err, channel) => {
             if (err) {
                 logger.error(err);
                 return res({success: false, error: err});
