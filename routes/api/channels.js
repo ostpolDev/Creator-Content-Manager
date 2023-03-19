@@ -162,7 +162,7 @@ router.post('/removeAccess', validation.ensureAuthenticated, async (req, res) =>
     })
 })
 
-router.get('/getWithAccess', validation.ensureAuthenticated, validation.ensureChannel, (req, res) => {
+router.get('/getWithAccess', validation.ensureAuthenticated, (req, res) => {
 
     let except = req.query.except;
 
