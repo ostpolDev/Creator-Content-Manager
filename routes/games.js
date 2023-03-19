@@ -13,7 +13,7 @@ router.get('*', ensureAuthenticated, (req, res, next) => {
 })
 
 router.get("/", (req, res) => {
-    Game.find().sort({"name": 1}).select("name header developers").exec((err, games) => {
+    Game.find().sort({"name": 1}).select("name header developers description.short").exec((err, games) => {
         if (err) {
             logger.error(err);
         }
