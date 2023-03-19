@@ -16,9 +16,6 @@ block content
                     span.icon
                         i.fas.fa-times
                     span Close
-    -let lastUpdateDiff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime()
-    -let diffHours = lastUpdateDiff / 3.6e+6;
-    -let canUpdate = diffHours >= 2;
     .container 
         .buttons
             a.button(href="/videos") 
@@ -116,51 +113,53 @@ block content
                                         if user && user.meta.preferences.showGameDescriptions
                                             small #{game.description.short} 
             .column.oneQuarter
-                if !video.isEmpty
-                    .buttons.fluid
+                .buttons.fluid
+                    if !video.isEmpty
                         a.button(href=video.url target="_BLANK")
                             span.icon
                                 i.fab.fa-youtube
                             span View on YouTube 
-                        if video.createdBy.id == user.id
-                            a.button(href="/videos/settings/"+video.id)
-                                span.icon
-                                    i.fas.fa-cog
-                                span Settings
+                    if video.createdBy.id == user.id
+                        a.button(href="/videos/settings/"+video.id)
+                            span.icon
+                                i.fas.fa-cog
+                            span Settings
                 
-                .segment
-                    each thing, i in Object.keys(video.statistics)
-                        if video.statistics[thing]
-                            p
-                                b #{formatString(thing)}:
-                                br
-                                -
-                                    let _thing = video.statistics[thing];
-                                    let type = typeof(_thing);
-                                span(title=_thing)
-                                    if type == "number" || !isNaN(_thing)
-                                        | #{numberWithCommas(_thing)}
-                                    else if type == "string"
-                                        | #{formatString(_thing)}
-                                    else if type == "boolean"
-                                        | #{formatBoolean(_thing)}
-                    
-                    each thing, i in Object.keys(video.status)
-                        if video.status[thing]
-                            p
-                                b #{formatString(thing)}:
-                                br
-                                -
-                                    let _thing = video.status[thing];
-                                    let type = typeof(_thing);
-                                span(title=_thing)
-                                    if type == "number"
-                                        | #{numberWithCommas(_thing)}
-                                    else if type == "string"
-                                        | #{formatString(_thing)}
-                                    else if type == "boolean"
-                                        | #{formatBoolean(_thing)}
-                    if !video.isEmpty
+                if !video.isEmpty
+                    -let lastUpdateDiff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime()
+                    -let diffHours = lastUpdateDiff / 3.6e+6;
+                    .segment
+                        each thing, i in Object.keys(video.statistics)
+                            if video.statistics[thing]
+                                p
+                                    b #{formatString(thing)}:
+                                    br
+                                    -
+                                        let _thing = video.statistics[thing];
+                                        let type = typeof(_thing);
+                                    span(title=_thing)
+                                        if type == "number" || !isNaN(_thing)
+                                            | #{numberWithCommas(_thing)}
+                                        else if type == "string"
+                                            | #{formatString(_thing)}
+                                        else if type == "boolean"
+                                            | #{formatBoolean(_thing)}
+                        
+                        each thing, i in Object.keys(video.status)
+                            if video.status[thing]
+                                p
+                                    b #{formatString(thing)}:
+                                    br
+                                    -
+                                        let _thing = video.status[thing];
+                                        let type = typeof(_thing);
+                                    span(title=_thing)
+                                        if type == "number"
+                                            | #{numberWithCommas(_thing)}
+                                        else if type == "string"
+                                            | #{formatString(_thing)}
+                                        else if type == "boolean"
+                                            | #{formatBoolean(_thing)}
                         .divider
                         p
                             b Last Update:
@@ -170,12 +169,16 @@ block content
                             b Last Request Duration:
                             br
                             span #{video.meta.requestInfo.time}ms
-                        p
-                            b Hours Since Last Request:
-                            br
-                            span(title=diffHours data-hover=diffHours) #{diffHours.toFixed(1)}
+                        if video.meta.requestInfo
+                            p
+                                b Hours Since Last Request:
+                                br
+                                span(title=diffHours data-hover=diffHours) #{diffHours.toFixed(1)}
 
                 if !video.isEmpty
+                    -let lastUpdateDiff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime()
+                    -let diffHours = lastUpdateDiff / 3.6e+6;
+                    -let canUpdate = diffHours >= 2;
                     if canUpdate
                         a.button.fluid(href="/videos/update/"+video.id)
                             span.icon
