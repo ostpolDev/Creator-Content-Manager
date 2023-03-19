@@ -5,7 +5,7 @@ block content
         .modalBackground(data-modal="close")
         .modalContainer
             .modalHeader 
-                h2 Add a Game
+                h2 Add a Steam Game
                 span.close(data-modal="close")
                     i.fas.fa-times
             .modalContent
@@ -37,10 +37,15 @@ block content
             .messageHeader
                 p Actions
             .messageBody
-                button.button(href="/games/add" data-modal="#addGameModal")
-                    span.icon
-                        i.fas.fa-plus
-                    span Add Game
+                .buttons
+                    button.button(data-modal="#addGameModal")
+                        span.icon
+                            i.fab.fa-steam
+                        span Add Steam Game
+                    a.button(href="/games/new")
+                        span.icon
+                            i.fas.fa-plus
+                        span Add Custom Game
 
 
         .columns.multiline

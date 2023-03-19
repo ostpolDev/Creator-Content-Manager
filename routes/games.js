@@ -24,6 +24,12 @@ router.get("/", (req, res) => {
     })
 })
 
+router.get("/new", (req, res) => {
+    res.render("games/new", {
+        title: "New Game"
+    })
+})
+
 router.get('/v/:id', (req, res) => {
     Game.findById(req.params.id).populate("meta.addedBy", "username name safeName id").exec((err, game) => {
         if (err) {

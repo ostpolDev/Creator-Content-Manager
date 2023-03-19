@@ -1,0 +1,62 @@
+extends ../layout
+
+block head
+    if !user.meta.preferences.disableMarkdown
+        link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css")
+        script(src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js") 
+
+
+block content
+    .container
+        .block
+            a.button(href="/games")
+                span.icon
+                    i.fas.fa-arrow-left 
+                span Back
+
+
+        h1.title Add a new game
+
+        form(action="/games/new", method="post") 
+
+            .field.required
+                label.label(for="name") Name
+                .control.hasIcon
+                    input.input#name(type="text", name="name", placeholder="Game Name" required)
+                    span.icon
+                        i.fas.fa-file-signature
+
+            .field
+                label.label(for="headerImage") Header Image URL
+                .control.hasIcon
+                    input.input#headerImage(type="text", name="headerImage", placeholder="https://...")
+                    span.icon
+                        i.fas.fa-globe
+            
+            .field
+                label.label(for="name") Tags
+                .control.hasIcon
+                    input.input#name(type="text", name="name", placeholder="Tags")
+                    span.icon
+                        i.fas.fa-tags
+
+            .field
+                label.label(for="about") Description
+                .control
+                    textarea.textarea(name="about", id="about", placeholder="About the game... \n(optional)", maxlength="4096")
+
+
+            .field
+                button.button.is-link
+                    span.icon
+                        i.fas.fa-plus
+                    span Add Game
+
+        .divider.light
+        p
+            small * Required
+
+block scripts
+    if !user.meta.preferences.disableMarkdown
+        script.
+            const easyMDE = new EasyMDE({element: document.getElementById("about")});
