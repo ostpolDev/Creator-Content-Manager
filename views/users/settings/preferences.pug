@@ -51,6 +51,12 @@ form(action="/users/settings/save/preferences", method="post")
                 label(for="hideAssetVideoList") Hide asset video list
             p.help When viewing assets, there is a list of videos that include the viewed asset. Check this to disable that.
 
+        .field
+            div.checkbox
+                input.checkbox#showGameDescriptions(type="checkbox" name="showGameDescriptions" checked=user.meta.preferences.showGameDescriptions)
+                label(for="showGameDescriptions") Show game descriptions
+            p.help Show short descriptions for games in the game list
+
     .emptySpace
 
     .field

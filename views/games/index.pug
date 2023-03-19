@@ -43,4 +43,16 @@ block content
                     span Add Game
 
 
+        .columns.multiline
+            each game, i in games
+                .column.oneQuarter
+                    a.card.hoverable(href="/games/v/"+game.id)
+                        .cardImage
+                            img(src=game.header) 
+                        .cardBody
+                            h1.header #{game.name}
+                            p #{game.developers.join(", ")}
+                            if user && user.meta.preferences.showGameDescriptions
+                                small #{game.description.short}
+
         
