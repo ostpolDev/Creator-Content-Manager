@@ -1,6 +1,12 @@
 extends ../layout
 
 block content
+    .modal.large.fluid#imageModal
+        .modalBackground(data-modal="close")
+        .modalContainer
+            .modalContent.noBackground
+                a#imageLink(href="")
+                    img.image.picture#imageModalImage(style="margin: auto; display: block;")
     .container
         .block
             a.button(href="/games")
@@ -166,3 +172,4 @@ block scripts
         const gameId = "#{game.id}";
     if user && channel && !user.meta.preferences.hideAssetVideoList
         script(src="/js/gameVideos.js")
+    script(src="/js/imageModal.js") 
