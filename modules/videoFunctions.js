@@ -17,7 +17,7 @@ const sorts = {
     "likes": "statistics.likeCount",
     "comments": "statistics.commentCount",
     "category": "categoryId",
-    "privacy ptatus": "status.privacyStatus",
+    "privacy status": "status.privacyStatus",
     "made for kids": "status.madeForKids",
     "licence": "status.licence",
     "youTube id": "youtubeId"
