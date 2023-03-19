@@ -133,64 +133,76 @@ const createVideo = function(youtubeId, channel, req) {
     })
 }
 
-const updateVideoData = function(video, req) {
+const updateVideoData = function(videoId, req) {
     return new Promise(async (res) => {
 
-        let start = new Date();
-
-        if (video.meta.requestInfo.lastRequest) {
-            let diff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime();
-            let diffHours = diff / 3.6e+6;
-            if (diffHours < 12) {
-                return res({success: false, msg: "The previous update request was less than 12 hours ago. Please try again later."});
-            }
+        if (!isValidObjectId(videoId)) {
+            return res({success: false, msg: "Invalid id"});
         }
 
-        let videoInfo = await youtube.getVideoInfo(youtubeId);
-        if (!videoInfo || !videoInfo.items) {
-            return res({success: false, msg: "The video was not found"});
-        }
-    
-        let item = videoInfo.items[0];
-        if (!item) {
-            return res({success: false, msg: "The video was not found"});
-        }
-
-        let snippet = item.snippet;
-        let stats = item.statistics;
-        let status = item.status;
-
-        let end = new Date();
-        let diff = end.getTime() - start.getTime();
-
-        video.isEmpty = false;
-        video.youtubeId = item.id;
-        video.title = snippet.title;
-        video.description = snippet.description;
-        video.thumbnails = snippet.thumbnails;
-        video.youtubeTags = snippet.tags;
-        video.categoryId = snippet.categoryId;
-        video.category = getCategory(snippet.categoryId);
-        video.status = status;
-        video.statistics = replaceWithNumbers(stats);
-        video.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
-        video.youtubeChannelId = snippet.channelId;
-        video.meta.publishedAt = new Date(snippet.publishedAt);
-        video.meta.requestInfo = {
-            lastRequest: start,
-            start,
-            end,
-            time: diff,
-            by: req.user.id
-        }
-
-        video.save((err, video) => {
+        Video.findById(videoId).exec(async (err, video) => {
             if (err) {
                 logger.error(err);
-                return res({success: false, error: err, msg: "Something went wrong"});
+                return res({success: false, msg: "Something went wrong."});
             }
-            return res({success: true, msg: `Successfully updated "${video.title}"`, video})
+
+            let start = new Date();
+    
+            if (video.meta && video.meta.requestInfo && video.meta.requestInfo.lastRequest) {
+                let diff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime();
+                let diffHours = diff / 3.6e+6;
+                if (diffHours < 12) {
+                    return res({success: false, msg: "The previous update request was less than 12 hours ago. Please try again later."});
+                }
+            }
+    
+            let videoInfo = await youtube.getVideoInfo(video.youtubeId);
+            if (!videoInfo || !videoInfo.items) {
+                return res({success: false, msg: "The video was not found"});
+            }
+        
+            let item = videoInfo.items[0];
+            if (!item) {
+                return res({success: false, msg: "The video was not found"});
+            }
+    
+            let snippet = item.snippet;
+            let stats = item.statistics;
+            let status = item.status;
+    
+            let end = new Date();
+            let diff = end.getTime() - start.getTime();
+    
+            video.isEmpty = false;
+            video.youtubeId = item.id;
+            video.title = snippet.title;
+            video.description = snippet.description;
+            video.thumbnails = snippet.thumbnails;
+            video.youtubeTags = snippet.tags;
+            video.categoryId = snippet.categoryId;
+            video.category = getCategory(snippet.categoryId);
+            video.status = status;
+            video.statistics = replaceWithNumbers(stats);
+            video.url = `https://www.youtube.com/watch?v=${encodeURIComponent(item.id)}`
+            video.youtubeChannelId = snippet.channelId;
+            video.meta.publishedAt = new Date(snippet.publishedAt);
+            video.meta.requestInfo = {
+                lastRequest: start,
+                start,
+                end,
+                time: diff,
+                by: req.user.id
+            }
+    
+            video.save((err, video) => {
+                if (err) {
+                    logger.error(err);
+                    return res({success: false, error: err, msg: "Something went wrong"});
+                }
+                return res({success: true, msg: `Successfully updated "${video.title}"`, video})
+            })
         })
+        
     })
 }
 

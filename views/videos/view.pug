@@ -1,6 +1,9 @@
 extends ../layout
 
 block content
+    -let lastUpdateDiff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime()
+    -let diffHours = lastUpdateDiff / 3.6e+6;
+    -let canUpdate = diffHours >= 2;
     .container 
         .buttons
             a.button(href="/videos") 
@@ -117,9 +120,6 @@ block content
                                     else if type == "boolean"
                                         | #{formatBoolean(_thing)}
                     if !video.isEmpty
-                        -let lastUpdateDiff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime()
-                        -let diffHours = lastUpdateDiff / 3.6e+6;
-                        -let canUpdate = diffHours >= 2;
                         .divider
                         p
                             b Last Update:
@@ -136,7 +136,7 @@ block content
 
                 if !video.isEmpty
                     if canUpdate
-                        a.button.fluid(href="/videos/update/"+channelToView.id)
+                        a.button.fluid(href="/videos/update/"+video.id)
                             span.icon
                                 i.fas.fa-sync
                             span Request Update
