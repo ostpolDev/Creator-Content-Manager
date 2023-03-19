@@ -18,6 +18,8 @@ block content
                             if isSelectedChannel
                                 span.icon(data-hover=(isSelectedChannel ? "Selected channel" : ""))
                             | #{channelToView.name}
+                        if channelToView.customUrl
+                            p #{channelToView.customUrl}
                         p #{channelToView.statistics.subscriberCount} #{channelToView.statistics.subscriberCount == 1 ? "subscriber" : "subscribers"}
 
                 br
