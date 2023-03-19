@@ -131,7 +131,7 @@ router.post('/upload', [
     body("name", "Name cannot be longer than 256 characters").isLength({max: 256}),
     body("batchName", "Batch name cannot be longer than 256 characters").isLength({max: 256}),
     body("about", "About text cannot be longer than 10,000 characters").isLength({max: 10000}),
-    body("legalInfo", "Legal information cannot be longer than 512 characters").isLength({max: 512}),
+    body("legalInfo", "Legal information cannot be longer than 4096 characters").isLength({max: 4096}),
     body("assetType", "Asset type is required").notEmpty().isLength({max: 128}),
     body("tags", "Tags cannot be longer than 2048 characters").isLength({max: 2048}),
     body("source", "Source has to be a valid URL").optional({checkFalsy: true}).isURL(),
@@ -301,7 +301,7 @@ router.get('/settings/:id', validation.ensureAuthenticated, (req, res, next) => 
 router.post('/settings/save/:id', [
     body("name", "Name cannot be longer than 256 characters").isLength({max: 256}),
     body("about", "About text cannot be longer than 10,000 characters").isLength({max: 10000}),
-    body("legalInfo", "Legal information cannot be longer than 512 characters").isLength({max: 512}),
+    body("legalInfo", "Legal information cannot be longer than 4096 characters").isLength({max: 4096}),
     body("assetType", "Asset type is required").notEmpty().isLength({max: 128}),
     body("tags", "Tags cannot be longer than 2048 characters").isLength({max: 2048}),
     body("source", "Source has to be a valid URL").optional({checkFalsy: true}).isURL(),

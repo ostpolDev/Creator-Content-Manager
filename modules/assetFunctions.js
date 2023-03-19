@@ -87,13 +87,9 @@ const handleFiles = function(req) {
             batch.skipped = [];
         }
         
-        let meta;
         if (source) {
             try {
-                meta = await makeMeta(source, batch.id);
-                if (!meta) {
-                    return res({success: false, msg: "Could not get meta information"});
-                }
+                await makeMeta(source, batch.id);
             } catch (e) {
                 logger.error(e);
                 return res({success: false, msg: "Could not get meta information"});
@@ -270,50 +266,56 @@ const makeBatch = function(userId, name) {
 
 const makeMeta = function(url, batchId) {
     return new Promise(async (res) => {
-        let start = new Date();
-        let metaData = await getMetaData(url);
-        if (!metaData) {
-            return res();
-        }
-
-        let uid = uuid();
-        let metaPath = path.join(paths.meta, uid + ".json");
-        fs.writeFile(metaPath, JSON.stringify(metaData), (err) => {
-            if (err) {
-                logger.error(err);
+        try {
+            let start = new Date();
+            let metaData = await getMetaData(url);
+            if (!metaData) {
                 return res();
             }
-
-            fs.stat(metaPath, (err, stats) => {
+            let uid = uuid();
+            let metaPath = path.join(paths.meta, uid + ".json");
+            fs.writeFile(metaPath, JSON.stringify(metaData), (err) => {
                 if (err) {
                     logger.error(err);
                     return res();
                 }
-
-                let end = new Date();
-                
-                let newMeta = new Meta({
-                    batch: batchId,
-                    url,
-                    uuid: uid,
-                    requestInfo: {
-                        lastRequest: start,
-                        start,
-                        end,
-                        time: end.getTime() - start.getTime()
-                    },
-                    size: stats.size
-                })
-
-                newMeta.save((err, meta) => {
+    
+                fs.stat(metaPath, (err, stats) => {
                     if (err) {
                         logger.error(err);
                         return res();
                     }
-                    return res(meta);
+    
+                    let end = new Date();
+                    
+                    let newMeta = new Meta({
+                        batch: batchId,
+                        url,
+                        uuid: uid,
+                        requestInfo: {
+                            lastRequest: start,
+                            start,
+                            end,
+                            time: end.getTime() - start.getTime()
+                        },
+                        size: stats.size
+                    })
+    
+                    newMeta.save((err, meta) => {
+                        if (err) {
+                            logger.error(err);
+                            return res();
+                        }
+                        return res(meta);
+                    })
                 })
             })
-        })
+
+        } catch (e) {
+            logger.error(e);
+            return res();
+        }
+
     })
 }
 
