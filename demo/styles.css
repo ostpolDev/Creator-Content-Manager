@@ -1500,6 +1500,13 @@ img.image.picture {
     border-radius: var(--default-border-radius);
 }
 
+video.video {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-inline: auto;
+}
+
 /* HIGHLIGHTED STUFF */
 *.highlighted {
     outline: 2px solid var(--light-blue);
