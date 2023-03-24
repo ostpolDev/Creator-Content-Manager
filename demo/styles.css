@@ -150,6 +150,10 @@ pre, .segment {
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
+.segment:empty {
+    display: none;
+}
+
 .elevated {
     -webkit-box-shadow: var(--default-box-shadow);
     box-shadow: var(--default-box-shadow);
