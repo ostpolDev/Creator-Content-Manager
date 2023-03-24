@@ -271,12 +271,16 @@ router.get("/category/:cat", (req, res, next) => {
         return next({status: 404});
     }
     res.render('assets/specialList', {
-        title: category + " assets",
+        title: capitalize(category) + " assets",
         capitalized: true,
         type: "assetType",
         assetType: category
     })
 })
+
+function capitalize(string) {
+    return string && string.length > 1 ? string.charAt(0).toUpperCase() + string.slice(1) : string;
+}
 
 router.get('/settings/:id', validation.ensureAuthenticated, (req, res, next) => {
     let id = req.params.id;
