@@ -7,7 +7,7 @@ const rateLimiter = new RateLimiterMemory({
 })
 
 const apiRequestRateLimiter = new RateLimiterMemory({
-    points: 1,
+    points: 10,
     duration: 25,
     blockDuration: 5
 })
