@@ -93,6 +93,7 @@ function userType() {
 function search(forceNew) {
     console.log("Searching for assets...");
     searchButton.disabled = true;
+    loadMoreButton.classList.add("is-loading");
 
     if (forceNew == true) {
         previousParams = "";
@@ -152,8 +153,10 @@ function search(forceNew) {
             console.error(json.msg);
         }
         searchButton.disabled = false;
+        loadMoreButton.classList.remove("is-loading");
     }).catch((err) => {
         console.error(err);
+        loadMoreButton.classList.remove("is-loading");
     })
 }
 
@@ -168,3 +171,16 @@ function clear() {
     search();
     searchButton.disabled = false;
 }
+
+if (autoLoadMore == "true") {
+    document.body.addEventListener('scroll', event => {
+        const {scrollHeight, scrollTop, clientHeight} = event.target;
+    
+        if (Math.abs(scrollHeight - clientHeight - scrollTop) < 1) {
+            if (!loadMoreButton.disabled) {
+                loadMoreButton.click();
+            }
+        }
+    });
+}
+

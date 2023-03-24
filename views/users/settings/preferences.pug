@@ -57,6 +57,12 @@ form(action="/users/settings/save/preferences", method="post")
                 label(for="showGameDescriptions") Show game descriptions
             p.help Show short descriptions for games in the game list
 
+        .field
+            div.checkbox
+                input.checkbox#autoLoadMore(type="checkbox" name="autoLoadMore" checked=user.meta.preferences.autoLoadMore)
+                label(for="autoLoadMore") Automatic load more
+            p.help In the asset lists, automatically activate the load more button whenever the bottom of the page has been reached.
+
     .segment.noBackground
         h2.header Defaults
         .field
