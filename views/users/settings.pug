@@ -21,7 +21,7 @@ block content
                             li(class=(s == setting ? "active" : ""))
                                 a.capitalized(href="/users/settings/"+encodeURIComponent(s))=s 
                 .buttons.fluid
-                    a.button(href="/users/v/"+encodeURIComponent(user.safeName))
+                    a.button(href="/users/v/"+encodeURIComponent(user.safeName) data-hover="Don't forget to save!")
                         span.icon
                             i.fas.fa-arrow-left
                         span Back 
