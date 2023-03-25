@@ -6,8 +6,37 @@ const userCardHeader = document.getElementById("userCardHeader");
 const userCardInfo = document.getElementById("userCardInfo");
 const userCardNameText = document.getElementById("userCardNameText");
 
+let registered = [];
+
 userLinks.forEach(link => {
 
+    RegisterHoverEvent(link);
+
+});
+
+async function GetUserInfo(id) {
+    try {
+        let res = await fetch("/api/users/getCardInfo/"+encodeURIComponent(id));
+        let json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            return undefined;
+        }
+
+        return json.info;
+    } catch (e) {
+        console.error(e);
+        return undefined;
+    }
+}
+
+function RegisterHoverEvent(link) {
+    if (registered.includes(link)) {
+        return;
+    }
+
+    registered.push(link);
     if (!link.getAttribute("data-disable-hover") && link.href.includes("/users/v/")) {
         
         link.addEventListener("mouseover", (/**@type {MouseEvent} */ e) => {
@@ -40,24 +69,6 @@ userLinks.forEach(link => {
             }
         })
 
-    }
-
-});
-
-async function GetUserInfo(id) {
-    try {
-        let res = await fetch("/api/users/getCardInfo/"+encodeURIComponent(id));
-        let json = await res.json();
-
-        if (!json.success) {
-            console.error(json.msg || "Something went wrong...");
-            return undefined;
-        }
-
-        return json.info;
-    } catch (e) {
-        console.error(e);
-        return undefined;
     }
 }
 

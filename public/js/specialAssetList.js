@@ -140,6 +140,10 @@ function search(forceNew) {
                 assetTableBody.innerHTML = assetTableBody.innerHTML + json.renderedResult;
             }
 
+            assetTableBody.querySelectorAll("a[href]").forEach((e) => {
+                RegisterHoverEvent(e)
+            });
+
             reachedEnd = json.reachedEnd;
 
             if (json.reachedEnd) {
