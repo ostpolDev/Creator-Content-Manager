@@ -234,6 +234,11 @@ block content
                         b Original Name:
                         br
                         span #{asset.originalName} 
+                    if dbMeta
+                        p
+                            b Meta ID: 
+                            br
+                            a.hiddenLink(href="/") #{dbMeta.id}
 
                 if asset.tags
                     .tags 

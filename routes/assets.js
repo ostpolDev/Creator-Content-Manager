@@ -76,7 +76,7 @@ router.get('/v/:id', (req, res, next) => {
         if (!asset) {
             return next({status: 404});
         }
-        Meta.findOne({batch: asset.batch}).exec((err, meta) => {
+        Meta.findOne({batch: asset.batch._id}).exec((err, meta) => {
             if (err) {
                 next(err);
             }
