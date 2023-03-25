@@ -92,7 +92,7 @@ const createFromId = function(id, checkExistence, req) {
             publishedAt: snippet.publishedAt ? new Date(snippet.publishedAt) : undefined,
             country: snippet.country,
             keywords: brandingSettings.channel.keywords,
-            bannerImageUrl: brandingSettings.image.bannerExternalUrl
+            bannerImageUrl: brandingSettings.image ? brandingSettings.image.bannerExternalUrl : undefined
         })
 
         if (countryData) {
@@ -162,7 +162,7 @@ const updateChannel = function(id, req) {
             channel.publishedAt = snippet.publishedAt ? new Date(snippet.publishedAt) : undefined;
             channel.country = snippet.country;
             channel.keywords = brandingSettings.channel.keywords;
-            channel.bannerImageUrl = brandingSettings.image.bannerExternalUrl;
+            channel.bannerImageUrl = brandingSettings.image ? brandingSettings.image.bannerExternalUrl : undefined;
 
             if (snippet.country) {
                 let countryInfo = await GetCountryInfo(snippet.country);

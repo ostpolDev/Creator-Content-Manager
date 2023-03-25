@@ -30,21 +30,28 @@ block content
                     .columns.multiline
                         include ../videos/videoGrid.pug
 
-                h2.header Members (#{1 + channelToView.access.length})
-                a.user.small.fluid(href="/users/v/"+channelToView.createdBy.safeName)
-                    .image
-                        img.rounded(src="https://www.gravatar.com/avatar/"+channelToView.createdBy.mailHash, alt=channelToView.createdBy.username)
-                    .content
-                        h1.header #{channelToView.createdBy.username}
-                        p Creator of this channel
-                            if user && channelToView.createdBy.id == user.id
-                                |  (You)
-                each u, i in channelToView.access
-                    a.user.small.fluid(href="/users/v/"+u.safeName)
+                .block
+                    h2.header Members (#{1 + channelToView.access.length})
+                    a.user.small.fluid(href="/users/v/"+channelToView.createdBy.safeName)
                         .image
-                            img.rounded(src="https://www.gravatar.com/avatar/"+u.mailHash, alt=u.username)
+                            img.rounded(src="https://www.gravatar.com/avatar/"+channelToView.createdBy.mailHash, alt=channelToView.createdBy.username)
                         .content
-                            h1.header #{u.username}
+                            h1.header #{channelToView.createdBy.username}
+                            p Creator of this channel
+                                if user && channelToView.createdBy.id == user.id
+                                    |  (You)
+                    each u, i in channelToView.access
+                        a.user.small.fluid(href="/users/v/"+u.safeName)
+                            .image
+                                img.rounded(src="https://www.gravatar.com/avatar/"+u.mailHash, alt=u.username)
+                            .content
+                                h1.header #{u.username}
+
+                if channelToView.keywords
+                    .block
+                        .tags
+                            each keyword, i in channelToView.keywords.split(" ")
+                                span.tag=keyword
             .column.oneQuarter
                 .buttons.fluid
                     if channel.id != channelToView.id
