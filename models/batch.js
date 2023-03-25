@@ -43,6 +43,10 @@ const BatchSchema = mongoose.Schema({
     artist: {
         type: String
     },
+    hasNoArtist: {
+        type: Boolean,
+        default: false
+    },
     cover: {
         hasCover: {
             type: Boolean,

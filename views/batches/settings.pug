@@ -52,6 +52,12 @@ block content
                         label(for="album") This batch is an album
 
                 .field
+                    div.checkbox
+                        input.checkbox#hasNoArtist(type="checkbox" name="hasNoArtist" checked=batch.hasNoArtist)
+                        label(for="hasNoArtist") This batch does not have an artist
+
+
+                .field
                     button.button.success.fluid
                         span.icon
                             i.fas.fa-save

@@ -99,6 +99,7 @@ router.post("/save/:id", [
     let name = req.body.batchName;
     let about = req.body.about;
     let isAlbum = req.body.album !== undefined;
+    let hasNoArtist = req.body.hasNoArtist !== undefined;
     let artist = req.body.artist;
     let price = req.body.price;
 
@@ -118,7 +119,8 @@ router.post("/save/:id", [
         "artist": artist,
         "purchase.price": price,
         "purchase.isPurchased": isPurchased,
-        "purchase.purchasedBy": req.user.id
+        "purchase.purchasedBy": req.user.id,
+        "hasNoArtist": hasNoArtist
     }}).exec((err) => {
         if (err) {
             logger.error(err);
