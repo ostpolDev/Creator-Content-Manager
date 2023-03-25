@@ -23,7 +23,16 @@ const { Stream } = require('stream');
 router.get('/', (req, res) => {
     res.render('batches/index', {
         title: "Batches",
-        sorts: batchFunctions.sorts
+        sorts: batchFunctions.sorts,
+        type: "batches"
+    })
+})
+
+router.get('/albums', (req, res) => {
+    res.render('batches/index', {
+        title: "Albums",
+        sorts: batchFunctions.sorts,
+        type: "albums"
     })
 })
 

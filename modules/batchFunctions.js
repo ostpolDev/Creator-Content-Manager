@@ -25,6 +25,7 @@ const getList = function(req) {
 
         let skip = req.query.skip;
         let limit = req.query.limit;
+        let album = req.query.album == "true";
 
         try {
             if (skip) {
@@ -56,9 +57,7 @@ const getList = function(req) {
         if (!currentOrder || (currentOrder != "1" && currentOrder != "-1")) {
             currentOrder = "-1";
         }
-    
-        currentOrder = parseInt(currentOrder);
-    
+        
         let batchQuery = {length: {$gt: 1}};
 
         if (searchQuery && searchQuery.trim() != "") {
@@ -79,6 +78,13 @@ const getList = function(req) {
         if (!selects.includes(field)) {
             selects.push(field);
         }
+
+        if (album) {
+            batchQuery["isAlbum"] = true;
+            batchQuery["cover.hasCover"] = true;
+        }
+
+        console.log(album, batchQuery)
     
         Batch.find(batchQuery).sort(batchSort).select(selects.join(" ")).limit(limit).sort({createdAt: -1}).skip(skip).populate("createdBy", "name safeName").exec((_err, batches) => {
             if (_err) {
@@ -92,7 +98,8 @@ const getList = function(req) {
                 batchQuery,
                 batchSort,
                 limit,
-                skip
+                skip,
+                album
             }
             return res({success: true, params, batches})
         })

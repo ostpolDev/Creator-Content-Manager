@@ -36,14 +36,18 @@ block content
                         i.fas.fa-search
                     span Search
 
+        #batchContainer.hidden
 
-        table.table.striped.hoverable
-            thead 
-                th Action
-                th Name
-                th Uploader
-                th Date
-            tbody#batchTableBody
+            table.table.striped.hoverable
+                thead 
+                    th Action
+                    th Name
+                    th Uploader
+                    th Date
+                tbody#batchTableBody
+
+        #albumContainer.hidden
+            .columns.multiline#batchColumnBody
 
         button.button.link.fluid.hidden#loadMoreButton
             span.icon
@@ -51,4 +55,6 @@ block content
             span Load More
 
 block scripts
+    script.
+        const TYPE = "#{type}";
     script(src="/js/batchList.js") 
