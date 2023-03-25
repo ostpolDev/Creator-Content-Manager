@@ -2,7 +2,7 @@ extends ../layout
 
 block content
     .container
-        h1.header Batches
+        h1.header #{type == "batches" ? "Batches" : "Albums"}
 
         .field 
             label.label(for="sortSelect") Sort by
