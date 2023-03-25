@@ -90,6 +90,7 @@ function search(forceNew) {
                                     </div>
                                     <div class="cardBody">
                                         <h1 class="header">${batch.name}</h1>
+                                        <p>${batch.length} songs</p>
                                     </div>
                                 </a>
                             </div>
