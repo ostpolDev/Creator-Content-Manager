@@ -12,6 +12,7 @@ const batchFunctions = require('../modules/batchFunctions');
 const Asset = require('../models/asset');
 const Meta = require('../models/meta');
 const User = require('../models/user');
+const Batch = require('../models/batch');
 
 const path = require('path');
 const paths = require('../modules/paths');
@@ -51,12 +52,21 @@ router.get('/', (req, res, next) => {
                 if (err) {
                     logger.error(err);
                 }
-                res.render('assets/index', {
-                    title: "Assets",
-                    count,
-                    assets,
-                    totalSize: result[0] ? result[0].totalSize : -1
+
+                Batch.find({isAlbum: true, "cover.hasCover": true}).select("name _id length").limit(4).sort({createdAt: -1}).exec((err, albums) => {
+                    if (err) {
+                        logger.error(err);
+                    }
+
+                    res.render('assets/index', {
+                        title: "Assets",
+                        count,
+                        assets,
+                        totalSize: result[0] ? result[0].totalSize : -1,
+                        albums
+                    })
                 })
+
             })
 
         })
