@@ -6,6 +6,11 @@ const userCardHeader = document.getElementById("userCardHeader");
 const userCardInfo = document.getElementById("userCardInfo");
 const userCardNameText = document.getElementById("userCardNameText");
 
+let lastUser = {
+    id: undefined,
+    data: undefined
+};
+
 let registered = [];
 
 userLinks.forEach(link => {
@@ -16,6 +21,12 @@ userLinks.forEach(link => {
 
 async function GetUserInfo(id) {
     try {
+        if (lastUser.id && id == lastUser.id) {
+            return lastUser.data;
+        }
+
+        console.log("Fetching user data...");
+
         let res = await fetch("/api/users/getCardInfo/"+encodeURIComponent(id));
         let json = await res.json();
 
@@ -23,6 +34,9 @@ async function GetUserInfo(id) {
             console.error(json.msg || "Something went wrong...");
             return undefined;
         }
+
+        lastUser.id = id;
+        lastUser.data = json.info;
 
         return json.info;
     } catch (e) {
