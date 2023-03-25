@@ -5,6 +5,12 @@ form(action="/users/settings/save/preferences", method="post")
             div.checkbox
                 input.checkbox#showVideos(type="checkbox" name="showVideos" checked=user.meta.preferences.mainPage.showVideos)
                 label(for="showVideos") Show Videos
+
+        .field
+            div.checkbox
+                input.checkbox#showAlbums(type="checkbox" name="showAlbums" checked=user.meta.preferences.mainPage.showAlbums)
+                label(for="showAlbums") Show recent Albums
+        
         .field
             div.checkbox
                 input.checkbox#showAssets(type="checkbox" name="showAssets" checked=user.meta.preferences.mainPage.showAssets)

@@ -253,7 +253,8 @@ router.post("/settings/save/preferences", validation.ensureAuthenticated, async 
         mainPage: {
             showVideos: req.body.showVideos !== undefined,
             showAssets: req.body.showAssets !== undefined,
-            randomTip: req.body.randomTip !== undefined
+            randomTip: req.body.randomTip !== undefined,
+            showAlbums: req.body.showAlbums !== undefined
         }
     };
 

@@ -24,6 +24,25 @@ block content
             .columns.multiline
                 include videos/videoGrid.pug
 
+        if albums && user.meta.preferences.mainPage.showAlbums && albums.length > 0
+
+            .emptySpace
+
+            h2.header Recent albums
+            p.subtitle The #{albums.length != 4 ? albums.length : "4"} most recent albums added
+
+            .columns.multiline
+                each album, i in albums
+                    .column.oneQuarter
+                        a.card.hoverable(href="/assets/batches/v/"+album.id)
+                            .cardImage
+                                img(src="/assets/batches/cover/"+album.id, loading="lazy")
+                            .cardBody 
+                                h1.header #{album.name}
+                                p #{album.length} songs 
+
+            .emptySpace
+
         if user.meta.preferences.mainPage.showAssets && assets && assets.length > 0
             h2.header Recent assets
             p.subtitle The 10 most recent assets uploaded

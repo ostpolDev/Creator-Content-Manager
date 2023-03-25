@@ -66,6 +66,10 @@ const UserSchema = mongoose.Schema({
                 randomTip: {
                     type: Boolean,
                     default: true
+                },
+                showAlbums: {
+                    type: Boolean,
+                    default: true
                 }
             }
         },

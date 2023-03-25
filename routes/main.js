@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Video = require('../models/video');
 const Channel = require('../models/channel');
+const Batch = require('../models/batch');
 const logger = require('../modules/logger');
 const validation = require('../modules/validation');
 const channelFunctions = require('../modules/channelFunctions');
@@ -37,11 +38,18 @@ router.get('/', async (req, res, next) => {
                 if (err) {
                     return next(err);
                 }
-                res.render("index", {
-                    videos,
-                    assets,
-                    hint: hints.getHint()
-                })
+                Batch.find({isAlbum: true, "cover.hasCover": true}).select("name _id length").limit(4).sort({createdAt: -1}).exec((err, albums) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    res.render("index", {
+                        videos,
+                        assets,
+                        hint: hints.getHint(),
+                        albums
+                    })
+
+                });
             });
         })
     })
