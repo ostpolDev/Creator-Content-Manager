@@ -238,7 +238,7 @@ block content
                         p
                             b Meta ID: 
                             br
-                            a.hiddenLink(href="/meta/v/"+dbMeta.id) #{dbMeta.id}
+                            a.hiddenLink(href="/meta/v/"+dbMeta.id+"?from="+asset.id+"&type=assets") #{dbMeta.id}
 
                 if asset.tags
                     .tags 

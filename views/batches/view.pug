@@ -191,6 +191,11 @@ block content
                             b Upload duration:
                             br
                             span #{batch.uploadTime.time}ms
+                        if dbMeta
+                            p
+                                b Meta ID: 
+                                br
+                                a.hiddenLink(href="/meta/v/"+dbMeta.id+"?from="+batch.id+"&type=batches") #{dbMeta.id}
                         if batch.cover.hasCover
                             p
                                 b Cover update:

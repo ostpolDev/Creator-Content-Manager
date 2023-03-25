@@ -171,6 +171,7 @@ app.use("/channels", require('./routes/channels'));
 app.use("/videos", require("./routes/videos"));
 app.use("/assets", require('./routes/assets'));
 app.use("/games", require('./routes/games'));
+app.use("/meta", require('./routes/meta'));
 
 app.listen(PORT, () => {
     logger.info(`Server listening on port ${PORT}`);

@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+    .container
+        if from && type
+            .block
+                a.button(href="/" + (type == "batches" ? "assets/batches" : type) + "/v/" + from) 
+                    span.icon
+                        i.fas.fa-arrow-left
+                    span Back
+
+        h1.title #{meta.batch.name}
+        p.subtitle Metadata
+
+        table.table.striped.hoverable
+            thead
+                th Key
+                th Value
+            tbody
+                each key, i in Object.keys(content)
+                    tr
+                        td.capitalized=key
+                        td=content[key]

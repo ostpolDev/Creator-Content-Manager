@@ -6,10 +6,9 @@ const admzip = require('adm-zip');
 const validation = require('../modules/validation');
 const logger = require('../modules/logger');
 
-const assetFunctions = require('../modules/assetFunctions');
-
 const Asset = require('../models/asset');
 const Batch = require('../models/batch');
+const Meta = require('../models/meta');
 
 const path = require('path');
 const paths = require('../modules/paths');
@@ -45,10 +44,16 @@ router.get('/v/:id', (req, res, next) => {
             if (err) {
                 return next(err);
             }
-            res.render("batches/view", {
-                title: batch.name,
-                batch,
-                firstAsset
+            Meta.findOne({batch: batch.id}).select("_id").exec((err, meta) => {
+                if (err) {
+                    return next(err);
+                }
+                res.render("batches/view", {
+                    title: batch.name,
+                    batch,
+                    firstAsset,
+                    dbMeta: meta
+                })
             })
         })
     })
