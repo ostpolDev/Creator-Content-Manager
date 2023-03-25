@@ -1373,6 +1373,10 @@ a.user {
     gap: var(--default-spacing);
 }
 
+.user:only-child {
+    margin-bottom: 0 !important;
+}
+
 .user h1 {
     font-size: 26px;
     line-height: 14px;
@@ -1518,6 +1522,19 @@ video.video {
 /* HIGHLIGHTED STUFF */
 *.highlighted {
     outline: 2px solid var(--light-blue);
+}
+
+.userCard {
+    position: fixed;
+    opacity: 0;
+    pointer-events: none;
+    width: 400px;
+    height: fit-content;
+    transition: opacity .2s ease;
+    border-radius: var(--default-border-radius);
+    border: 1px solid var(--default-border-color);
+    background-color: var(--background-white);
+    z-index: 99;
 }
 
 /* RESPONSIVE STUFFS */

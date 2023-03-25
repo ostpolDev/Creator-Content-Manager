@@ -53,6 +53,35 @@ router.get('/getDisplayInfo/:name', (req, res) => {
     })
 })
 
+router.get('/getCardInfo/:name', (req, res) => {
+    let name = req.params.name;
+    if (!name) {
+        return res.status(400).json({success: false});
+    }
+
+    User.findOne({$or: [
+        {username: name},
+        {safeName: name}
+    ]}).select("mailHash username name safeName meta.assetCount").exec((err, user) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        if (!user) {
+            return res.status(404).json({success: false});
+        }
+        return res.status(200).json({success: true, info: {
+            avatarUrl: "https://www.gravatar.com/avatar/"+user.mailHash,
+            username: user.username,
+            safeName: user.safeName,
+            hash: user.mailHash,
+            assetCount: user.meta.assetCount,
+            name: user.name,
+            pageUrl: "/users/v/"+encodeURIComponent(user.safeName)
+        }});
+    })
+})
+
 router.get("/getUsernames", validation.ensureAuthenticated, (req, res) => {
     User.find({}).select("username id").exec((err, users) => {
         if (err) {

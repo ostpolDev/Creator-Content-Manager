@@ -54,7 +54,7 @@ nav.navbar
                             i.fas.fa-user-plus
                         span Register
                 else
-                    a.navItem(href="/users/v/"+user.safeName, data-context-name="Settings" data-context-icon="cog" data-context-link="/users/settings")
+                    a.navItem(href="/users/v/"+user.safeName, data-context-name="Settings" data-context-icon="cog" data-context-link="/users/settings"  data-disable-hover="true")
                         span.icon
                             i.fas.fa-user
                         span(data-context-name="Settings" data-context-icon="cog" data-context-link="/users/settings") #{user.username} 

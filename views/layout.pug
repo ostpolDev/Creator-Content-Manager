@@ -108,6 +108,14 @@ html(lang="en")
         .hoverTag#hoverTag
             span#hoverTagText
 
+        .userCard#userCard
+            .user.small.fluid#userCardLink(href="/users/v/")
+                .image
+                    img.rounded#userCardImage(src="https://www.gravatar.com/avatar/")
+                .content
+                    h1.header#userCardHeader
+                    p#userCardNameText
+                    p#userCardInfo
 
         include misc/functions.pug
 
@@ -143,6 +151,7 @@ html(lang="en")
         script(src="/js/hover.js")  
         script(src="/js/themeSwitcher.js") 
         script(src="/js/musicPlayer.js") 
+        script(src="/js/userHoverCard.js") 
 
         script(src="/js/assetFunctions.js") 
         script(src="/js/contextMenu.js") 

@@ -7,7 +7,7 @@ block content
         .columns.multiline
             each u, i in users
                 .column.oneQuarter
-                    a.card.hoverable.circular(href="/users/v/"+u.safeName)
+                    a.card.hoverable.circular(href="/users/v/"+u.safeName data-disable-hover="true")
                         .cardImage
                             img(src="https://www.gravatar.com/avatar/"+u.mailHash+"?s=200", alt=u.username)
                         .cardBody.centerText
