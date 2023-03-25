@@ -73,6 +73,12 @@ const ChannelSchema = mongoose.Schema({
             }
         },
         flag: String
+    },
+    keywords: {
+        type: String
+    },
+    bannerImageUrl: {
+        type: String
     }
 }, {timestamps: true});
 

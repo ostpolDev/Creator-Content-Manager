@@ -48,6 +48,7 @@ const createFromId = function(id, checkExistence, req) {
         let snippet = item.snippet;
         let stats = item.statistics;
         let status = item.status;
+        let brandingSettings = item.brandingSettings;
 
         let countryData = undefined;
 
@@ -89,7 +90,9 @@ const createFromId = function(id, checkExistence, req) {
             status,
             customUrl: snippet.customUrl,
             publishedAt: snippet.publishedAt ? new Date(snippet.publishedAt) : undefined,
-            country: snippet.country
+            country: snippet.country,
+            keywords: brandingSettings.channel.keywords,
+            bannerImageUrl: brandingSettings.image.bannerExternalUrl
         })
 
         if (countryData) {
@@ -148,6 +151,7 @@ const updateChannel = function(id, req) {
             let snippet = item.snippet;
             let stats = item.statistics;
             let status = item.status;
+            let brandingSettings = item.brandingSettings;
 
             channel.name = snippet.title;
             channel.thumbnails = snippet.thumbnails;
@@ -157,6 +161,8 @@ const updateChannel = function(id, req) {
             channel.customUrl = snippet.customUrl;
             channel.publishedAt = snippet.publishedAt ? new Date(snippet.publishedAt) : undefined;
             channel.country = snippet.country;
+            channel.keywords = brandingSettings.channel.keywords;
+            channel.bannerImageUrl = brandingSettings.image.bannerExternalUrl;
 
             if (snippet.country) {
                 let countryInfo = await GetCountryInfo(snippet.country);
