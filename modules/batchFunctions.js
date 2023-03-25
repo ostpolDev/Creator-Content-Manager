@@ -83,8 +83,6 @@ const getList = function(req) {
             batchQuery["isAlbum"] = true;
             batchQuery["cover.hasCover"] = true;
         }
-
-        console.log(album, batchQuery)
     
         Batch.find(batchQuery).sort(batchSort).select(selects.join(" ")).limit(limit).sort({createdAt: -1}).skip(skip).populate("createdBy", "name safeName").exec((_err, batches) => {
             if (_err) {

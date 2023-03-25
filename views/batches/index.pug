@@ -9,7 +9,7 @@ block content
             .control
                 select.input.capitalized#sortSelect
                     each sort, i in Object.keys(sorts)
-                        option.capitalized(value=sort,selected=(sort == "album"))=sort
+                        option.capitalized(value=sort,selected=(sort == "name"))=sort
 
         .field 
             label.label(for="channelSelect") Order
