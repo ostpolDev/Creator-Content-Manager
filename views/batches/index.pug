@@ -1,8 +1,34 @@
 extends ../layout
 
 block content
+    if missingCovers && missingCovers.length > 0
+        .modal#missingModal
+            .modalBackground(data-modal="close")
+            .modalContainer
+                .modalHeader 
+                    h2 #{missingCovers.length == 1 ? "This batch is" : "These batches are"} missing a cover image.
+                    span.close(data-modal="close")
+                        i.fas.fa-times
+                .modalContent
+                    each b, i in missingCovers
+                        .notification
+                            a.hiddenLink(href="/assets/batches/v/"+b._id)=b.name
+                .modalFooter
+                    button.button.has-icon(data-modal="close")
+                        span.icon
+                            i.fas.fa-times
+                        span Close
+
     .container
         h1.header #{type == "batches" ? "Batches" : "Albums"}
+
+        if missingCovers && missingCovers.length > 0
+            .message.info.block
+                .messageHeader
+                    p Info
+                .messageBody
+                    p #{missingCovers.length} album#{missingCovers.length != 1 ? "s are" : " is"} missing a cover image. 
+                        a(href="javascript:void(0);" data-modal="#missingModal") View.
 
         .field 
             label.label(for="sortSelect") Sort by

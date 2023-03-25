@@ -28,11 +28,17 @@ router.get('/', (req, res) => {
     })
 })
 
-router.get('/albums', (req, res) => {
-    res.render('batches/index', {
-        title: "Albums",
-        sorts: batchFunctions.sorts,
-        type: "albums"
+router.get('/albums', (req, res, next) => {
+    Batch.find({isAlbum: true, "cover.hasCover": false}).select("_id name").exec((err, missingCovers) => {
+        if (err) {
+            return next(err);
+        }
+        res.render('batches/index', {
+            title: "Albums",
+            sorts: batchFunctions.sorts,
+            type: "albums",
+            missingCovers
+        })
     })
 })
 
