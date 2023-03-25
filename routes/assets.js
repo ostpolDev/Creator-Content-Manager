@@ -196,8 +196,10 @@ router.get('/download/:id', (req, res) => {
             return res.status(404).send();
         }
 
-        await assetFunctions.updateDownloadCount(asset.id);
-        await batchFunctions.uploadTotalDownloads(asset.batch);
+        if (req.headers.referer) {
+            await assetFunctions.updateDownloadCount(asset.id);
+            await batchFunctions.uploadTotalDownloads(asset.batch);
+        }
 
         res.setHeader('Content-disposition', 'attachment; filename=' + asset.originalName);
         res.setHeader('Content-type', asset.mimetype);
