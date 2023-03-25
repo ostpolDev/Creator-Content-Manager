@@ -238,6 +238,8 @@ router.post("/settings/save/general", validation.ensureAuthenticated, [
     })
 })
 
+const NavUserSettings = ["name", "image", "both"];
+
 router.post("/settings/save/preferences", validation.ensureAuthenticated, async (req, res) => {
     let preferences = {
         hiddenFavorites: req.body.hiddenFavorites !== undefined,
@@ -247,6 +249,7 @@ router.post("/settings/save/preferences", validation.ensureAuthenticated, async 
         hideAssetVideoList: req.body.hideAssetVideoList !== undefined,
         showGameDescriptions: req.body.showGameDescriptions !== undefined,
         autoLoadMore: req.body.autoLoadMore !== undefined,
+        navUserIcon: NavUserSettings.includes(req.body.navUserIcon) ? req.body.navUserIcon : NavUserSettings[0],
         mainPage: {
             showVideos: req.body.showVideos !== undefined,
             showAssets: req.body.showAssets !== undefined,

@@ -54,10 +54,12 @@ nav.navbar
                             i.fas.fa-user-plus
                         span Register
                 else
-                    a.navItem(href="/users/v/"+user.safeName, data-context-name="Settings" data-context-icon="cog" data-context-link="/users/settings"  data-disable-hover="true")
-                        span.icon
-                            i.fas.fa-user
-                        span(data-context-name="Settings" data-context-icon="cog" data-context-link="/users/settings") #{user.username} 
+                    a.navItem.vertCenter(href="/users/v/"+user.safeName, data-context-name="Settings" data-context-icon="cog" data-context-link="/users/settings"  data-disable-hover="true")
+                        if !user.meta.preferences.navUserIcon || user.meta.preferences.navUserIcon == "both" || user.meta.preferences.navUserIcon == "image"
+                            span.icon.hasImage
+                                img.circle(src="https://www.gravatar.com/avatar/"+user.mailHash+"?s=50", alt="")
+                        if !user.meta.preferences.navUserIcon || user.meta.preferences.navUserIcon == "both" || user.meta.preferences.navUserIcon == "name"
+                            span.vertCenter(data-context-name="Settings" data-context-icon="cog" data-context-link="/users/settings") #{user.username} 
                     a.navItem.button(href="/users/logout")
                         span.icon
                             i.fas.fa-sign-out-alt

@@ -63,6 +63,14 @@ form(action="/users/settings/save/preferences", method="post")
                 label(for="autoLoadMore") Automatic load more
             p.help In the asset lists, automatically activate the load more button whenever the bottom of the page has been reached.
 
+        .field 
+            label.label(for="navUserIcon") Navigation user icon
+            .control
+                select.input.capitalized#navUserIcon(name="navUserIcon")
+                    option(value="name" data-selected=(user.meta.preferences.navUserIcon == "name").toString()) Username only
+                    option(value="image" data-selected=(user.meta.preferences.navUserIcon == "image").toString()) Profile picture only
+                    option(value="both" data-selected=(user.meta.preferences.navUserIcon == "both").toString()) Username and Profile picture
+
     .segment.noBackground
         h2.header Defaults
         .field

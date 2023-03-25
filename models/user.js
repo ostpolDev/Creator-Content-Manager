@@ -49,6 +49,7 @@ const UserSchema = mongoose.Schema({
             hideAssetVideoList: Boolean,
             showGameDescriptions: Boolean,
             autoLoadMore: Boolean,
+            navUserIcon: String,
             defaultChannel: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Channel'

@@ -59,6 +59,9 @@ block content
                                 p=setting
 
 block scripts
+
+    script(src="/js/selectHelp.js") 
+
     if setting == "general" && (user && !user.meta.preferences.disableMarkdown)
         script.
             const easyMDE = new EasyMDE();
