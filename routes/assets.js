@@ -76,18 +76,9 @@ router.get('/v/:id', (req, res, next) => {
         if (!asset) {
             return next({status: 404});
         }
-        Meta.findOne({batch: asset.batch._id}).exec((err, meta) => {
+        Meta.findOne({batch: asset.batch._id}).select("_id").exec((err, meta) => {
             if (err) {
                 next(err);
-            }
-            let metaPath;
-            let metaData;
-            if (meta) {
-                metaPath = path.join(paths.meta, meta.uuid);
-                
-                if (fs.existsSync(metaPath)) {
-                    metaData = JSON.parse(fs.readFileSync(metaPath));
-                }
             }
 
             let content = "";
@@ -111,7 +102,6 @@ router.get('/v/:id', (req, res, next) => {
                     title: asset.meta.hasCustomName ? asset.name : asset.cleanName,
                     asset,
                     dbMeta: meta,
-                    meta: metaData,
                     favoriteCount,
                     sorts: videoFunctions.sorts,
                     content
