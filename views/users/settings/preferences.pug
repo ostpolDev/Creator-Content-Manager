@@ -15,6 +15,11 @@ form(action="/users/settings/save/preferences", method="post")
             div.checkbox
                 input.checkbox#showAssets(type="checkbox" name="showAssets" checked=user.meta.preferences.mainPage.showAssets)
                 label(for="showAssets") Show recent Assets
+
+        .field
+            div.checkbox
+                input.checkbox#showAssetSearch(type="checkbox" name="showAssetSearch" checked=user.meta.preferences.mainPage.showAssetSearch)
+                label(for="showAssetSearch") Show Asset search bar
     
         .divider.light
 

@@ -12,6 +12,17 @@ block content
 
         .emptySpace
 
+        if user.meta.preferences.mainPage.showAssetSearch
+
+            .field
+                label.label(for="searchQuery") Asset Search
+                .control.hasIcon
+                    input.input#searchQuery(type="url" name="searchQuery" placeholder="Title, description, tags, ...") 
+                    span.icon
+                        i.fas.fa-search
+
+            .emptySpace
+
         if user.meta.preferences.mainPage.randomTip && hint
             .segment
                 p
@@ -63,3 +74,6 @@ block content
             strong Tip: 
             | Change what's shown here in your 
             a(href="/users/settings/preferences") preference settings
+
+block scripts
+    script(src="/js/index.js") 

@@ -70,6 +70,10 @@ const UserSchema = mongoose.Schema({
                 showAlbums: {
                     type: Boolean,
                     default: true
+                },
+                showAssetSearch: {
+                    type: Boolean,
+                    default: true
                 }
             }
         },

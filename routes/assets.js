@@ -398,9 +398,11 @@ router.post('/settings/save/:id', [
 })
 
 router.get("/search", (req, res) => {
+    let query = req.query.q;
     res.render('assets/specialList', {
         title: "Asset Search",
-        type: "globalSearch"
+        type: "globalSearch",
+        query
     })
 })
 
