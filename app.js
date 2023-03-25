@@ -12,6 +12,7 @@ const upload = require('express-fileupload');
 const cookieSession = require('cookie-session');
 const MemoryStore = require('memorystore')(session);
 const uuid = require('uuid').v4;
+const cors = require('cors');
 
 const Channel = require('./models/channel');
 
@@ -38,6 +39,7 @@ db.on("error", (err) => {
 
 // app.use(helmet({contentSecurityPolicy: false}));
 
+app.use(cors());
 
 app.set("views", paths.views);
 app.set("view engine", "pug");
