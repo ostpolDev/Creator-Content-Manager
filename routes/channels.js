@@ -93,7 +93,7 @@ router.get('/v/:id', validation.ensureAuthenticated, (req, res, next) => {
             {createdBy: req.user.id},
             {access: req.user.id}
         ]
-    }).populate("createdBy access meta.requestInfo.by").exec((err, channel) => {
+    }).populate("createdBy access meta.requestInfo.by descriptionTemplate.lastUpdateBy").exec((err, channel) => {
         if (err) {
             return next(err);
         }
@@ -134,6 +134,46 @@ router.get('/access/:id', validation.ensureAuthenticated, (req, res, next) => {
             channelToView: channel
         })
 
+    })
+})
+
+router.post("/saveDescriptionTemplate/:id", [
+    body("template", "The template cannot be longer than 5,000 characters").isLength({max: 5000})
+], validation.ensureAuthenticated, (req, res, next) => {
+    let id = req.params.id;
+    if (!isValidObjectId(id)) {
+        req.flash('danger', "Invalid ID");
+        return res.redirect("/");
+    }
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        errors.array().forEach(e => {
+            req.flash('danger', e.msg);
+        })
+        return res.redirect("/channels/v/"+encodeURIComponent(id));
+    }
+    
+
+    let text = req.body.template;
+
+    Channel.findOneAndUpdate({
+        _id: id,
+        createdBy: req.user.id
+    }, {
+        $set: {
+            descriptionTemplate: {
+                text,
+                lastUpdate: new Date(),
+                lastUpdateBy: req.user.id
+            }
+        }
+    }).exec((err) => {
+        if (err) {
+            return next(err);
+        }
+        req.flash('success', "Successfully updated the channels description template");
+        res.redirect("/channels/v/"+encodeURIComponent(id));
     })
 })
 

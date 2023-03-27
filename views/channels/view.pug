@@ -2,6 +2,74 @@ extends ../layout
 
 block content
 
+    .modal#descriptionTemplateModal
+        .modalBackground(data-modal="close")
+        .modalContainer
+            .modalHeader 
+                h2 Description Template
+                span.close(data-modal="close")
+                    i.fas.fa-times
+            .modalContent
+
+                .segment Description templates are used to quickly generate a video description. Each channel gets one.
+
+                form(action="/channels/saveDescriptionTemplate/"+channelToView.id, method="post") 
+                    .field
+                        label.label(for="template") Template
+                        .control
+                            textarea.textarea#template(name="template", placeholder="Write the description template...", maxlength="5000", rows="15")
+                                | #{channelToView.descriptionTemplate.text}
+
+                    .field
+                        button.button.is-link
+                            span.icon
+                                i.fas.fa-save
+                            span Save
+
+                .divider.ligth
+
+                p Video description templates can use tokens. Tokens are pieces of text that get replaced with information as the description gets generated from the template.
+                    | Use these tokens in your description text to make them more dynamic.
+                p
+                    | To use a token, sourround the name of the token with curly braces, for example, the token "name" would turn into {name}
+
+                table.table.striped
+                    thead
+                        th Token
+                        th Effect
+                    tbody
+                        tr
+                            td name
+                            td The video name
+                        tr
+                            td starring
+                            td A list of users that starr in the video
+                        tr
+                            td editor
+                            td The name of the user that edited this video
+                        tr
+                            td legal
+                            td The legal info required for the assets used in the video
+                        tr
+                            td date
+                            td The current date
+                        tr
+                            td dictionary
+                            td A random word from the dictionary 
+
+                if channelToView.descriptionTemplate.lastUpdate && channelToView.descriptionTemplate.lastUpdateBy
+                    p The description template was last updated by 
+                        a(href="/users/v/"+channelToView.descriptionTemplate.lastUpdateBy.safeName) #{channelToView.descriptionTemplate.lastUpdateBy.username}
+                        |  at #{formatDateAndTime(channelToView.descriptionTemplate.lastUpdate)} 
+                else
+                    p The description template was never updated
+                
+            .modalFooter
+                button.button.has-icon(data-modal="close")
+                    span.icon
+                        i.fas.fa-times
+                    span Close
+
     .container
         if channelToView.bannerImageUrl
             .bannerImage(style="background-image: url('" + channelToView.bannerImageUrl + "')")
@@ -60,7 +128,7 @@ block content
                                 i.fas.fa-toggle-off
                             span Switch to channel
                     else
-                        button.button(disabled)
+                        button.button(disabled data-hover="You are already currently using this cannel")
                             span.icon
                                 i.fas.fa-toggle-on
                             span Switch to channel
@@ -69,6 +137,10 @@ block content
                             span.icon
                                 i.fas.fa-users
                             span Manage Access 
+                        button.button(data-modal="#descriptionTemplateModal")
+                            span.icon
+                                i.fas.fa-pen
+                            span Edit description template
                 .segment
                     p
                             b Created by:

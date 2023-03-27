@@ -81,8 +81,7 @@ const ChannelSchema = mongoose.Schema({
         type: String
     },
     descriptionTemplate: {
-        raw: String,
-        rendered: String,
+        text: String,
         lastUpdate: Date,
         lastUpdateBy: {
             type: mongoose.Schema.Types.ObjectId,
