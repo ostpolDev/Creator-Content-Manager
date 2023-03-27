@@ -16,6 +16,22 @@ block content
                     span.icon
                         i.fas.fa-times
                     span Close
+
+    .modal#descriptionModal
+        .modalBackground(data-modal="close")
+        .modalContainer
+            .modalHeader 
+                h2 Generated Description
+                span.close(data-modal="close")
+                    i.fas.fa-times
+            .modalContent
+                p The channel that this video is on (#{video.channel.name}) has its description template set up. This is the description that was generated based on that description.
+                pre.segment#descriptionContent
+            .modalFooter
+                button.button.has-icon(data-modal="close")
+                    span.icon
+                        i.fas.fa-times
+                    span Close
     .container 
         .buttons
             a.button(href="/videos") 
@@ -127,6 +143,11 @@ block content
                             span.icon
                                 i.fas.fa-cog
                             span Settings
+                    if video.channel.descriptionTemplate && video.channel.descriptionTemplate.text && video.channel.descriptionTemplate.text.trim() != ""
+                        button.button#viewGeneratedDescription
+                            span.icon
+                                i.fas.fa-file-alt
+                            span View generated description
                 
                 if !video.isEmpty
                     -let lastUpdateDiff = new Date().getTime() - video.meta.requestInfo.lastRequest.getTime()

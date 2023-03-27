@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 const Channel = require('../../models/channel');
+const Video = require('../../models/video');
 const User = require('../../models/user');
-const channelFunctions = require('../../modules/channelFunctions');
 const userFunctions = require('../../modules/userFunctions');
 const validation = require('../../modules/validation');
 const logger = require('../../modules/logger');
 const { isValidObjectId } = require('mongoose');
+const randomWords = require('random-words');
 
 router.post("/switch/:id", validation.ensureAuthenticated, (req, res, next) => {
     let id = req.params.id;
@@ -185,6 +186,63 @@ router.get('/getWithAccess', validation.ensureAuthenticated, (req, res) => {
         return res.status(200).json({success: true, channels});
     })
 })
+
+router.get("/description/:videoid", validation.ensureAuthenticated, (req, res) => {
+    let id = req.params.videoid;
+    if (!isValidObjectId(id)) {
+        return res.status(400).json({success: false, msg: "Invalid ID"});
+    }
+
+    Video.findById(id).populate("channel", "access createdBy descriptionTemplate").populate("assets", "legalInfo").populate("editor", "username").populate("starring", "username").exec((err, video) => {
+        if (err) {
+            logger.error(err);
+            return res.status(500).json({success: false});
+        }
+        if (!video.channel.access.includes(req.user.id) && video.channel.createdBy != req.user.id) {
+            return res.status(403).json({success: false, msg: "Permission denied"});
+        }
+        if (!video.channel.descriptionTemplate || !video.channel.descriptionTemplate.text || video.channel.descriptionTemplate.text.trim() == "") {
+            return res.status(404).json({success: false, msg: "No description template found for this channel"});
+        }
+
+        let text = video.channel.descriptionTemplate.text;
+
+        try {
+            text = text.replace(/{name}/gi, video.name);
+            text = text.replace(/{date}/gi, formatDate(new Date()));
+            text = text.replace(/{editor}/gi, video.editor.username);
+            text = text.replace(/{starring}/gi, video.starring.map(x => x.username).join(", "));
+            text = text.replace(/{legal}/gi, video.assets.map(x => x.legalInfo).join("\n\n"));
+            text = text.replace(/{dictionary}/gi, randomWords());
+            return res.status(200).json({success: true, description: text});
+        } catch (e) {
+            logger.error(e);
+            return res.status(500).json({success: false, msg: "Something went wrong when generating the description text"});
+        }
+
+
+
+    })
+})
+
+function formatDate(date) {
+    if (date == undefined) {
+        return "--";
+    }
+    var monthNames = [
+        "January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+    ];
+
+    if (typeof date === "string") {
+        date = new Date(date);
+    }
+
+    var day = date.getDate();
+    var monthIndex = date.getMonth();
+    var year = date.getFullYear();
+
+    return monthNames[monthIndex] + ' ' + day + ', ' + year;
+}
 
 
 module.exports = router;
