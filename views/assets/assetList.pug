@@ -22,6 +22,9 @@ if assets && assets.length > 0
                     if user && user.favorites.includes(_asset.id)
                         span.icon
                             i.fas.fa-star
+                    if _asset.nsfw 
+                        span.tag.danger(title="This asset has been marked as NSFW") NSFW
+                        | &nbsp;&nbsp;
                     | #{_asset.meta.hasCustomName ? _asset.name : _asset.cleanName}
                 input.input.hidden.assetRename(type="text" value=(_asset.meta.hasCustomName ? _asset.name : _asset.cleanName) placeholder=_asset.name)
             td

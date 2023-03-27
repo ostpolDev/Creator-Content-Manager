@@ -455,7 +455,7 @@ const getList = function(req) {
     
         assetSort[field] = currentOrder;
     
-        let selects = ["name", "cleanName", "fileType", "mimetype", "createdBy", "meta", "createdAt", "tags", "extention", "tagsString"];
+        let selects = ["name", "cleanName", "fileType", "mimetype", "createdBy", "meta", "createdAt", "tags", "extention", "tagsString", "nsfw"];
         if (!field.startsWith("meta") && !selects.includes(field)) {
             selects.push(field);
         }
