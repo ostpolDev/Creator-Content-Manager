@@ -5,9 +5,9 @@ const logger = require('../modules/logger');
 const validation = require('../modules/validation');
 const rateLimiter = require('../modules/rateLimiter');
 const channelFunctions = require('../modules/channelFunctions');
-const userFunctions = require('../modules/userFunctions');
+const { sanitizeFull } = require('../modules/marked');
 
-const {body, validationResult} = require('express-validator');
+const { body, validationResult } = require('express-validator');
 
 const Video = require('../models/video');
 const Channel = require('../models/channel');
@@ -155,7 +155,7 @@ router.post("/saveDescriptionTemplate/:id", [
     }
     
 
-    let text = req.body.template;
+    let text = sanitizeFull(req.body.template);
 
     Channel.findOneAndUpdate({
         _id: id,
