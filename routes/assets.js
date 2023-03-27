@@ -284,11 +284,17 @@ router.get("/category/:cat", (req, res, next) => {
     if (!assetFunctions.assetTypes.includes(category)) {
         return next({status: 404});
     }
-    res.render('assets/specialList', {
-        title: capitalize(category) + " assets",
-        capitalized: true,
-        type: "assetType",
-        assetType: category
+    Asset.countDocuments({assetType: category, nsfw: true}).exec((err, count) => {
+        if (err) {
+            return next(err);
+        }
+        res.render('assets/specialList', {
+            title: capitalize(category) + " assets",
+            capitalized: true,
+            type: "assetType",
+            assetType: category,
+            nsfwCount: count
+        })
     })
 })
 
@@ -416,12 +422,18 @@ router.post('/settings/save/:id', [
     })
 })
 
-router.get("/search", (req, res) => {
+router.get("/search", (req, res, next) => {
     let query = req.query.q;
-    res.render('assets/specialList', {
-        title: "Asset Search",
-        type: "globalSearch",
-        query
+    Asset.countDocuments({nsfw: true}).exec((err, count) => {
+        if (err) {
+            return next(err);
+        }
+        res.render('assets/specialList', {
+            title: "Asset Search",
+            type: "globalSearch",
+            query,
+            nsfwCount: count
+        })
     })
 })
 

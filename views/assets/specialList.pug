@@ -8,7 +8,7 @@ block content
             .message.info
                 .messageHeader Info
                 .messageBody
-                    p #{nsfwCount} nsfw assets uploaded by #{userName} #{nsfwCount == 1 ? "is" : "are"} hidden.
+                    p #{nsfwCount} nsfw assets #{userName ? "uploaded by "+ userName : ""} #{nsfwCount == 1 ? "is" : "are"} hidden.
 
         .message.danger.hidden#invalidMessage
             .messageHeader Something went wrong
