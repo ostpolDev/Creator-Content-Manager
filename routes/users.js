@@ -250,6 +250,7 @@ router.post("/settings/save/preferences", validation.ensureAuthenticated, async 
         showGameDescriptions: req.body.showGameDescriptions !== undefined,
         autoLoadMore: req.body.autoLoadMore !== undefined,
         navUserIcon: NavUserSettings.includes(req.body.navUserIcon) ? req.body.navUserIcon : NavUserSettings[0],
+        disableNSFW: req.body.disableNSFW !== undefined,
         mainPage: {
             showVideos: req.body.showVideos !== undefined,
             showAssets: req.body.showAssets !== undefined,

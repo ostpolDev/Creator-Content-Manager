@@ -33,6 +33,11 @@ form(action="/users/settings/save/preferences", method="post")
         h2.header Various Preferences
         .field
             div.checkbox
+                input.checkbox#disableNSFW(type="checkbox" name="disableNSFW" checked=user.meta.preferences.disableNSFW)
+                label(for="disableNSFW") Disable NSFW
+            p.help This hides all NSFW assets and batches.
+        .field
+            div.checkbox
                 input.checkbox#hiddenFavorites(type="checkbox" name="hiddenFavorites" checked=user.meta.preferences.hiddenFavorites)
                 label(for="hiddenFavorites") Hidden favorites
             p.help Make your favorite assets hidden to other users

@@ -35,7 +35,11 @@ router.get('/', (req, res, next) => {
         if (err) {
             return next(err);
         }
-        Asset.find({}).sort({createdAt: -1}).limit(10).exec((err, assets) => {
+        let assetQuery = {};
+        if (req.user && req.user.meta.preferences.disableNSFW == true) {
+            assetQuery["nsfw"] = {$ne: true};
+        }
+        Asset.find(assetQuery).sort({createdAt: -1}).limit(10).exec((err, assets) => {
             if (err) {
                 return next(err);
             }

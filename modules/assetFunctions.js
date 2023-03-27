@@ -448,6 +448,12 @@ const getList = function(req) {
         if (extention && fileTypes.includes(extention)) {
             assetQuery.extention = extention;
         }
+
+        if (req.user && req.user.meta.preferences.disableNSFW == true) {
+            assetQuery["nsfw"] = {$ne: true};
+        }
+
+        console.log(assetQuery);
     
         let assetSort = {}
     

@@ -50,6 +50,10 @@ const UserSchema = mongoose.Schema({
             showGameDescriptions: Boolean,
             autoLoadMore: Boolean,
             navUserIcon: String,
+            disableNSFW: {
+                type: Boolean,
+                default: false
+            },
             defaultChannel: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Channel'
