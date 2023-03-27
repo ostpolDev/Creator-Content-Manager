@@ -36,6 +36,9 @@ block content
         #headerContainer(data-context-source="getAssetContext" data-asset=asset.id data-owner=(user && asset.createdBy.id == user.id))
             h1.header.assetName #{asset.meta.hasCustomName ? asset.name : asset.cleanName}
             p.subtitle.capitalized #{asset.assetType}
+                if asset.nsfw 
+                    | 
+                    span.tag.danger NSFW
             input.input.hidden.assetRename(type="text" value=(asset.meta.hasCustomName ? asset.name : asset.cleanName) placeholder=asset.name)
         .columns
             .column.threeQuarter
