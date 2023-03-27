@@ -133,6 +133,12 @@ block content
                         label(for="videos") Videos
 
                 .field
+                    legend Is NSFW
+                    div.checkbox
+                        input.checkbox#nsfw(type="checkbox" name="nsfw" checked=asset.nsfw)
+                        label(for="nsfw" title="Not safe for work") NSFW
+
+                .field
                     button.button.success.fluid
                         span.icon
                             i.fas.fa-save

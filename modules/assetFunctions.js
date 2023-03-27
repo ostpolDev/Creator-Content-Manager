@@ -59,6 +59,7 @@ const handleFiles = function(req) {
         let source = req.body.source;
         let price = req.body.price;
         let licence = req.body.licence;
+        let nsfw = req.body.nsfw != undefined;
 
         let canUseVideos = req.body.videos != undefined;
         let canUseStreaming = req.body.streaming != undefined;
@@ -163,6 +164,7 @@ const handleFiles = function(req) {
                                 safeName: req.user.safeName
                             }
                         },
+                        nsfw,
                         allowedPlatforms: {
                             videos: canUseVideos,
                             streams: canUseStreaming

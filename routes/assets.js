@@ -345,6 +345,7 @@ router.post('/settings/save/:id', [
         let source = req.body.source;
         let price = req.body.price;
         let licence = req.body.licence;
+        let nsfw = req.body.nsfw != undefined;
 
         let canUseVideos = req.body.videos != undefined;
         let canUseStreaming = req.body.streaming != undefined;
@@ -385,6 +386,7 @@ router.post('/settings/save/:id', [
         }
         asset.source = source;
         asset.licence = licence;
+        asset.nsfw = nsfw;
 
         asset.save((err) => {
             if (err) {
