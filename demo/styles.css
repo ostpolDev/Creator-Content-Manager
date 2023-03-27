@@ -56,12 +56,13 @@ body, html {
     filter: brightness(.85) !important;
 }
 
-p.subtitle {
+p.subtitle, a.hiddenLink.subtitle {
     font-size: 20px;
     font-weight: 100;
     line-height: 12px;
     margin-bottom: var(--default-spacing);
     margin-top: -0.6em;
+    display: block;
 }
 
 a {
