@@ -567,4 +567,21 @@ const assetExists = function(id) {
     })
 }
 
-module.exports = {handleFiles, makeBatch, makeMeta, cleanName, assetExists, makeBoolean, fileTypes, assetTypes, licenceTypes, getList, sorts, updateDownloadCount, deleteFile, deleteMetaFile, deleteManyFiles, updateUsername}
+module.exports = { 
+    handleFiles, 
+    makeBatch, 
+    makeMeta, 
+    cleanName, 
+    assetExists, 
+    makeBoolean, 
+    fileTypes, 
+    assetTypes, 
+    licenceTypes, 
+    getList, 
+    sorts, 
+    updateDownloadCount, 
+    deleteFile, 
+    deleteMetaFile, 
+    deleteManyFiles, 
+    updateUsername 
+}
