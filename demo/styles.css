@@ -1578,6 +1578,10 @@ video.video {
     border-radius: var(--default-border-radius);
 }
 
+*[disabled], input[disabled], input[disabled] label, *[disabled] * {
+    cursor: default !important;
+}
+
 /* RESPONSIVE STUFFS */
 
 @media only screen and (max-width: 820px) {

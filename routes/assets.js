@@ -388,13 +388,18 @@ router.post('/settings/save/:id', [
         asset.licence = licence;
         asset.nsfw = nsfw;
 
-        asset.save((err) => {
+        asset.save(async (err) => {
             if (err) {
                 return next(err);
             }
+
+            await assetFunctions.updateBatchNSFWStatus(asset.batch);
+
             req.flash('success', "Successfully saved asset info");
             res.redirect('/assets/v/'+asset.id);
         })
+
+
 
     })
 })

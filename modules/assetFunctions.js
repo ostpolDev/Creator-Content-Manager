@@ -84,6 +84,9 @@ const handleFiles = function(req) {
             return res({success:false, msg: "Failed to create batch"});
         }
 
+        batch.nsfw = nsfw;
+        batch.containsNSFW = nsfw;
+
         if (!batch.skipped) {
             batch.skipped = [];
         }
@@ -567,6 +570,33 @@ const assetExists = function(id) {
     })
 }
 
+const updateBatchNSFWStatus = function(id) {
+    return new Promise((res) => {
+        if (!isValidObjectId(id)) {
+            return res(false);
+        }
+
+        Asset.countDocuments({batch: id, nsfw: true}).exec((err, count) => {
+            if (err) {
+                logger.error(err);
+                return res(false);
+            }
+            Batch.findByIdAndUpdate(id, {
+                $set: {
+                    nsfw: count > 0,
+                    containsNSFW: count > 0
+                }
+            }).exec((err) => {
+                if (err) {
+                    logger.error(err);
+                    return res(false);
+                }
+                return res(true);
+            })
+        })
+    })
+}
+
 module.exports = { 
     handleFiles, 
     makeBatch, 
@@ -583,5 +613,6 @@ module.exports = {
     deleteFile, 
     deleteMetaFile, 
     deleteManyFiles, 
-    updateUsername 
+    updateUsername,
+    updateBatchNSFWStatus
 }

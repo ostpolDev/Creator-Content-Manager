@@ -58,6 +58,9 @@ block content
     .container
         h1.header #{batch.name}
         p.subtitle #{batch.length} assets in batch
+            if batch.nsfw 
+                | 
+                span.tag.danger NSFW
 
         .columns
             .column.threeQuarter

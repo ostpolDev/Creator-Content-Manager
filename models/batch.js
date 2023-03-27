@@ -84,6 +84,10 @@ const BatchSchema = mongoose.Schema({
     nsfw: {
         type: Boolean,
         default: false
+    },
+    containsNSFW: {
+        type: Boolean,
+        default: false
     }
 }, {timestamps: true});
 

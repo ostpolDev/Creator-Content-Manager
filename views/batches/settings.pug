@@ -56,6 +56,11 @@ block content
                         input.checkbox#hasNoArtist(type="checkbox" name="hasNoArtist" checked=batch.hasNoArtist)
                         label(for="hasNoArtist") This batch does not have an artist
 
+                .field
+                    div.checkbox(disabled=batch.containsNSFW data-hover=(batch.containsNSFW ? "If one or more assets within this batch have been marked as NSFW, the batches NSFW setting cannot be disabled." : ""))
+                        input.checkbox#nsfw(type="checkbox" name="nsfw" checked=batch.nsfw disabled=batch.containsNSFW)
+                        label(for="nsfw" title="Not safe for work") NSFW
+
 
                 .field
                     button.button.success.fluid

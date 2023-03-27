@@ -122,34 +122,51 @@ router.post("/save/:id", [
     let hasNoArtist = req.body.hasNoArtist !== undefined;
     let artist = req.body.artist;
     let price = req.body.price;
+    let nsfw = req.body.nsfw !== undefined;
 
     let isPurchased = false;
     if (!isNaN(price) && price > 0.0) {
         isPurchased = true;
     }
 
-    Batch.updateOne({
-        _id: id,
-        createdBy: req.user.id
-    }, {$set: {
-        "name": name,
-        "customInfo.description.raw": about,
-        "customInfo.description.rendered": marked.markAndSanitize(about),
-        "isAlbum": isAlbum,
-        "artist": artist,
-        "purchase.price": price,
-        "purchase.isPurchased": isPurchased,
-        "purchase.purchasedBy": req.user.id,
-        "hasNoArtist": hasNoArtist
-    }}).exec((err) => {
+    Batch.findById(id).select("containsNSFW nsfw").exec((err, batch) => {
         if (err) {
             logger.error(err);
             req.flash('danger', "Something went wrong");
-        } else {
-            req.flash('success', "Successfully updated batch information");
+            return res.redirect('/assets/batches/settings/'+encodeURIComponent(id));
         }
-        res.redirect('/assets/batches/settings/'+encodeURIComponent(id));
+        if (!batch) {
+            req.flash('danger', "Batch not found");
+            return res.redirect("/");
+        }
+        if (batch.containsNSFW == true) {
+            nsfw = true;
+        }
+        Batch.updateOne({
+            _id: id,
+            createdBy: req.user.id
+        }, {$set: {
+            "name": name,
+            "customInfo.description.raw": about,
+            "customInfo.description.rendered": marked.markAndSanitize(about),
+            "isAlbum": isAlbum,
+            "artist": artist,
+            "purchase.price": price,
+            "purchase.isPurchased": isPurchased,
+            "purchase.purchasedBy": req.user.id,
+            "hasNoArtist": hasNoArtist,
+            "nsfw": nsfw
+        }}).exec((err) => {
+            if (err) {
+                logger.error(err);
+                req.flash('danger', "Something went wrong");
+            } else {
+                req.flash('success', "Successfully updated batch information");
+            }
+            res.redirect('/assets/batches/settings/'+encodeURIComponent(id));
+        })
     })
+
 })
 
 router.get('/cover/:id', (req, res) => {
