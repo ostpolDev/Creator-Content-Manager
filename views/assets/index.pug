@@ -7,6 +7,18 @@ block content
             if totalSize && totalSize != -1
                 span(title=totalSize) (~#{bytesToSize(totalSize)})
 
+        .field
+            label.label(for="searchQuery") Asset Search
+            .control.hasIcon
+                input.input#searchQuery(type="url" name="searchQuery" placeholder="Title, description, tags, ...") 
+                span.icon
+                    i.fas.fa-search
+
+        .divider.light
+
+        .emptySpace
+
+
         .buttons.equal
             a.button(href="/assets/batches")
                 span.icon
@@ -101,3 +113,6 @@ block content
                 th Tags
             tbody
                 include assetList.pug
+
+block scripts
+    script(src="/js/index.js")
