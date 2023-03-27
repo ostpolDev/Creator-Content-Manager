@@ -88,6 +88,10 @@ const AssetSchema = mongoose.Schema({
             username: String,
             safeName: String
         }
+    },
+    nsfw: {
+        type: Boolean,
+        default: false
     }
 }, {timestamps: true});
 
