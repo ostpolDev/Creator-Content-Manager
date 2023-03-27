@@ -452,8 +452,6 @@ const getList = function(req) {
         if (req.user && req.user.meta.preferences.disableNSFW == true) {
             assetQuery["nsfw"] = {$ne: true};
         }
-
-        console.log(assetQuery);
     
         let assetSort = {}
     

@@ -1073,6 +1073,10 @@ a.tag {
     color: inherit;
 }
 
+.tag:empty {
+    display: none;
+}
+
 /* NAVIGATION */
 .navbar {
     width: 100%;
