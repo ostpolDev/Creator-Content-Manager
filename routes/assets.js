@@ -263,11 +263,19 @@ router.get('/user/:name', async (req, res, next) => {
         if (!user) {
             return next({status: 404});
         }
-        res.render('assets/specialList', {
-            title: user.username + "'s assets",
-            type: "user",
-            userName: user.username
+
+        Asset.countDocuments({createdBy: user.id, nsfw: true}).exec((err, count) => {
+            if (err) {
+                return next(err);
+            }
+            res.render('assets/specialList', {
+                title: user.username + "'s assets",
+                type: "user",
+                userName: user.username,
+                nsfwCount: count
+            })
         })
+
     })
 })
 
