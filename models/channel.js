@@ -79,6 +79,15 @@ const ChannelSchema = mongoose.Schema({
     },
     bannerImageUrl: {
         type: String
+    },
+    descriptionTemplate: {
+        raw: String,
+        rendered: String,
+        lastUpdate: Date,
+        lastUpdateBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
     }
 }, {timestamps: true});
 
