@@ -17,6 +17,13 @@ function getAssetContext(/**@type {MouseEvent} */ e, /**@type {HTMLElement} */ e
         }
     })
 
+    menus.push({
+        text: "Add to Collection",
+        event: (linkEvent, pointerEvent) => {
+            AddAssetToCollection(id);
+        }
+    })
+
 
     if (isOwner != undefined) {
         menus.push({

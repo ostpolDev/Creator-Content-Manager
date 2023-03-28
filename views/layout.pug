@@ -108,6 +108,50 @@ html(lang="en")
         .hoverTag#hoverTag
             span#hoverTagText
 
+        if user
+            .modal#collectionModal
+                .modalBackground(data-modal="close")
+                .modalContainer
+                    .modalHeader 
+                        h2 Add asset to collection
+                        span.close(data-modal="close")
+                            i.fas.fa-times
+                    .modalContent
+                        p Add "
+                            strong#collectionAssetName
+                            | " to a collection
+
+                        .field
+                            label.label(for="collectionSelect") Choose a collection
+                            .control
+                                select#collectionSelect.input(name="collectionSelect")
+                                    option(value="undefined") New Collection
+                                    if collections
+                                        each collection, i in collections
+                                            option(value=collection._id) #{collection.name} 
+
+                        #newCollection
+                            .field.required
+                                label.label Name
+                                .control.hasIcon
+                                    input.input(type="text" placeholder="Collection Name")
+                                    span.icon
+                                        i.fas.fa-italic
+
+                        .emptySpace
+
+                        .field 
+                            button.button.info
+                                span.icon
+                                    i.fas.fa-folder-plus 
+                                span Add to collection
+                        
+                    .modalFooter
+                        button.button.has-icon(data-modal="close")
+                            span.icon
+                                i.fas.fa-times
+                            span Close
+
         .userCard#userCard
             .user.small.fluid#userCardLink(href="/users/v/")
                 .image
@@ -153,6 +197,9 @@ html(lang="en")
         script(src="/js/musicPlayer.js") 
         script(src="/js/userHoverCard.js") 
         script(src="/js/global.js") 
+
+        if user
+            script(src="/js/collectionModal.js") 
 
         script(src="/js/assetFunctions.js") 
         script(src="/js/contextMenu.js") 
