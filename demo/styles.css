@@ -140,6 +140,24 @@ a.hiddenLink {
     overflow: hidden;
     text-overflow: ellipsis;
     transition: max-height var(--default-transition-time) ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.segment.closed::before {
+    content: "Click to read more";
+    left: 50%;
+    bottom: 0;
+    transition: background .2s ease;
+    position: absolute;
+    z-index: 20;
+    transform: translateX(-50%);
+    color: #0000003c;
+    transition: color .2s ease;
+}
+
+.segment.closed:hover::before {
+    color: black;
 }
 
 pre, .segment {
@@ -1585,6 +1603,10 @@ video.video {
 
 *[disabled], input[disabled], input[disabled] label, *[disabled] * {
     cursor: default !important;
+}
+
+.pointer {
+    cursor: pointer !important;
 }
 
 /* RESPONSIVE STUFFS */
