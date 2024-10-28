@@ -183,4 +183,19 @@ const uploadTotalDownloads = function(batchId) {
     })
 }
 
-module.exports = {makeBoolean, getList, sorts, deleteIfEmpty, deleteCover, uploadTotalDownloads};
+const getCollections = (id) => {
+    return new Promise((res) => {
+        if (!isValidObjectId(id)) {
+            return res(undefined);
+        }
+        Batch.find({createdBy: id, isCollection: true}).select("_id name").exec((err, collections) => {
+            if (err) {
+                logger.error(err);
+                return res(undefined);
+            }
+            return res(collections);
+        })
+    })
+}
+
+module.exports = {makeBoolean, getList, sorts, deleteIfEmpty, deleteCover, uploadTotalDownloads, getCollections};

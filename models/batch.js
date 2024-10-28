@@ -88,6 +88,20 @@ const BatchSchema = mongoose.Schema({
     containsNSFW: {
         type: Boolean,
         default: false
+    },
+    isCollection: {
+        type: Boolean,
+        default: false
+    },
+    collectionInfo: {
+        isPublic: {
+            type: Boolean,
+            default: false
+        },
+        collectionAssets: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Asset'
+        }]
     }
 }, {timestamps: true});
 

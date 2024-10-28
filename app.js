@@ -3,7 +3,6 @@ require('dotenv').config();
 const config = require('./config/database');
 const cookie_parser = require('cookie-parser');
 const express = require('express');
-const helmet = require('helmet');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const paths = require('./modules/paths');
@@ -13,6 +12,7 @@ const cookieSession = require('cookie-session');
 const MemoryStore = require('memorystore')(session);
 const uuid = require('uuid').v4;
 const cors = require('cors');
+const batchFunctions = require('./modules/batchFunctions');
 
 const Channel = require('./models/channel');
 
@@ -94,7 +94,7 @@ let colorModes = ["Auto", "Dark", "Light"]
 
 console.log(`Running in ${environment === "production" ? "Production" : "Development"}`)
 
-app.get('*', (req, res, next) => {
+app.get('*', async (req, res, next) => {
     res.locals.user = req.user || null;
     res.locals.url = 'https://' + req.get('host') + req.originalUrl;
     res.locals.colorModes = colorModes;
@@ -111,6 +111,8 @@ app.get('*', (req, res, next) => {
                 {access: req.user.id}
             ]}
         }
+
+        res.locals.collections = await batchFunctions.getCollections(req.user.id);
     }
     
     if (req.cookies.channel && mongoose.isValidObjectId(req.cookies.channel) && req.user) {
