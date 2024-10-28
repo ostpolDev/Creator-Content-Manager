@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+    .container
+        h1.title Register
+
+        form.block(data-form="/api/users/register", method="post") 
+            .field
+                label.label Name
+                .control.has-icons-left
+                    input.input(type="text" name="name" placeholder="Name")
+                    span.icon.is-small.is-left
+                        span person
+                        
+            .field
+                label.label Username *
+                .control.has-icons-left
+                    input.input(type="text" name="username" placeholder="Username" required)
+                    span.icon.is-small.is-left
+                        span person
+            .field
+                label.label Password *
+                .control.has-icons-left
+                    input.input(type="password" name="password" placeholder="Password" required)
+                    span.icon.is-small.is-left
+                        span password
+
+            button.button.is-link Register
+
+        p 
+            a(href="/users/login") Already have an account?
+        br
+        p
+            small * Required

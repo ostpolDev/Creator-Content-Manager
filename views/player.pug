@@ -1,0 +1,19 @@
+.box.musicPlayer.is-hidden#musicPlayer
+    .playerContent
+        img.playerAlbumArt#playerAlbumArt(src="https://placehold.co/256x256", alt="")
+        .vertStack
+            .info
+                p.title.is-4
+                p.subtitle.is-6
+            input#musicPlayerProgress(type="range" value="0", min="0" max="100" step="0.001")
+            .buttons.is-justify-content-center
+                button.button.iconButton.is-rounded#musicPlayButton
+                    span.icon
+                        span play_arrow
+                a.button.iconButton.is-rounded#musicLinkButton
+                    span.icon
+                        span link
+                button.button.iconButton.is-rounded#musicCloseButton
+                    span.icon
+                        span close
+        p.progressText#musicProgressText

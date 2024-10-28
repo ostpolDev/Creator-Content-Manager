@@ -1,0 +1,94 @@
+extends ../layout
+
+block head
+    link(rel="stylesheet", href="/lib/croppie/croppie.css")
+    script(src="/lib/croppie/croppie.min.js") 
+    script(src="/js/batches/edit.js" type="module" defer) 
+
+    script.
+        const DEF = {
+            batch: "#{batch.id}",
+        }
+
+block modals
+    include ../modals/assetInfo.pug
+
+block content
+    .container
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/assets") Assets
+                li
+                    a(href="/assets/batches") Batches
+                li
+                    a(href="/assets/batches/v/" + batch.id) #{batch.name} 
+                li.is-active
+                    a(href="#") Edit
+
+        .buttons
+            button.button.info(data-modal="#uploadHelpModal")
+                span.icon
+                    span info
+                span Help & Information
+
+        article.media
+            if batch.type == "album"
+                figure.media-left
+                    p.image.is-64x64
+                        img(src=(batch.image_url || "/img/defaultAlbum.webp"))
+            .media-content
+                .content
+                    h1.title Edit batch
+                    p.subtitle #{batch.name}
+
+        .message.is-info
+            .message-body Here, you can edit most of the batch's settings. Some settings however may only be changed in the individual asset settings.
+
+
+        form(data-form="/api/batches/edit/" + batch.id, method="POST", enctype="multipart/form-data")
+
+            .field
+                label.label(for="type") Batch type
+                .control
+                    select.input#type(name="type")
+                        each type in types
+                            if type != "single"
+                                option(value=type, selected=(batch.type == type)) #{formatString(type)}
+            
+            #coverField(class=(batch.type != "album" ? "is-hidden" : ""))
+                .field
+                    .file.has-name.is-fullwidth
+                        label.file-label(for="fileInput") 
+                            input.file-input#fileInput(type="file" accept="image/*")
+                            span.file-cta
+                                span.file-icon
+                                    span upload
+                                span.file-label Choose a cover image
+                            span.file-name#fileName #{batch.original_image_name}
+                    p.help Any image files are accepted
+
+                #croppieArea
+
+            .field
+                label.label(for="name") Name
+                .control.has-icons-left
+                    input.input#name(type="text" name="name" placeholder="Album by person" maxlength="256" autocomplete="off", value=batch.name)
+                    span.icon.is-small.is-left
+                        span edit_note 
+
+
+            button(type="button").button.is-link.is-fullwidth#submitButton Save changes
+            button.is-hidden#saveButton
+        
+        if batch.image_url
+        
+            hr
+
+            h2.title.is-4 Other options
+            .buttons
+                if batch.image_url
+                    button.button.is-danger.is-outlined#removeCoverImage
+                        span.icon
+                            span remove_selection
+                        span Remove cover image

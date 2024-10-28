@@ -1,0 +1,57 @@
+extends ../layout
+
+block head
+    script(src="/js/batches.js" type="module" defer) 
+
+block content
+    .container
+
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/assets") Assets
+                li.is-active
+                    a(href="#")  Batches 
+
+        h1.title #{title}
+        p.subtitle There #{batch_count == 1 ? "is" : "are"} currently #{batch_count.toLocaleString()} batch#{batch_count == 1 ? "" : "es"} registered.
+
+        .message.is-light
+            .message-body
+                p Every time assets get uploaded a batch is created which stores more information about the collection of assets.
+                p Batches may store images or artist names as well as unique names.
+
+        .field.block
+            label.label Search
+            .control.has-icons-left
+                input.input#searchInput(type="text" placeholder="Search..." name="q", value=(search || ""))
+                span.icon.is-small.is-left
+                    span search
+        
+        .buttons.fluid
+            button.button(data-type="single")
+                span.icon
+                    span description
+                span Include single
+            button.button(data-type="album")
+                span.icon
+                    span album
+                span Album
+
+        .block
+            #batchTable.is-hidden
+                table.table.is-striped.is-hoverable.is-fullwidth
+                    thead
+                        th Name
+                        th Uploaded by
+                        th Uploaded
+                        th Assets
+                    tbody#batchTableBody
+
+            #batchCards
+                .columns.is-fullwidth.is-multiline#batchCardsBody
+
+        button.button.is-link.is-fullwidth.is-outlined#loadMoreButton
+            span Load More
+
+        

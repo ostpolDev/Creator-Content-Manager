@@ -1,0 +1,38 @@
+.modal#uploadHelpModal
+    .modal-background(data-modal="close")
+    .modal-card
+        header.modal-card-head
+            p.modal-card-title Help & Information
+            button.delete(data-modal="close")
+        section.modal-card-body
+            .content
+                h2.title.is-4 Files
+                p At least one file has to be uploaded. When a file gets uploaded, an asset is created. When multiple files are selected, a batch is created.
+                
+                h3.title.is-6 Batches 
+                p Batches are a collection of assets. Technically all assets have a batch associated with them, but their functionality becomes more apparent when multiple files are uploaded.
+                p If more than one file are in a batch, the assets within do not get shown in the big asset list, or in the recents list. They will still show up in searches.
+                p This is mainly to avoid clutter when similarly named assets are uploaded.
+                p Batches can also be turned into albums. When they are marked as an album, you can upload an album cover and add more information.
+
+                h4.title.is-4 Batch Name
+                p If multiple files are uploaded, it is recommended to change the "batch name" field. This will give your batch a pretty name, instead of a randomly generated one, which is useful for albums and for searching for the batch.
+
+                h2.title.is-4 More on multiple files
+                p When uploading multiple files, it is recommended to not put anything into the "name" field on the upload page. If you put in a name and upload multiple files, every fill will have that name.
+                p Instead, leave it blank, and the site will automatically use the original file name to try and generate a more formatted asset name. This is useful when uploading albums, as this will display the song names for each song.
+
+                h2.title.is-4 Legal Information
+                p This is a text that must be included in the video description in order to be used. This can be a simple attribution or a couple of artist links. Whatever the original copyright holder wants.
+
+                h2.title.is-4 Price
+                p If you bought your asset / assets, you can add how much you paid for them. Not required, but it provides useful information. The total price you've spent on assets will be viewable on your Profile page.
+            
+                h2.title.is-4 Source
+                p If you got your asset from a website, like YouTube, please provide the source link. This will also allow for speical previews inside the asset page, like embedded YouTube videos, or song lyrics.
+                
+                h2.title.is-4 Changes
+                p You can change the information of assets and batches at any time once you've uploaded them, granted that you are the original uploaded of those files.
+        footer.modal-card-foot
+            .buttons
+                button.button Close

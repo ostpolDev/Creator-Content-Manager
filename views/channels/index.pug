@@ -1,0 +1,46 @@
+extends ../layout
+
+block head
+    script(src="/js/channels.js" type="module" defer) 
+
+block modals
+    .modal#addModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title Add a channel
+                button.delete(data-modal="close")
+            section.modal-card-body
+                .field
+                    label.label(for="channelHandle") YouTube username
+                    .control.has-icons-left
+                        input.input#channelHandle(type="text", name="channelHandle" placeholder="Username", autocomplete="off")
+                        span.icon.is-small.is-left
+                            span alternate_email
+
+            footer.modal-card-foot
+                .buttons
+                    button.button.is-link#submitChannelButton
+                        span.icon
+                            span add
+                        span Add channel
+                    button.button
+                        span.icon
+                            span close
+                        span Cancel
+
+block content
+    .container 
+        h1.title #{title}
+        p.subtitle You currently have access to #{channel_count.toLocaleString()} channel#{channel_count == 1 ? "" : "s"}
+
+        .buttons
+            button.button#addChannelButton
+                span.icon
+                    span add
+                span Add a YouTube channel
+
+        .block
+            .columns.is-multiline#channelContainer
+
+        button.button.is-link.is-fullwidth#loadMoreButton Load more

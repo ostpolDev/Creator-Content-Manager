@@ -1,0 +1,94 @@
+extends ../layout
+
+block head
+    script(src="/js/videos.js" type="module" defer) 
+
+block modals
+    .modal#addVideoModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title Add a new video
+                button.delete(data-modal="close")
+            section.modal-card-body
+
+                .field
+                    label.label(for="channelSelect") Channel
+                    .control
+                        select.input.channelSelect#channelSelect(autocomplete="off")
+                            each channel in channels
+                                option(value=channel.id) #{channel.name} 
+
+                .field
+                    label.label(for="youtubeId") YouTube video ID or URL
+                    .control.has-icons-left
+                        input.input#youtubeId(type="text" placeholder="R_FQU4KzN7A") 
+                        span.icon.is-small.is-left
+                            span videocam
+                    p.help Either the ID of the video, or a link to a video. This is optional if you want to create an empty video.
+
+                .field
+                    label.label(for="videoName") Video title
+                    .control.has-icons-left
+                        input.input#videoName(type="text" placeholder="Title of your video")
+                        span.icon.is-small.is-left
+                            span title
+                    p.help Use this if your video isn't on YouTube yet. This will be overridden once you add the YouTube link.
+
+                .field(data-search="user")
+                    label.label(for="starring") Starring
+                    .control.has-icons-left
+                        input.input#starring(type="text" placeholder="Enter a name...")
+                        input#starringResult(type="hidden")
+                        span.icon.is-small.is-left
+                            span person
+
+                .field(data-search="user")
+                    label.label(for="editors") Editors
+                    .control.has-icons-left
+                        input.input#editors(type="text" placeholder="Enter a name...")
+                        input#editorsResult(type="hidden")
+                        span.icon.is-small.is-left
+                            span person
+                            
+
+            footer.modal-card-foot
+                .buttons
+                    button.button.is-link#createVideoButton
+                        span.icon
+                            span add
+                        span Add video
+                    button.button(data-modal="close")
+                        span.icon
+                            span close
+                        span Cancel
+
+block content
+    .container
+        h1.title #{title}
+        p.subtitle There are currently #{videoCount} video#{videoCount != 1 ? "s" : ""} registered across your channels.
+
+        .buttons.block
+            button.button#addVideoButton
+                span.icon
+                    span add
+                span Add a new video
+
+        .block
+            .columns
+                .column.is-one-quarter
+                    .field
+                        label.label(for="channelSearch") Channel
+                        .control
+                            select.input.channelSelect#channelSearch(autocomplete="off", data-list-target="videos", data-list-filter="channel")
+                                each channel in channels
+                                    option(value=channel.id, selected=(!selected_channel ? false : selected_channel == channel.id)) #{channel.name} 
+                .column.is-three-quarters
+                    .field
+                        label.label Search
+                        .control.has-icons-left
+                            input.input#searchInput(type="text" placeholder="Search..." name="q", data-list-target="videos", data-list-filter="q")
+                            span.icon.is-small.is-left
+                                span search
+
+        .columns.is-multiline(data-list="videos" data-list-limit="8", data-list-load="true")

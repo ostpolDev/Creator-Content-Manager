@@ -1,0 +1,72 @@
+doctype html
+html(lang="en" data-theme="light")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title #{title ? title + " | " : ""}Creator Content Manager
+
+        script(src="/js/common.js" type="module" defer)
+        script(src="/js/lists.js" type="module" defer) 
+        script(src="/js/modals.js" defer)
+
+        link(rel="preload", href="/bulma/bulma.min.css", as="style")
+        link(rel="preload", href="/css/styles.css", as="style")
+
+        link(rel="stylesheet", href="/css/styles.css")
+        link(rel="stylesheet", href="/bulma/bulma.min.css")
+
+        script(src="/js/player.js" type="module" defer) 
+
+        script(src="/lib/moment.min.js") 
+
+        script.
+            let FF_FOUC_FIX;
+
+        block head
+
+    body 
+        script.
+            0
+
+        section#modals
+            include modals.pug
+            block modals
+
+        .box.contextMenu#contextMenu
+            #contextList
+
+
+        include functions.pug
+
+        include nav.pug
+
+        include player.pug
+
+        section.section#messagesSection(class=(messages ? "" : "is-hidden"))
+            .container
+                .message.is-warning
+                    .message-header Issues
+                    .message-body.content
+                        ul#messageList
+                            if messages
+                                each m in messages
+                                    li=m
+
+        block preContent
+
+        section.section#main
+            block content
+
+        block postContent
+
+        footer.footer
+            .container
+                if environment == "development"
+                    p 
+                        small 
+                            span.icon
+                                span edit
+                            | This site is running in development mode.
+                block footer
+
+        block scripts

@@ -1,0 +1,190 @@
+extends ../layout
+
+block head
+    script.
+        const DEF = {
+            video: "#{video.id}",
+        }
+
+    if view == "assets"
+        link(rel="stylesheet", href="/bulma/bulma-list.css")
+        script(src="/js/videos/assetSearch.js" type="module" defer) 
+
+block content
+    .container
+
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/channels") Channels
+                li
+                    a(href="/channels/v/" + video.channel_id) #{video.channel_name}
+                li
+                    a(href="/videos?channel=" + encodeURIComponent(video.channel_id)) Videos
+                li.is-active
+                    a(href="#") #{video.title || video.id}
+
+        h1.title #{video.title || video.id}
+        p.subtitle #{subtitle || video.channel_name || ""}
+
+        .columns
+            .column.is-three-quarters
+                if video.youtube_id
+                    figure.image.is-16by9.block
+                        iframe.has-ratio(src="https://youtube.com/embed/" + video.youtube_id, frameborder="0", width="640", height="360", allowfullscreen) 
+
+                    nav.level.block
+                        .level-item.has-text-centered
+                            div
+                                p.heading Views
+                                p.title(title=video.views) #{(video.views || 0).toLocaleString()}
+                        .level-item.has-text-centered
+                            div
+                                p.heading Likes
+                                p.title(title=video.likes) #{(video.likes || 0).toLocaleString()}
+                        if video.dislikes && video.dislikes != -1
+                            .level-item.has-text-centered
+                                div
+                                    p.heading Dislikes
+                                    p.title(title=video.dislikes) #{(video.dislikes || 0).toLocaleString()}
+                        .level-item.has-text-centered
+                            div
+                                p.heading Comments
+                                p.title(title=video.comments) #{(video.comments || 0).toLocaleString()}
+                
+                .tabs.is-boxed
+                    ul
+                        li(class=(view == "description" ? "is-active" : ""))
+                            a(href="?view=description")
+                                span.icon.is-small
+                                    span description
+                                span Description 
+                        li(class=(view == "assets" ? "is-active" : ""))
+                            a(href="?view=assets")
+                                span.icon.is-small
+                                    span files
+                                span Assets 
+                        li(class=(view == "comments" ? "is-active" : ""))
+                            a(href="?view=comments")
+                                span.icon.is-small
+                                    span comment
+                                span Comments 
+
+                if view == "description"
+                    if video.rendered_description
+                        pre.noBackground.block=video.rendered_description
+
+                    if video.tags
+                        .tags
+                            each tag in video.tags.split(",")
+                                span.tag #{tag}
+
+                else if view == "assets"
+                    .field.block
+                        label.label Asset search
+                        .control.has-icons-left
+                            input.input#searchInput(type="text" placeholder="Search for an asset" autocomple="off" value="")
+                            span.icon.is-small.is-left
+                                span search
+
+                    .buttons.block.fluid
+                        button.button#legalInfoButton
+                            span.icon
+                                span description
+                            span Generate legal information
+                        a.button(href="/assets") 
+                            span.icon
+                                span files
+                            span Browse assets
+
+                    .columns
+                        .column.is-half
+                            h2.title.is-6 Added assets
+                            button.button.is-fullwidth.is-loading#loadingCurrent Loading
+                            .list.has-visible-pointer-controls.has-overflow-ellipsis#currentAssetsContainer
+                            
+                        .column.is-half
+                            h2.title.is-6 Results
+                            button.button.is-fullwidth.is-loading.is-hidden#loadingSearch Loading
+                            .list.has-visible-pointer-controls.has-overflow-ellipsis#searchedAssetsContainer
+
+            .column.is-one-quarter
+                .buttons
+                    if video.youtube_id
+                        a.button.iconButton.is-rounded(href="https://youtube.com/watch?v=" + encodeURIComponent(video.youtube_id)) 
+                            span.icon
+                                span link 
+                    a.button.iconButton.is-rounded(href="/videos?channel="+encodeURIComponent(video.channel_id))
+                        span.icon
+                            span folder
+                    if isAuthor
+                        button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
+                            span.icon
+                                span delete
+                        button.button.iconButton.is-rounded#refreshButton(disabled=!canUpdate)
+                            span.icon
+                                span refresh
+                        a.button.iconButton.is-rounded(href="/videos/edit/"+encodeURIComponent(video.id))
+                            span.icon
+                                span edit
+                
+                .box.content
+                    p
+                        strong Added by
+                        br
+                        a.ellipsed(href="/users/v/" + video.author_username) #{video.author_display_name}
+                    p
+                        strong Added date
+                        br
+                        time(datetime=video.created_at, data-format="smart")
+                    if video.created_at.getTime() != video.updated_at.getTime()
+                        p
+                            strong Last change
+                            br
+                            time(datetime=video.updated_at, data-format="smart")
+                    
+                    if video.channel_name
+                        p
+                            strong Channel
+                            br
+                            a.ellipsed(href="/channels/v/" + video.channel_id) #{video.channel_name} 
+
+                    if video.youtube_id && video.uploaded_at
+                        p
+                            strong Upload date
+                            br
+                            time(datetime=video.uploaded_at, data-format="smart")
+                    if video.youtube_id
+                        p
+                            strong YouTube ID
+                            br
+                            span #{video.youtube_id}
+                    if video.category
+                        p
+                            strong Category
+                            br
+                            span(title=video.properties.category) #{video.category}
+                    if video.properties
+                        if video.properties.language
+                            p
+                                strong Language
+                                br
+                                span #{video.properties.language}
+                        if video.properties.contentDetails
+                            p
+                                strong Duration
+                                br
+                                time(datetime=video.properties.contentDetails.duration, data-format="HH:mm:ss", data-time="duration")
+                            p
+                                strong Definition
+                                br
+                                span #{video.properties.contentDetails.definition}
+                            p
+                                strong Licensed content
+                                br
+                                span #{formatString(video.properties.contentDetails.licensedContent.toString())}
+                    p
+                        strong Assets
+                        br
+                        a.hiddenLink(title=assetCount, href="?view=assets") #{assetCount.toLocaleString()}
+                    

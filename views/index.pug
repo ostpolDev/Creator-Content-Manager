@@ -1,0 +1,52 @@
+extends layout
+
+block content
+    .container
+        h1.title Creator Content Manager
+
+        if !user
+            p.subtitle Welcome!
+
+            .block
+                p This is the 3rd version of the "Creator Content Manager". On this site, you can manage all of your assets for videos and live streams.
+                p To get access to the full functionality of this site, please 
+                    a(href="/users/login") login
+                    |  or 
+                    a(href="/users/register") create a new account 
+
+        else
+            p.subtitle Welcome #{user.name || user.display_name}! This is your overview. 
+                if channel
+                    | Your currently selected channel is #{channel.name}.
+
+            form.block(action="/assets", method="get") 
+                .field
+                    label.label Asset search
+                    .control.has-icons-left
+                        input.input(type="text" placeholder="Search..." name="q")
+                        span.icon.is-small.is-left
+                            span search
+
+            .message.is-light
+                .message-body
+                    strong Tip: 
+                    | #{hint}
+
+            .block
+                h1.title.is-4 Latest videos
+                p.subtitle.is-6 The 10 latest videos across all of your channels
+
+                .columns.is-multiline(data-list="videos" data-list-limit="10", data-list-load="false")
+
+            .block
+                h1.title.is-4 Latest assets
+                p.subtitle.is-6 The 10 latest assets
+
+                table.table.is-fullwidth.is-striped.is-hoverable
+                    thead
+                        th Action
+                        th Name
+                        th Author
+                        th Uploaded
+                        th Tags
+                    tbody(data-list="assets" data-list-limit="10" data-list-filter="*", data-list-load="false")

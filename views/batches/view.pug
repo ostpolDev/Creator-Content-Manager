@@ -1,0 +1,175 @@
+extends ../layout
+
+block head
+    script.
+        const DEF = {
+            batch: "#{batch.id}",
+        }
+
+    if view == "assets"
+        script(src="/js/assets.js" type="module" defer) 
+    else if view == "comments"
+        script(src="/js/comments.js" type="module" defer) 
+
+    script(src="/js/batches/view.js" type="module" defer) 
+
+block modals
+    if isAuthor
+        .modal#deleteModal
+            .modal-background(data-modal="close")
+            .modal-card
+                header.modal-card-head
+                    p.modal-card-title Are you sure?
+                    button.delete(data-modal="close")
+                section.modal-card-body
+                    p Deleting this batch will also delete all of the assets (
+                        span #{batch.asset_count}
+                        | ) within as well as all of their associated data. This action 
+                        strong cannot 
+                        | be undone.
+                footer.modal-card-foot
+                    .buttons
+                        button.button(data-modal="close")
+                            span.icon
+                                span close
+                            span Cancel
+                        button.button.is-danger.is-outlined#confirmDeleteButton
+                            span.icon
+                                span delete
+                            span Delete all assets forever
+
+block content
+    .container
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/assets") Assets
+                li
+                    a(href="/assets/batches") Batches 
+                li.is-active
+                    a(href="#") #{batch.name}
+
+        .columns
+            .column.is-three-quarters
+                h1.title #{batch.name}
+                p.subtitle #{formatString(batch.type)} | #{batch.asset_count.toLocaleString()} Asset#{batch.asset_count != 1 ? "s" : ""}
+
+                if firstAsset
+                    if firstAsset.legal_information
+                        .message.is-light.block
+                            .message-header Legal information
+                            .message-body
+                                pre.overflow.noBackground #{firstAsset.legal_information}
+
+                    if firstAsset.tags
+                        span.tags.block
+                            each tag in firstAsset.tags.split(",")
+                                span.tag 
+                                    a.hiddenLink(href="/assets?q=" + encodeURIComponent(tag))  #{tag.trim()}
+
+                    br
+
+                .tabs.is-boxed
+                    ul
+                        li(class=(view == "assets" ? "is-active" : ""))
+                            a(href="?view=assets")
+                                span.icon.is-small
+                                    span files
+                                span Assets
+                        li(class=(view == "comments" ? "is-active" : ""))
+                            a(href="?view=comments")
+                                span.icon.is-small
+                                    span comment
+                                span Comments
+
+                if view == "assets"
+                    .field.block
+                        label.label Search
+                        .control.has-icons-left
+                            input.input#searchInput(type="text" placeholder="Search..." name="q" value=(search || ""))
+                            span.icon.is-small.is-left
+                                span search
+
+                    .buttons.is-justify-content-center
+                        button.button.iconButton.is-rounded(data-type="music") 
+                            span.icon
+                                span music_note
+                        button.button.iconButton.is-rounded(data-type="soundEffect") 
+                            span.icon
+                                span volume_up
+                        button.button.iconButton.is-rounded(data-type="image") 
+                            span.icon
+                                span image
+                        button.button.iconButton.is-rounded(data-type="video") 
+                            span.icon
+                                span videocam
+                        button.button.iconButton.is-rounded(data-type="text") 
+                            span.icon
+                                span description
+
+                    br
+                    
+                    table.table.is-fullwidth.is-striped.is-hoverable
+                        thead
+                            th Action
+                            th Name
+                            th Author
+                            th Uploaded
+                            th Tags
+                        tbody(data-filter="batch:" + batch.id)#assetList
+
+                    button.button.is-link.is-fullwidth.is-outlined#loadMoreButton
+                        span Load More
+
+                else if view == "comments"
+
+                    div(data-comment=("B-" + batch.id))
+
+            .column.is-one-quarter
+
+                .buttons
+                    if isAuthor
+                        a.button.iconButton.is-rounded(href="/assets/batches/edit/" + batch.id) 
+                            span.icon
+                                span edit
+                    a.button.iconButton.is-rounded(href="/assets/batches/download/" + batch.id) 
+                        span.icon
+                            span download
+                    if isAuthor
+                        button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
+                            span.icon
+                                span delete
+
+                if batch.type == "album" && batch.image_url
+                    figure.image.is-square.block
+                        img(src=batch.image_url)
+
+                .box.content
+                    p
+                        strong Uploaded by
+                        br
+                        a.ellipsed(href="/users/v/" + firstAsset.author_id) #{firstAsset.author_display_name} 
+                    p
+                        strong Upload date
+                        br
+                        time(datetime=batch.created_at, data-format="smart")
+                    p
+                        strong Files
+                        br
+                        span #{batch.asset_count.toLocaleString()}
+                    p
+                        strong Failed files
+                        br
+                        span #{batch.failed_assets.toLocaleString()}
+                    p
+                        strong Total size
+                        br
+                        span #{bytesToSize(batch.size)}
+                    p
+                        strong Type
+                        br
+                        span #{formatString(batch.type)}
+                    p
+                        strong ID
+                        br
+                        span.ellipsed(title=batch.id) #{batch.id}

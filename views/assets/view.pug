@@ -1,0 +1,172 @@
+extends ../layout
+
+block head
+    script.
+        const DEF = {
+            asset: "#{asset.id}",
+            batch: "#{asset.batch}",
+        }
+
+    script(src="/js/assets/view.js" type="module" defer) 
+
+block modals
+    if isAuthor
+        .modal#deleteModal
+            .modal-background(data-modal="close")
+            .modal-card
+                header.modal-card-head
+                    p.modal-card-title Are you sure?
+                    button.delete(data-modal="close")
+                section.modal-card-body
+                    p Deleting 
+                        strong "#{asset.name}" 
+                        | cannot be undone and will delete the files and all of the content associated with this asset.
+                footer.modal-card-foot
+                    .buttons
+                        button.button(data-modal="close")
+                            span.icon
+                                span close
+                            span Cancel
+                        button.button.is-danger.is-outlined#confirmDeleteButton
+                            span.icon
+                                span delete
+                            span Delete forever
+
+block content
+    .container
+
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/assets") Assets
+                li.is-active
+                    a(href="#") #{asset.name}
+
+
+        .columns
+            .column.is-two-quarters
+                h1.title #{asset.name}
+                p.subtitle #{formatString(asset.type)}
+
+                if asset.type == "music" || asset.type == "soundEffect"
+                    audio(src=("/assets/get/" + asset.id), controls, style="display: block; width: 100%;") 
+                else if asset.type == "image"
+                    a.block(href="/assets/get/" + asset.id, style="display: block;") 
+                        img.assetImage(src="/assets/get/" + asset.id, alt=asset.name)
+                else if asset.type == "video"
+                    video(src="/assets/get/" + asset.id, controls, style="display: block; max-height: 25dvh; margin-inline: auto; max-width: 100%;") 
+                else if asset.type == "text"
+                    button.button.is-fullwidth.is-loading#placeholderButton Loading...
+
+                br
+
+                if asset.legal_information
+                    .message.is-light.block
+                        .message-header Legal information
+                        .message-body
+                            pre.overflow.noBackground #{asset.legal_information}
+                
+                if asset.rendered_description
+                    pre.noBackground!=asset.rendered_description
+                    br
+
+                .tags
+                    if asset.nsfw
+                        .tag.is-danger NSFW
+                    if !asset.videos
+                        .tag.is-danger NOT for YouTube
+                    if !asset.streams
+                        .tag.is-danger NOT for Twitch & Streams
+                    if asset.tags
+                        each tag in asset.tags.split(",")
+                            span.tag 
+                                a.hiddenLink(href="/assets?q=" + encodeURIComponent(tag)) #{tag.trim()}
+
+            .column.is-one-quarter
+                .buttons
+                    if isAuthor
+                        a.button.iconButton.is-rounded(href="/assets/edit/" + asset.id) 
+                            span.icon
+                                span edit
+                    a.button.iconButton.is-rounded(href="/assets/download/" + asset.id) 
+                        span.icon
+                            span download
+                    button.button.is-loading.is-rounded.iconButton#likeButton
+                        span.icon
+                            span star
+                    if asset.source
+                        a.button.iconButton.is-rounded(href=asset.source, title=asset.source)
+                            span.icon
+                                span link 
+                    if isAuthor
+                        button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
+                            span.icon
+                                span delete
+
+                .box.content
+                    p
+                        strong Uploaded by
+                        br
+                        a.ellipsed(href="/users/v/" + asset.author_id) #{asset.author_display_name} 
+                    p
+                        strong Upload date
+                        br
+                        time(datetime=asset.created_at, data-format="smart")
+                    if asset.created_at.getTime() != asset.updated_at.getTime()
+                        p
+                            strong Last change
+                            br
+                            time(datetime=asset.updated_at, data-format="smart")
+                    p
+                        strong Size
+                        br
+                        span(title=asset.size.toLocaleString() + " B") #{bytesToSize(asset.size)}
+                    p
+                        strong Extension
+                        br
+                        | #{asset.extension}
+                    p
+                        strong Type
+                        br
+                        | #{asset.mime}
+                    p
+                        strong Batch
+                        br
+                        a.ellipsed(href="/assets/batches/v/" + asset.batch, title=asset.batch) #{asset.batch_name || asset.batch}
+                    p
+                        strong Original name
+                        br
+                        span.ellipsed(title=asset.original_name) #{asset.original_name}
+                    p
+                        strong Favorites
+                        br
+                        span #{asset.favorites.toLocaleString()}
+                    p
+                        strong Downloads
+                        br
+                        span #{asset.downloads.toLocaleString()}
+                    p
+                        strong ID
+                        br
+                        span.ellipsed(title=asset.id) #{asset.id}
+
+        .tabs.is-boxed
+            ul
+                li(class=(view == "comments" ? "is-active" : ""))
+                    a(href="?view=comments")
+                        span.icon.is-small
+                            span comment
+                        span Comments
+                li(class=(view == "videos" ? "is-active" : ""))
+                    a(href="?view=videos")
+                        span.icon.is-small
+                            span videocam
+                        span Videos
+
+        if view == "comments"
+
+            div(data-comment=("A-" + asset.id))
+        
+        else if view == "videos"
+
+            .columns.is-multiline(data-list="videos" data-list-limit="8", data-list-load="false", data-list-filter="asset:" + asset.id)

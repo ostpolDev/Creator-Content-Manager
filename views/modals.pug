@@ -1,0 +1,43 @@
+.modal#imageModal
+    .modal-background(data-modal="close")
+    .modal-card
+        section.modal-card-body.imageModal#imageModalImage
+        footer.modal-card-foot
+            button.button.iconButton.is-rounded.mr-3(data-modal="close")
+                span.icon
+                    span close
+            a.button.iconButton.is-rounded.mr-3#imageModalLink
+                span.icon
+                    span link
+            p#imageModalLabel
+
+.modal#videoModal
+    .modal-background(data-modal="close")
+    .modal-content
+        video.video#videoModalVideo(controls) 
+        p.title.videoTitle.has-text-centered.has-text-white#videoModalTitle
+        .buttons.videoModalButtons.mt-4
+            button.button.iconButton.is-rounded.mr-3(data-modal="close")
+                span.icon
+                    span close
+            a.button.iconButton.is-rounded.mr-3#videoModalLink
+                span.icon
+                    span link
+    button.modal-close.is-large(data-modal="close" aria-label="close")
+
+.modal#textModal
+    .modal-background(data-modal="close")
+    .modal-card
+        header.modal-card-head
+            p.modal-card-title#textModalTitle
+            button.delete(data-modal="close")
+        section.modal-card-body
+            pre.nowrap#textModalContent
+        footer.modal-card-foot
+            .buttons
+                button.button.iconButton.is-rounded(data-modal="close")
+                    span.icon
+                        span close
+                a.button.iconButton.is-rounded#textModalLink
+                    span.icon
+                        span link

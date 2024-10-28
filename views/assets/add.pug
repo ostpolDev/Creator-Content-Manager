@@ -1,0 +1,176 @@
+extends ../layout
+
+block head
+    script(src="/js/assets/upload.js" defer) 
+
+block modals
+    include ../modals/assetInfo.pug
+
+block content
+
+    -
+        function GetValue(key) {
+            if (!asset) {
+                return "";
+            }
+            return asset[key] || "";
+        }
+
+        function CheckVal(key, val, def) {
+            if (!asset) {
+                return def;
+            }
+            return GetValue(key) == val;
+        }
+
+        const TARGET = asset ? "/api/assets/edit" : "/api/assets/add";
+
+    .container
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/assets") Assets
+                if asset
+                    li
+                        a(href="/assets/v/" + asset.id) #{asset.name} 
+                    li.is-active
+                        a(href="#") Edit
+                else
+                    li.is-active
+                        a(href="#") Add
+        .buttons
+            button.button.info(data-modal="#uploadHelpModal")
+                span.icon
+                    span info
+                span Help & Information
+
+        if asset
+            h1.title Edit asset
+            p.subtitle #{asset.name}
+        else
+            h1.title Upload an asset
+
+        if asset
+            .message.is-info
+                .message-body Here, you can edit most of the asset's settings. Some settings however may only be changed in the 
+                    a(href="/assets/batches/edit/" + asset.batch) batch settings
+                    | . 
+        else
+            .message.is-info
+                .message-body Please make sure that the asset is freely useable on video or live-streaming platforms, and that if there are special permissons that need to be given, that you add them accordingly.
+        
+        form(data-form=TARGET, method="post" enctype="multipart/form-data") 
+            if asset
+                input(type="hidden", name="asset", value=asset.id)
+
+                .field
+                    label.label File
+                    .control.has-icons-left
+                        input.input(type="text", value=asset.original_name, disabled)
+                        span.icon.is-small.is-left
+                            span files
+            else
+                .field
+                    .file.has-name.is-fullwidth
+                        label.file-label(for="fileInput") 
+                            input.file-input#fileInput(type="file" name="assets" accept=fileTypes.join(",") multiple)
+                            span.file-cta
+                                span.file-icon
+                                    span upload
+                                span.file-label Choose some files...
+                            span.file-name#fileName
+                    p.help Accepted file types are #{fileTypes.join(", ")}
+
+            .field
+                label.label(for="name") Name
+                .control.has-icons-left
+                    input.input#name(type="text" name="name" placeholder="Super cool asset name" maxlength="256" autocomplete="off", value=GetValue("name"))
+                    span.icon.is-small.is-left
+                        span edit_note 
+
+            if !asset
+                .field
+                    label.label(for="batchName") Batch name
+                    .control.has-icons-left
+                        input.input#batchName(type="text" name="batchName" placeholder="Album by person" maxlength="256" autocomplete="off")
+                        span.icon.is-small.is-left
+                            span folder
+
+            .field
+                label.label(for="aboutText") Description
+                .control
+                    textarea.textarea#aboutText(name="description" placeholder="Describe the asset...")
+                        | #{GetValue("description")}
+
+            .field
+                label.label(for="legalText") Legal / rights information
+                .control
+                    textarea.textarea#legalText(name="legal" placeholder="Describe the asset...")
+                        | #{GetValue("legal_information")}
+
+            .field
+                label.label(for="assetType") Select an asset type
+                .control
+                    select.input#assetType(name="assetType")
+                        each type in assetTypes
+                            if type != "user" && type != "fav"
+                                option(value=type, selected=CheckVal("type", type, false)) #{formatString(type)}
+
+            .field
+                label.label(for="tags") Tags
+                .control.has-icons-left
+                    input.input#tags(type="text" name="tags" placeholder="super, cool, assets", value=GetValue("tags"))
+                    span.icon.is-small.is-left
+                        span tag
+                p.help Eneter tags separated by 
+                    strong , 
+
+            .field
+                label.label(for="source") Source
+                .control.has-icons-left
+                    input.input#source(type="text" name="source" placeholder="https://www.youtube.com/watch?v=94vIKBfX9hI", value=GetValue("source")) 
+                    span.icon.is-small.is-left
+                        span link
+
+            .field
+                label.label(for="price") Price
+                .control.has-icons-left
+                    input.input#price(type="number" name="price" min="0" step="0.01" placeholder="7.99" value=(GetValue("price") || "0")) 
+                    span.icon.is-small.is-left
+                        span sell
+
+            .field
+                label.label(for="licenseType") License
+                .control.has-icons-left
+                    .select.is-fullwidth
+                        select#licenseType(name="licenseType")
+                            each type in Object.keys(licenseTypes) 
+                                option(value=type, selected=CheckVal("license", type, false)) #{type}
+                    span.icon.is-small.is-left
+                        span license
+
+            br
+
+            .field.block
+                h2.title.is-6 Supported platforms
+                .checkboxes
+                    label.checkbox
+                        input(type="checkbox" name="support_youtube" checked=CheckVal("videos", true, true)) 
+                        |  YouTube
+                    label.checkbox
+                        input(type="checkbox" name="support_twitch" checked=CheckVal("streams", true, true)) 
+                        |  Twitch
+            br
+            .field
+                h2.title.is-6 Additional information
+                label.checkbox
+                    input(type="checkbox" name="nsfw", checked=CheckVal("nsfw", true, false))
+                    |  NSFW
+
+            br
+
+            button.button.is-fullwidth.is-link
+                if asset
+                    | Save changes
+                else
+                    | Upload assets

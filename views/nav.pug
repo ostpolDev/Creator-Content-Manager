@@ -1,0 +1,146 @@
+nav.navbar.is-light(role="navigation" aria-label="main navigation")
+    .container
+        .navbar-brand
+            a.navbar-burger.burger(role='button', aria-label='menu', aria-expanded='false', data-target='navbar')
+                span(aria-hidden='true')
+                span(aria-hidden='true')
+                span(aria-hidden='true')
+
+        .navbar-menu#navbar
+            .navbar-start
+                a.navbar-item(href="/")
+                    span.icon
+                        span home
+                    span Home 
+                
+                if user
+                    .navbar-item.has-dropdown.is-hoverable
+                        a.navbar-link(href="/videos") 
+                            span.icon
+                                span videocam
+                            span Videos
+                        .navbar-dropdown
+                            a.navbar-item(href="/videos?focus=add") 
+                                span.icon
+                                    span add
+                                span Add
+                            a.navbar-item(href="/videos?focus=search") 
+                                span.icon
+                                    span search
+                                span Search
+
+                    .navbar-item.has-dropdown.is-hoverable
+                        a.navbar-link(href="/assets") 
+                            span.icon
+                                span files
+                            span Assets
+                        .navbar-dropdown
+                            a.navbar-item(href="/assets/add") 
+                                span.icon
+                                    span add
+                                span Add
+                            a.navbar-item(href="/assets/search") 
+                                span.icon
+                                    span search
+                                span Search
+                            .navbar-divider
+                            a.navbar-item(href="/assets/batches") 
+                                span.icon
+                                    span folder
+                                span Batches
+                            a.navbar-item(href="/assets/albums") 
+                                span.icon
+                                    span album
+                                span Albums
+                            .navbar-divider
+                            a.navbar-item(href="/assets?type=music") 
+                                span.icon
+                                    span music_note
+                                span Music
+                            a.navbar-item(href="/assets?type=effect") 
+                                span.icon
+                                    span volume_up
+                                span Sound effects 
+                            a.navbar-item(href="/assets?type=image") 
+                                span.icon
+                                    span image
+                                span Images 
+                            a.navbar-item(href="/assets?type=video") 
+                                span.icon
+                                    span videocam
+                                span Videos
+                            .navbar-divider
+                            a.navbar-item(href="/assets/random") 
+                                span.icon
+                                    span shuffle
+                                span Random
+                    
+                    .navbar-item.has-dropdown.is-hoverable
+                        a.navbar-link(href="/channels") 
+                            span.icon
+                                span account_circle
+                            span Channels
+                        .navbar-dropdown
+                            if last_channel
+                                a.navbar-item(href="/channels/v/" + last_channel.id)
+                                    span.icon
+                                        span account_circle
+                                    span #{last_channel.name}
+                                .navbar-divider
+                            a.navbar-item(href="/channels?focus=add") 
+                                span.icon
+                                    span add
+                                span Add
+                            a.navbar-item(href="/channels?focus=search")
+                                span.icon
+                                    span search
+                                span Search
+
+                    .navbar-item.has-dropdown.is-hoverable
+                        a.navbar-link(href="/users") 
+                            span.icon
+                                span people
+                            span Users
+                        .navbar-dropdown
+                            a.navbar-item(href="/users/v/" + user.username)
+                                span.icon
+                                    span person
+                                span #{user.display_name}
+                            a.navbar-item(href="/users?focus=search")
+                                span.icon
+                                    span search
+                                span Search
+
+                    .navbar-item.has-dropdown.is-hoverable
+                        a.navbar-link(href="/games") 
+                            span.icon
+                                span sports_esports
+                            span Games
+                        .navbar-dropdown
+                            a.navbar-item(href="/games?focus=search")
+                                span.icon
+                                    span search
+                                span Search
+                            a.navbar-item(href="/games/add")
+                                span.icon
+                                    span add
+                                span Add custom
+                            a.navbar-item(href="/games?focus=steam")
+                                span.icon
+                                    span storefront
+                                span Add steam game
+
+            .navbar-end
+                .buttons
+                    if !user
+                        a.button.is-light(href="/users/login")
+                            span.icon
+                                span person
+                            span Login
+                    else
+                        a.button.is-light(href="/users/v/"+user.username)
+                            | #{user.username}
+                        a.button(href="/logout") 
+                            span.icon
+                                span logout
+                            span Logout

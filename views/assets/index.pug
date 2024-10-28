@@ -1,0 +1,96 @@
+extends ../layout
+
+block head
+    script(src="/js/assets.js" type="module" defer) 
+
+block content
+
+    .container
+        h1.title Assets
+        p.subtitle There are currently #{asset_count.toLocaleString()} assets registered
+            span(title=(asset_count > 2 ? totalSize.toLocaleString() + " B" : "")) #{asset_count > 2 ? ", totaling " + bytesToSize(totalSize) + " in size" : ""}.
+
+        .box
+            .buttons.fluid
+                a.button(href="/assets/batches") 
+                    span.icon
+                        span folder
+                    span Batches
+                a.button(href="/assets/batches?type=album") 
+                    span.icon
+                        span album
+                    span Albums
+                if asset_count > 0
+                    a.button(href="/assets/random")
+                        span.icon
+                            span shuffle
+                        span View random
+                    a.button(href="/assets/random?option=download")
+                        span.icon
+                            span download
+                        span Download random
+                    button.button#playRandomButton
+                        span.icon
+                            span play_arrow
+                        span Play random
+
+            a.button.is-fullwidth(href="/assets/add")
+                span.icon
+                    span add
+                span Upload an asset
+
+        hr
+
+        h2.title.is-4 Asset search
+        p.subtitle.is-6 Search through all of the existing assets here.
+        
+        .field.block
+            label.label Search
+            .control.has-icons-left
+                input.input#searchInput(type="text" placeholder="Search..." name="q" value=(search || ""))
+                span.icon.is-small.is-left
+                    span search
+
+        .buttons.fluid
+            button.button(data-type="music") 
+                span.icon
+                    span music_note
+                span Music
+            button.button(data-type="soundEffect") 
+                span.icon
+                    span volume_up
+                span Sound effects
+            button.button(data-type="image") 
+                span.icon
+                    span image
+                span Images
+            button.button(data-type="video") 
+                span.icon
+                    span videocam
+                span Videos
+            button.button(data-type="text") 
+                span.icon
+                    span description
+                span Text
+            button.button(data-type="user", data-ref=user.id) 
+                span.icon
+                    span person
+                span My assets
+            button.button(data-type="fav", data-ref=user.id) 
+                span.icon
+                    span star
+                span My favorites
+
+        br
+        
+        table.table.is-fullwidth.is-hoverable.is-striped
+            thead
+                th Action
+                th Name
+                th Uploaded by
+                th Uploaded
+                th Tags
+            tbody#assetList
+
+        button.button.is-link.is-fullwidth.is-outlined#loadMoreButton
+            span Load More

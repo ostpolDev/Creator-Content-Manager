@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    .container
+        h1.title 404
+        p.subtitle The requested page was not found
+
+        p.block The page you requested at 
+            strong #{url} 
+            | was not found.
+
+        a.button.is-link(href="/") 
+            span.icon
+                span home
+            span Return home

@@ -1,0 +1,153 @@
+extends ../layout
+
+block head
+    script.
+        const DEF = {
+            channel: "#{channel.id}",
+            canUpdate: "#{canUpdate}",
+        }
+
+    script(src="/js/channels/view.js" type="module" defer) 
+
+    if view == "members"
+        link(rel="stylesheet", href="/bulma/bulma-list.css")
+        script(src="/js/channels/members.js" type="module" defer) 
+
+
+block content
+    .container
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/channels") Channels
+                li.is-active
+                    a(href="#") #{channel.name}
+
+        .channelBannerContainer
+            .channelBanner(style=("background-image: url('" + channel.header_image_url + "')"))
+            img.channelImage(src=channel.image_url)
+
+        nav.level.block
+            .level-item.has-text-centered
+                div
+                    p.heading Subscribers
+                    p.title(title=channel.subscribers) #{(channel.subscribers || 0).toLocaleString()}
+            .level-item.has-text-centered
+                div
+                    p.heading Views
+                    p.title(title=channel.views) #{channel.views.toLocaleString()}
+            .level-item.has-text-centered
+                div
+                    p.heading Videos
+                    p.title(title=(channel.settings.videoCount || 0)) #{(channel.settings.videoCount || 0).toLocaleString()}
+            .level-item.has-text-centered
+                div
+                    p.heading Registered videos
+                    p.title(title=videoCount) #{videoCount.toLocaleString()}
+
+        .columns.mt-2
+            .column.is-three-quarters
+                h1.title #{channel.name}
+                if channel.description
+                    pre.noBackground.block=channel.description
+
+                if channel.tags
+                    span.tags.block
+                        each tag in channel.tags.split(",")
+                            span.tag=tag.trim()
+
+            .column.is-one-quarter
+                .buttons
+                    a.button.iconButton.is-rounded(href="https://youtube.com/" + channel.handle, target="_BLANK")
+                        span.icon
+                            span link 
+                    a.button.iconButton.is-rounded(href="/videos?channel=" + encodeURIComponent(channel.id))
+                        span.icon
+                            span videocam
+                    if isAuthor
+                        button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
+                            span.icon
+                                span delete
+                        button.button.iconButton.is-rounded#refreshButton(disabled=!canUpdate)
+                            span.icon
+                                span refresh
+                    else
+                        button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
+                            span.icon
+                                span logout
+
+                .box.content
+                    p
+                        strong Added by
+                        br
+                        a.ellipsed(href="/users/v/" + channel.author_id) #{channel.author_display_name}
+                    p
+                        strong Added date
+                        br
+                        time(datetime=channel.created_at, data-format="smart")
+                    
+                    if channel.created_at.getTime() != channel.updated_at.getTime()
+                        p
+                            strong Last change
+                            br
+                            time(datetime=channel.updated_at, data-format="smart")
+
+                    p
+                        strong Joined YouTube
+                        br
+                        time(datetime=channel.channel_creation, data-format="smart")
+                    
+                    if channel.country
+                        p
+                            strong Country
+                            br
+                            span(title=(channel.country.name + " (" + channel.country.official + ")")) #{channel.country.name} #{channel.country.flag}
+
+                    p
+                        strong Hidden subscriber count
+                        br
+                        span #{formatString((channel.settings.hiddenSubscriberCount || false).toString())}
+
+        .tabs.is-boxed
+            ul
+                li(class=(view == "videos" ? "is-active" : ""))
+                    a(href="?view=videos")
+                        span.icon.is-small
+                            span videocam
+                        span Videos
+                li(class=(view == "comments" ? "is-active" : ""))
+                    a(href="?view=comments")
+                        span.icon.is-small
+                            span comment
+                        span Comments
+                li(class=(view == "members" ? "is-active" : ""))
+                    a(href="?view=members")
+                        span.icon.is-small
+                            span people
+                        span Members
+
+        if view == "videos"
+            .block
+                .field
+                    label.label Search
+                    .control.has-icons-left
+                        input.input#searchInput(type="text" placeholder="Search..." name="q", data-list-target="videos", data-list-filter="q")
+                        span.icon.is-small.is-left
+                            span search
+                            
+            .columns.is-multiline(data-list="videos" data-list-limit="8", data-list-load="true", data-list-filter="channel:" + channel.id)
+
+        else if view == "comments"
+            div(data-comment=("C-" + channel.id))
+
+        else if view == "members"
+
+            .field.block
+                label.label Search
+                .control.has-icons-left
+                    input.input#userSearchInput(type="text" placeholder="Search for people..." autocomplete="off" value="")
+                    span.icon.is-small.is-left
+                        span search
+            
+            button.button.is-fullwidth.is-loading#membersLoading Loading
+            .list.has-visible-pointer-controls.has-overflow-ellipsis#userBody

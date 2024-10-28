@@ -1,0 +1,47 @@
+extends ../layout
+
+block content
+    .container
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/channels") Channels
+                li
+                    a(href="/channels/v/" + video.channel_id) #{video.channel_name}
+                li
+                    a(href="/videos?channel=" + encodeURIComponent(video.channel_id)) Videos
+                li
+                    a(href="/videos/v/" + video.id) #{video.title || video.id}
+                li.is-active
+                    a(href="#") Edit 
+
+        h1.title #{video.title}
+        p.subtitle Edit
+
+        form(data-form="/api/videos/edit/" + video.id, method="POST")
+            .field
+                label.label(for="channelSelect" name="channel") Channel
+                .control
+                    select.input.channelSelect#channelSelect(autocomplete="off" name="channel")
+                        each channel in channels
+                            option(value=channel.id, selected=(video.channel == channel.id)) #{channel.name} 
+
+            .field
+                label.label(for="youtubeId") YouTube video ID or URL
+                .control.has-icons-left
+                    input.input#youtubeId(type="text" placeholder="R_FQU4KzN7A" name="youtube", value=video.youtube_id) 
+                    span.icon.is-small.is-left
+                        span videocam
+                p.help Either the ID of the video, or a link to a video
+
+            .field
+                label.label(for="videoName") Video title
+                .control.has-icons-left
+                    input.input#videoName(type="text" placeholder="Title of your video" name="title", value=video.title)
+                    span.icon.is-small.is-left
+                        span title
+
+            button.button.is-fullwidth.is-link
+                span.icon
+                    span save
+                span Save changes

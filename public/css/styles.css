@@ -1,0 +1,222 @@
+@font-face {
+    font-family: icon;
+    src: url(/material_symbols/MaterialSymbolsOutlined-VariableFont_FILL\,GRAD\,opsz\,wght.ttf);
+}
+
+span.icon > *, .icon > *, .file-icon > * {
+    font-family: icon !important;
+    font-size: 2.5ch;
+}
+
+.buttons.fluid > * {
+    flex-grow: 1;
+}
+
+.iconButton {
+    aspect-ratio: 1 / 1;
+}
+
+table td {
+    vertical-align: middle !important;
+}
+
+.modal .imageModal {
+    aspect-ratio: 16 / 9;
+    border-radius: var(--bulma-modal-card-foot-radius) var(--bulma-modal-card-foot-radius) 0 0;
+    background-position: center;
+    background-size: contain;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    position: relative;
+}
+
+.modal .imageModal::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: inherit;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: saturate(.5) blur(2px);
+    margin: -3px;
+    z-index: -1;
+}
+
+.video {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.videoTitle {
+    position: fixed;
+    z-index: 99;
+    top: 2em;
+    left: 50%;
+    transform: translateX(-50%);
+    text-shadow: 2px 2px 2px #000000;
+}
+
+.musicPlayer {
+    --playerGap: 2em;
+
+    position: fixed;
+    bottom: var(--playerGap);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    width: calc(100% - calc(var(--playerGap) * 2));
+    max-width: 1000px;
+    height: fit-content;
+    margin: 0 !important;
+    min-height: 6em;
+    border: 1px solid #dfdfdf;
+}
+
+.musicPlayer .playerContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+}
+
+.musicPlayer img.playerAlbumArt {
+    display: block !important;
+    height: 100px !important;
+}
+
+.musicPlayer img.playerAlbumArt.is-hidden {
+    display: none !important;
+}
+
+.musicPlayer input[type="range"] {
+    display: block;
+    width: 100%;
+}
+
+.musicPlayer .vertStack {
+    flex-shrink: 1;
+    display: block;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 150px;
+}
+
+.musicPlayer .progressText {
+    width: max-content;
+    flex-grow: 1;
+    white-space: nowrap;
+}
+
+pre.nowrap {
+    white-space: normal;
+}
+
+a.hiddenLink {
+    color: inherit !important;
+    text-decoration: none;
+}
+
+.ellipsed {
+    white-space: nowrap !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: inline-block;
+    max-width: 100%;
+}
+
+pre.noBackground {
+    background-color: transparent !important;
+    color: inherit !important;
+    padding: 0;
+    overflow-x: hidden;
+    white-space: pre-wrap;
+}
+
+pre.overflow {
+    white-space: wrap;
+}
+
+img.assetImage {
+    max-height: 400px;
+    width: auto;
+    height: 100%;
+    display: block;
+    margin-inline: auto;
+}
+
+.contextMenu {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: fit-content;
+    height: fit-content;
+    min-height: 10px;
+    z-index: 9999;
+    transition: opacity .1s ease;
+    opacity: 0;
+}
+
+.contextMenu:not(.active) {
+    pointer-events: none;
+}
+
+.contextMenu .button {
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    display: block;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.divider {
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid #00000014;
+}
+
+.channelBanner {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 5 / 1;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 6px;
+}
+
+.channelBannerContainer {
+    position: relative;
+    margin-bottom: 64px;
+}
+
+.channelBannerContainer img.channelImage {
+    position: absolute;
+    top: calc(100% - 64px);
+    max-width: 128px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.tag.clickable {
+    cursor: pointer;
+}
+
+.has-text-capitalized {
+    text-transform: capitalize;
+}
