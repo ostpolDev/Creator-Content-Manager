@@ -59,7 +59,22 @@ block content
                         .message.is-light.block
                             .message-header Legal information
                             .message-body
-                                pre.overflow.noBackground #{firstAsset.legal_information}
+                                pre.noBackground #{firstAsset.legal_information}
+
+                    if firstAsset.license && licenseTypes[firstAsset.license] && firstAsset.license != "None"
+                        -let license = licenseTypes[firstAsset.license];
+
+                        .block.box
+                            article.media
+                                figure.media-left
+                                    p.image.is-64x64.centered
+                                        img(src=license.icon)
+                                .media-content
+                                    if license.msg
+                                        p #{license.msg}
+                                    if license.url
+                                        p
+                                            a(href=license.url) More information
 
                     if firstAsset.tags
                         span.tags.block

@@ -89,7 +89,7 @@ router.post("/add", [
 
                     let newAsset = await knex("assets").insert({
                         added_by: req.user.id,
-                        name: req.files.assets.length == 1 ? name || textHelpers.RemoveExtension(asset.name) : textHelpers.RemoveExtension(asset.name),
+                        name: req.files.assets.length == 1 ? name || textHelpers.capitalizeString(textHelpers.RemoveExtension(asset.name)) : textHelpers.capitalizeString(textHelpers.RemoveExtension(asset.name)),
                         type: assetType,
                         batch: batch[0].id,
                         tags,

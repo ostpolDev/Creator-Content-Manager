@@ -8,7 +8,7 @@ const fs = require('fs');
 const archiver = require('archiver');
 const { randomUUID } = require('crypto');
 const logger = require('../modules/logger');
-const { TriggerMassDownload } = require('../modules/assetHelpers');
+const { TriggerMassDownload, ParseLegalText, licenseTypes } = require('../modules/assetHelpers');
 
 const TYPES = ["batch", "album", "single"];
 
@@ -55,7 +55,7 @@ router.get("/v/:id", async (req, res, next) => {
         }
 
         let select = [
-            "assets.id", "assets.name", "assets.added_by", "asset_infos.legal_information", "asset_infos.compression", "assets.tags",
+            "assets.id", "assets.name", "assets.added_by", "asset_infos.legal_information", "asset_infos.compression", "assets.tags", "asset_infos.license",
             "users.id as author_id", "users.username as author_username", "users.display_name as author_display_name", "users.profile_image_url as author_image"
         ]
 
@@ -70,7 +70,7 @@ router.get("/v/:id", async (req, res, next) => {
 
         if (assetInBatch[0]) {
             if (assetInBatch[0].legal_information) {
-                assetInBatch[0].legal_information = await UnzipString(assetInBatch[0].legal_information, assetInBatch[0].compression);
+                assetInBatch[0].legal_information = ParseLegalText(await UnzipString(assetInBatch[0].legal_information, assetInBatch[0].compression), assetInBatch[0]);
             }
             if (assetInBatch[0].rendered_description) {
                 assetInBatch[0].rendered_description = await UnzipString(assetInBatch[0].rendered_description, assetInBatch[0].compression);
@@ -82,7 +82,8 @@ router.get("/v/:id", async (req, res, next) => {
             batch: batch[0],
             firstAsset: assetInBatch[0],
             isAuthor: assetInBatch[0].author_id == req.user.id,
-            view
+            view,
+            licenseTypes
         })
 
     } catch (e) {

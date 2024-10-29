@@ -131,14 +131,15 @@ router.get("/v/:id", async (req, res, next) => {
 
         asset[0].description = UnzipString(asset[0].description, asset[0].compression);
         asset[0].rendered_description = UnzipString(asset[0].rendered_description, asset[0].compression);
-        asset[0].legal_information = UnzipString(asset[0].legal_information, asset[0].compression);
+        asset[0].legal_information = assetHelpers.ParseLegalText(UnzipString(asset[0].legal_information, asset[0].compression), asset[0]);
         
 
         res.render("assets/view", {
             title: asset[0].name,
             asset: asset[0],
             isAuthor: asset[0].added_by == req.user.id,
-            view
+            view,
+            licenseTypes: assetHelpers.licenseTypes
         })
     } catch (e) {
         return next(e);

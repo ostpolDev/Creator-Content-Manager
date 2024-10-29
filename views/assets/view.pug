@@ -64,7 +64,23 @@ block content
                     .message.is-light.block
                         .message-header Legal information
                         .message-body
-                            pre.overflow.noBackground #{asset.legal_information}
+                            pre.noBackground #{asset.legal_information}
+
+                if asset.license && licenseTypes[asset.license] && asset.license != "None"
+                    -let license = licenseTypes[asset.license];
+
+                    .block.box
+                        article.media
+                            figure.media-left
+                                p.image.is-64x64.centered
+                                    img(src=license.icon)
+                            .media-content
+                                if license.msg
+                                    p #{license.msg}
+                                if license.url
+                                    p
+                                        a(href=license.url) More information 
+                                
                 
                 if asset.rendered_description
                     pre.noBackground!=asset.rendered_description

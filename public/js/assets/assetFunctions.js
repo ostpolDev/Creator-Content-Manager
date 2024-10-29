@@ -150,6 +150,8 @@ async function Interact(button, asset) {
             return;
         }
 
+        asset.name = json.asset.name;
+
         switch (type) {
             case "image":
                 const imageModalImage = document.getElementById("imageModalImage");
