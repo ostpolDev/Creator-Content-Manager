@@ -46,6 +46,10 @@ class List {
         this.loadMoreButton.classList.add("button", "is-fullwidth");
         if (!this.disableLoadMore) {
             this.element.insertAdjacentElement("afterend", this.loadMoreButton);
+        } else {
+            this.loadMoreButton.addEventListener("click", () => {
+                this.LoadMore();
+            })
         }
     }
 

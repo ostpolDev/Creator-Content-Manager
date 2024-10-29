@@ -161,4 +161,70 @@ router.get("/members/:id", async (req, res, next) => {
     }
 })
 
+const MODIFY_MODES = ["add", "remove"];
+
+router.post("/modifyMember", async (req, res, next) => {
+    let channelId = req.body.channel;
+    let username = req.body.user;
+    let mode = req.body.mode;
+
+    if (!channelId) {
+        return res.status(400).json({success: false, msg: "Channel required"});
+    }
+    if (!username) {
+        return res.status(400).json({success: false, msg: "User required"});
+    }
+    if (!MODIFY_MODES.includes(mode)) {
+        return res.status(400).json({success: false, msg: "Mode required"});
+    }
+
+    try {
+
+        let user = await knex("users").where({username}).limit(1).select(["id", "username"]);
+        if (!user) {
+            return res.status(404).json({success: false, msg: "User not found"});
+        }
+
+        if (req.user.level != -1) {
+            if (user[0].id == req.user.id) {
+                let channelAccess = await knex("channel_members").where({channel: channelId, user: req.user.id});
+                if (!channelAccess[0]) {
+                    return res.status(401).json({success: false, msg: "Access denied"});
+                }
+            } else {
+                let channelAccess = await knex("channel_members").where({channel: channelId, user: req.user.id}).whereIn("access", [-1, 1]);
+                if (!channelAccess[0]) {
+                    return res.status(401).json({success: false, msg: "Access denied"});
+                }
+            }
+        }
+
+        let existingUser = await knex("channel_members").where({channel: channelId, user: user[0].id})
+            .innerJoin("channels", "channels.id", "=", "channel_members.channel")
+            .select(["channels.added_by"])
+
+        if (existingUser[0] && mode == "add" || !existingUser[0] && mode == "remove") {
+            return res.status(200).json({success: true});
+        }
+
+        if (existingUser[0] && mode == "remove") {
+            if (existingUser[0].added_by == user[0].id) {
+                return res.status(403).json({success: false, msg: "Forbidden"}); 
+            }
+            
+            await knex("channel_members").where({channel: channelId, user: user[0].id}).delete();
+        } else if (!existingUser[0] && mode == "add") {
+            await knex("channel_members").insert({
+                channel: channelId,
+                user: user[0].id
+            });
+        }
+
+        return res.status(200).json({success: true});
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
 module.exports = router;

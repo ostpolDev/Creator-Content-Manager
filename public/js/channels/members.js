@@ -4,6 +4,8 @@ const userSearchInput = document.getElementById("userSearchInput");
 const userBody = document.getElementById("userBody");
 const membersLoading = document.getElementById("membersLoading");
 
+const userSearchResult = document.getElementById("userSearchResult");
+
 const ACCESS_MAP = {
     "-1": "Creator",
     "0": "Default",
@@ -83,7 +85,86 @@ function MakeUserObject(user) {
     if (!user.isAuthor && !user.isUser && user.level != -1) {
         let removeButton = MakeButton("delete");
         buttons.appendChild(removeButton);
+
+        removeButton.addEventListener("click", async () => {
+            await ModifyUser(user.username, "remove");
+            RefreshUsers();
+        })
     }
 
     return listItem;
+}
+
+let searchTimeout;
+
+userSearchInput.addEventListener("input", () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        SearchUsers();
+    }, 500)
+})
+
+async function SearchUsers() {
+    userSearchResult.innerHTML = "";
+    if (userSearchInput.value.trim() == "") {
+        return;
+    }
+
+    try {
+
+        let body = new URLSearchParams({
+            limit: 5,
+            q: userSearchInput.value,
+            channel: DEF.channel
+        })
+        let res = await fetch(`/api/users/list?${body.toString()}`);
+        let json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            return;
+        }
+
+        json.items.forEach(user => {
+            let tag = document.createElement("span");
+            tag.classList.add("tag", "is-link", "clickable");
+            tag.innerText = user.display_name;
+            tag.setAttribute("data-user", user.username);
+            userSearchResult.appendChild(tag);
+
+            tag.addEventListener("click", async () => {
+                await ModifyUser(user.username, "add");
+                tag.remove();
+                RefreshUsers();
+            })
+        })
+        
+
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function ModifyUser(username, mode) {
+    try {
+        let res = await fetch("/api/channels/modifyMember", {
+            method: "POST",
+            body: JSON.stringify({
+                channel: DEF.channel,
+                user: username,
+                mode: mode
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        let json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            return;
+        }
+    } catch (e) {
+        console.error(e);
+    }
 }
