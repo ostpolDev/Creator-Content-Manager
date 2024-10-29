@@ -148,7 +148,8 @@ block content
                 else if view == "description"
 
                     if firstAsset && firstAsset.rendered_description
-                        pre.noBackground!=firstAsset.rendered_description
+                        pre.noBackground
+                            .content!=firstAsset.rendered_description
 
             .column.is-one-quarter
 

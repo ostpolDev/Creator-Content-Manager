@@ -83,7 +83,8 @@ block content
                                 
                 
                 if asset.rendered_description
-                    pre.noBackground!=asset.rendered_description
+                    pre.noBackground
+                        .content!=asset.rendered_description
                     br
 
                 .tags

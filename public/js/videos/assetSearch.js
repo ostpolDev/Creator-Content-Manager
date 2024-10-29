@@ -2,7 +2,6 @@ import { MakeButton } from "../helpers.js";
 import { GetIconFromType, Interact } from "../assets/assetFunctions.js";
 
 const searchInput = document.getElementById("searchInput");
-const legalInfoButton = document.getElementById("legalInfoButton");
 
 const currentAssetsContainer = document.getElementById("currentAssetsContainer");
 const searchedAssetsContainer = document.getElementById("searchedAssetsContainer");
@@ -234,4 +233,72 @@ async function ReloadCurrent() {
 ReloadCurrent();
 searchInput.value = "";
 
-export { MakeButton }
+//#region Legal info modal
+
+const legalInfoButton = document.getElementById("legalInfoButton");
+const incompatibleMessage = document.getElementById("incompatibleMessage");
+const incompatibleList = document.getElementById("incompatibleList");
+const legalInfoContent = document.getElementById("legalInfoContent");
+
+legalInfoButton.addEventListener("click", () => {
+    incompatibleMessage.classList.add("is-hidden");
+    incompatibleList.innerHTML = "";
+    legalInfoContent.innerHTML = "";
+    ShowLegalSummary();
+})
+
+async function ShowLegalSummary() {
+    legalInfoButton.classList.add("is-loading");
+
+    try {
+
+        let res = await fetch("/api/videos/legal/" + encodeURIComponent(DEF.video));
+        let json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            return;
+        }
+        
+        json.infos.forEach(info => {
+            MakeInfoElement(info, json.issues || {});
+        })
+
+        SetModalOpen("#legalInfoModal", true);
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        legalInfoButton.classList.remove("is-loading");
+    }
+}
+
+function MakeInfoElement(info, issues) {
+    // Info element
+    if (info.text && info.text.trim() != "") {
+        let p = document.createElement("p");
+        p.innerText = info.text;
+        legalInfoContent.appendChild(p);
+    }
+
+    // Check issues
+    if (issues[info.id]) {
+        let issue = issues[info.id];
+        incompatibleMessage.classList.remove("is-hidden");
+
+        let listElement = document.createElement("li");
+        listElement.innerText = info.name;
+        incompatibleList.appendChild(listElement);
+
+        let subList = document.createElement("ul");
+        listElement.appendChild(subList);
+
+        issue.forEach(i => {
+            let subListElement = document.createElement("li");
+            subListElement.innerText = i;
+            subList.appendChild(subListElement);
+        })
+    }
+}
+
+//#endregion

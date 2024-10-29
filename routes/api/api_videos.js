@@ -2,6 +2,8 @@ const { GetVideoInfo } = require('../../modules/youtubeHelpers');
 const {knex} = require('../../modules/database');
 const { randomUUID } = require('crypto');
 const logger = require('../../modules/logger');
+const { UnzipString } = require('../../modules/textHelpers');
+const { ParseLegalText } = require('../../modules/assetHelpers');
 
 const router = require('express').Router();
 
@@ -306,6 +308,71 @@ router.post("/edit/:id", async (req, res, next) => {
 
         return res.status(200).json({success: true, redirect: `/videos/v/${video[0].id}`});
 
+    } catch (e) {
+        return next(e);
+    }
+})
+
+router.get("/legal/:id", async (req, res, next) => {
+    try {
+        let video = await knex("videos").where({"videos.id": req.params.id}).limit(1)
+            .select([
+                "videos.id", "videos.channel", "videos.youtube_id", "videos.title"
+            ])
+    
+        if (req.user.level != -1) {
+            let channelCheck = await knex("channel_members").where({user: req.user.id, channel: video[0].channel}).limit(1);
+            if (!channelCheck[0]) {
+                return res.status(404).json({success: false, msg: "Video not found"});
+            }
+        }
+
+        let assetInfos = await knex("video_assets").where({video: video[0].id})
+            .innerJoin("assets", "assets.id", "=", "video_assets.asset")
+            .innerJoin("asset_infos", "asset_infos.id", "=", "video_assets.asset")
+            .select([
+                "asset_infos.compression", "asset_infos.legal_information", "video_assets.asset as asset_id",
+                "assets.name", "asset_infos.license", "asset_infos.videos", "asset_infos.source"
+            ])
+
+        let legalText = [];
+        let checked = [];
+        let issues = {};
+        assetInfos.forEach(info => {
+            if (checked.includes(info.asset_id)) {
+                return;
+            }
+            info.legal_information = ParseLegalText(UnzipString(info.legal_information, info.compression), info);
+
+            if ((!info.legal_information || info.legal_information.trim() == "") && info.license.includes("Attribution")) {
+                info.legal_information = info.name;
+                if (info.source) {
+                    info.legal_information += `\n${info.source}`
+                }
+            }
+            
+            legalText.push({
+                id: info.asset_id,
+                text: info.legal_information ? info.legal_information.trim() : null,
+                name: info.name
+            });
+
+            if (info.videos == false) {
+                if (!issues[info.asset_id]) {
+                    issues[info.asset_id] = [];
+                }
+                issues[info.asset_id].push("This asset has been marked as incompatible with YouTube");
+            }
+            if (info.license.includes("NonCommercial")) {
+                if (!issues[info.asset_id]) {
+                    issues[info.asset_id] = [];
+                }
+                issues[info.asset_id].push("This asset's license contains a Non-commercial restriction");
+            }
+
+        })
+
+        return res.status(200).json({success: true, infos: legalText, issues});
     } catch (e) {
         return next(e);
     }

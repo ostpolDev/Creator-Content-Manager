@@ -234,7 +234,7 @@ router.post("/edit", [
         await knex("asset_infos").where({id: assetCheck[0].id}).limit(1).update({
             description,
             rendered_description: renderedDescription,
-            legal_information: legalText,
+            legal_information: legalText || null,
             compression: shouldCompress ? "gzip" : "none",
             license: licenseType,
             source,
