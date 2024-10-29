@@ -77,6 +77,8 @@ block content
                         .tag.is-danger NOT for YouTube
                     if !asset.streams
                         .tag.is-danger NOT for Twitch & Streams
+                    if asset.price
+                        .tag.is-warning $#{asset.price}
                     if asset.tags
                         each tag in asset.tags.split(",")
                             span.tag 

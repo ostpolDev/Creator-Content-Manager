@@ -38,7 +38,7 @@ router.get("/", async (req, res, next) => {
     }
 })
 
-const VIEWS = ["assets", "comments"];
+const VIEWS = ["assets", "comments", "description"];
 
 router.get("/v/:id", async (req, res, next) => {
     try {
@@ -54,16 +54,27 @@ router.get("/v/:id", async (req, res, next) => {
             return next();
         }
 
+        let select = [
+            "assets.id", "assets.name", "assets.added_by", "asset_infos.legal_information", "asset_infos.compression", "assets.tags",
+            "users.id as author_id", "users.username as author_username", "users.display_name as author_display_name", "users.profile_image_url as author_image"
+        ]
+
+        if (view == "description") {
+            select.push("asset_infos.rendered_description");
+        }
+
         let assetInBatch = await knex("assets").where({batch: batch[0].id})
         .innerJoin("users", "users.id", "=", "assets.added_by")
         .innerJoin("asset_infos", "asset_infos.id", "=", "assets.id")
-        .limit(1).select([
-            "assets.id", "assets.name", "assets.added_by", "asset_infos.legal_information", "asset_infos.compression", "assets.tags",
-            "users.id as author_id", "users.username as author_username", "users.display_name as author_display_name", "users.profile_image_url as author_image"
-        ])
+        .limit(1).select(select)
 
-        if (assetInBatch[0] && assetInBatch[0].legal_information) {
-            assetInBatch[0].legal_information = await UnzipString(assetInBatch[0].legal_information, assetInBatch[0].compression);
+        if (assetInBatch[0]) {
+            if (assetInBatch[0].legal_information) {
+                assetInBatch[0].legal_information = await UnzipString(assetInBatch[0].legal_information, assetInBatch[0].compression);
+            }
+            if (assetInBatch[0].rendered_description) {
+                assetInBatch[0].rendered_description = await UnzipString(assetInBatch[0].rendered_description, assetInBatch[0].compression);
+            }
         }
 
         res.render("batches/view", {

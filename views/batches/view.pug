@@ -81,6 +81,11 @@ block content
                                 span.icon.is-small
                                     span comment
                                 span Comments
+                        li(class=(view == "description" ? "is-active" : ""))
+                            a(href="?view=description")
+                                span.icon.is-small
+                                    span description
+                                span Description
 
                 if view == "assets"
                     .field.block
@@ -124,6 +129,11 @@ block content
                 else if view == "comments"
 
                     div(data-comment=("B-" + batch.id))
+
+                else if view == "description"
+
+                    if firstAsset && firstAsset.rendered_description
+                        pre.noBackground!=firstAsset.rendered_description
 
             .column.is-one-quarter
 
