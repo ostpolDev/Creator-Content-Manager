@@ -127,10 +127,12 @@ router.get("/v/:id", async (req, res, next) => {
         if (!asset[0]) {
             return next();
         }
+        
 
-        asset.description = UnzipString(asset.description, asset.compression);
-        asset.rendered_description = UnzipString(asset.rendered_description, asset.compression);
-        asset.legal_information = UnzipString(asset.legal_information, asset.compression);
+        asset[0].description = UnzipString(asset[0].description, asset[0].compression);
+        asset[0].rendered_description = UnzipString(asset[0].rendered_description, asset[0].compression);
+        asset[0].legal_information = UnzipString(asset[0].legal_information, asset[0].compression);
+        
 
         res.render("assets/view", {
             title: asset[0].name,
