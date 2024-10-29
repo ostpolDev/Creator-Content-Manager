@@ -72,7 +72,7 @@ block content
 
                 if view == "description"
                     if video.rendered_description
-                        pre.noBackground.block=video.rendered_description
+                        pre.noBackground.block!=replace_content(video.rendered_description)
 
                     if video.tags
                         .tags
