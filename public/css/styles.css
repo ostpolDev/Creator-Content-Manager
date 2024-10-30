@@ -231,3 +231,9 @@ img.assetImage {
     width: 100px;
     height: auto;
 }
+
+iframe.assetFrame {
+    display: block;
+    width: 100%;
+    height: 50dvh;
+}

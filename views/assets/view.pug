@@ -5,6 +5,7 @@ block head
         const DEF = {
             asset: "#{asset.id}",
             batch: "#{asset.batch}",
+            mime: "#{asset.mime}",
         }
 
     script(src="/js/assets/view.js" type="module" defer) 
@@ -39,14 +40,29 @@ block content
             ul
                 li
                     a(href="/assets") Assets
+                if channel
+                    li
+                        a(href="/resources") Resources
+                    if channel != "GLOBAL" 
+                        li
+                            a(href="/resources?channel=" + encodeURIComponent(channel.id)) #{channel.name} 
                 li.is-active
                     a(href="#") #{asset.name}
-
 
         .columns
             .column.is-two-quarters
                 h1.title #{asset.name}
                 p.subtitle #{formatString(asset.type)}
+
+                if channel
+                    .message.is-info
+                        .message-body
+                            if channel == "GLOBAL"
+                                p This asset is a 
+                                    a(href="/resources") global resource.
+                            else
+                                p This asset is a resource for the 
+                                    a(href="/resources?channel=" + encodeURIComponent(channel.id)) #{channel.name} channel.  
 
                 if asset.type == "music" || asset.type == "soundEffect"
                     audio(src=("/assets/get/" + asset.id), controls, style="display: block; width: 100%;") 

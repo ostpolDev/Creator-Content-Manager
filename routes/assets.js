@@ -180,13 +180,21 @@ router.get("/v/:id", async (req, res, next) => {
         asset[0].rendered_description = UnzipString(asset[0].rendered_description, asset[0].compression);
         asset[0].legal_information = assetHelpers.ParseLegalText(UnzipString(asset[0].legal_information, asset[0].compression), asset[0]);
         
+        let channel;
+        if (asset[0].resource_id && asset[0].resource_id != "GLOBAL") {
+            let channelCheck = await knex("channels").where({id: asset[0].resource_id}).limit(1).select(["name", "id"]);
+            if (channelCheck[0]) {
+                channel = channelCheck[0];
+            }
+        }
 
         res.render("assets/view", {
             title: asset[0].name,
             asset: asset[0],
             isAuthor: asset[0].added_by == req.user.id,
             view,
-            licenseTypes: assetHelpers.licenseTypes
+            licenseTypes: assetHelpers.licenseTypes,
+            channel: channel ? channel : asset[0].resource_id == "GLOBAL" ? "GLOBAL" : null
         })
     } catch (e) {
         return next(e);

@@ -113,6 +113,9 @@ block content
                     a.button.iconButton.is-rounded(href="/videos?channel=" + encodeURIComponent(channel.id))
                         span.icon
                             span videocam
+                    a.button.iconButton.is-rounded(href="/resources?channel=" + encodeURIComponent(channel.id))
+                        span.icon
+                            span description 
                     if isAuthor
                         button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
                             span.icon

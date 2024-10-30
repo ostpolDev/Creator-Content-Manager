@@ -27,6 +27,10 @@ block content
                             span.icon
                                 span upload
                             span Upload an asset #{channel.name} 
+                        a.button(href="/channels/v/" + encodeURIComponent(channel.id))
+                            span.icon
+                                span folder
+                            span #{channel.name} 
                     else if user.level == -1
                         a.button(href="/assets/add?channel=GLOBAL")
                             span.icon
