@@ -40,6 +40,11 @@ router.post("/add", [
     let support_twitch = req.body.support_twitch == "true";
     let nsfw = req.body.nsfw == "true";
 
+    let channel = req.body.channel;
+    if (channel && channel == "GLOBAL" && req.user.level != -1) {
+        return res.status(401).json({success: false, msg: "Access denied"});
+    }
+
     if (!req.files || !req.files.assets) {
         return res.status(400).json({success: false, msg: "Please select at least one file"});
     }
@@ -57,6 +62,13 @@ router.post("/add", [
     }
 
     try {
+
+        if (channel && channel != "GLOBAL" && req.user.level != -1) {
+            let channelAccess = await knex("channel_members").where({channel, user: req.user.id}).limit(1);
+            if (!channelAccess[0]) {
+                return res.status(401).json({success: false, msg: "Access denied"});
+            }
+        }
 
         let proms = [];
 
@@ -97,7 +109,8 @@ router.post("/add", [
                         size: asset.size,
                         extension,
                         nsfw,
-                        price
+                        price,
+                        resource_id: channel
                     }, "id");
 
                     if (!newAsset[0]) {
