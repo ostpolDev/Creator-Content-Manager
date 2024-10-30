@@ -178,7 +178,7 @@ async function Interact(button, asset) {
                 break;
             case "music":
             case "soundEffect":
-                await Play(asset);
+                await Play(json.asset);
                 break;
             case "text":
                 const textModalContent = document.getElementById("textModalContent");
