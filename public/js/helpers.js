@@ -40,4 +40,8 @@ function MakeButton(icon, text, href) {
     return button;
 }
 
-export { CreateLikedWhenString, CreateSmartTimeString, MakeButton }
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export { CreateLikedWhenString, CreateSmartTimeString, MakeButton, escapeRegExp }
