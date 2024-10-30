@@ -381,9 +381,14 @@ router.get("/info/:id", async (req, res, next) => {
     
             return res.status(200).json({success: true, asset: asset[0]});
         } else if (type == "content") {
-            let asset = await knex("assets").where({id: req.params.id, type: "text"}).select(["id", "path"]);
+            let asset = await knex("assets").where({"assets.id": req.params.id, "assets.type": "text"})
+                .innerJoin("asset_infos", "asset_infos.id", "=", "assets.id").select(["assets.id", "assets.path", "asset_infos.mime"]);
             if (!asset[0]) {
                 return next();
+            }
+
+            if (!asset[0].mime.startsWith("text/")) {
+                return res.status(400).json({success: false, msg: "File needs to be embedded"});
             }
 
             let filePath = path.join(paths.uploads, asset[0].path);

@@ -4,7 +4,7 @@ const { escapeRegExp } = require("./textHelpers");
 
 const commonToReplace = ["y2matecom", "redditsavecom", "y2mate.com", "redditsave.com", "[Mpgun.com]", "[mpgun.com]", "Mpgun.com", "mpgun.com"];
 
-const fileTypes = [".jpg", ".png", ".mp3", ".mp4", ".wmv", ".webp", ".ogg", ".jpeg", ".pdn", ".wav", ".txt", ".md"];
+const fileTypes = [".jpg", ".png", ".mp3", ".mp4", ".wmv", ".webp", ".ogg", ".jpeg", ".pdn", ".wav", ".txt", ".md", ".pdf", ".doc", ".docx"];
 const assetTypes = ["music", "soundEffect", "video", "image", "text", "user", "fav"];
 const licenseTypes = {
     "None": {},
