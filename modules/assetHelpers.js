@@ -74,9 +74,4 @@ function ParseLegalText(legal, asset) {
     return legal;
 }
 
-console.log(ParseLegalText(test, {
-    name: "Cool asset name"
-}));
-
-
 module.exports = { fileTypes, assetTypes, licenseTypes, TriggerDownload, TriggerMassDownload, ParseLegalText }
