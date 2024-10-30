@@ -41,13 +41,60 @@ router.get("/", async (req, res, next) => {
     }
 })
 
-router.get("/add", (req, res, next) => {
-    res.render("assets/add", {
-        title: "Upload asset",
-        fileTypes: assetHelpers.fileTypes,
-        assetTypes: assetHelpers.assetTypes,
-        licenseTypes: assetHelpers.licenseTypes
-    })
+router.get("/add", async (req, res, next) => {
+    try {
+        let channelId = req.query.channel;
+        
+        if (!channelId || (channelId == "GLOBAL" && req.user.level != -1)) {
+            return res.render("assets/add", {
+                title: "Upload asset",
+                fileTypes: assetHelpers.fileTypes,
+                assetTypes: assetHelpers.assetTypes,
+                licenseTypes: assetHelpers.licenseTypes
+            })
+        }
+
+        if (req.user.level != -1) {
+            let accessCheck = await knex("channel_members").where({channel: channelId, user: req.user.id}).limit(1)
+                .innerJoin("channels", "channels.id", "=", "channel_members.channel")
+                .select(["channels.id", "channels.name"]);
+            if (!accessCheck[0]) {
+                return next();
+            }
+
+            return res.render("assets/add", {
+                title: "Upload asset",
+                fileTypes: assetHelpers.fileTypes,
+                assetTypes: assetHelpers.assetTypes,
+                licenseTypes: assetHelpers.licenseTypes,
+                channel: accessCheck[0]
+            })
+        } else if (channelId == "GLOBAL") {
+            return res.render("assets/add", {
+                title: "Upload asset",
+                fileTypes: assetHelpers.fileTypes,
+                assetTypes: assetHelpers.assetTypes,
+                licenseTypes: assetHelpers.licenseTypes,
+                channel: "GLOBAL"
+            })
+        }
+
+        let channel = await knex("channels").where({id: channelId}).limit(1).select(["name", "id"]);
+        if (!channel[0]) {
+            return next();
+        }
+
+        return res.render("assets/add", {
+            title: "Upload asset",
+            fileTypes: assetHelpers.fileTypes,
+            assetTypes: assetHelpers.assetTypes,
+            licenseTypes: assetHelpers.licenseTypes,
+            channel: channel[0]
+        })
+
+    } catch (e) {
+        return next(e);
+    }
 })
 
 router.get("/get/:id", async (req, res, next) => {

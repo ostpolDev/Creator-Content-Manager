@@ -36,6 +36,13 @@ block content
                     li.is-active
                         a(href="#") Edit
                 else
+                    if channel
+                        if channel
+                            li
+                                a(href="/resources") Resources
+                            if channel != "GLOBAL"
+                                li
+                                    a(href="/resources?channel=" + encodeURIComponent(channel.id)) #{channel.name}
                     li.is-active
                         a(href="#") Add
         .buttons
@@ -48,7 +55,10 @@ block content
             h1.title Edit asset
             p.subtitle #{asset.name}
         else
-            h1.title Upload an asset
+            if channel
+                h1.title Upload a resource asset
+            else
+                h1.title Upload an asset
 
         if asset
             .message.is-info
@@ -59,7 +69,21 @@ block content
             .message.is-info
                 .message-body Please make sure that the asset is freely useable on video or live-streaming platforms, and that if there are special permissons that need to be given, that you add them accordingly.
         
+        if channel
+            .message.is-info
+                .message-body
+                    if channel == "GLOBAL"
+                        p The following assets will be added as a global 
+                            a(href="/resources") resource
+                            |  for all users. 
+                    else
+                        p The following assets will be added to the 
+                            a(href="/resources?channel=" + encodeURIComponent(channel.id)) #{channel.name} resources. 
+
         form(data-form=TARGET, method="post" enctype="multipart/form-data") 
+            if channel
+                input(type="hidden", name="channel" value=(channel == "GLOBAL" ? channel : channel.id))
+
             if asset
                 input(type="hidden", name="asset", value=asset.id)
 
@@ -173,4 +197,7 @@ block content
                 if asset
                     | Save changes
                 else
-                    | Upload assets
+                    if channel
+                        | Upload resource assets
+                    else
+                        | Upload assets

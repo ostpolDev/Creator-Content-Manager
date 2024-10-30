@@ -21,4 +21,14 @@ block content
                             li
                                 a(href="/resources?channel=" + encodeURIComponent(channel.id), class=(selected && selected == channel.id ? "is-active" : "")) #{channel.name} 
             .column.is-three-quarters
-                    
+                .buttons
+                    if selected
+                        a.button(href="/assets/add?channel=" + encodeURIComponent(channel.id))
+                            span.icon
+                                span upload
+                            span Upload an asset #{channel.name} 
+                    else if user.level == -1
+                        a.button(href="/assets/add?channel=GLOBAL")
+                            span.icon
+                                span upload
+                            span Upload a global resource asset 
