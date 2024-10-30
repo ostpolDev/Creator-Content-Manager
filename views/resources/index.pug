@@ -1,0 +1,24 @@
+extends ../layout
+
+block content
+    .container
+        h1.title #{title}
+        if !selected
+            p.subtitle Files that may be useful to any channel.
+        else
+            p.subtitle Assets for #{channel.name}
+
+        .columns
+            .column.is-one-quarter
+                aside.menu
+                    p.menu-label General
+                    ul.menu-list
+                        li
+                            a(href="/resources", class=(!selected ? "is-active" : "")) Global resources 
+                    p.menu-label Your Channels
+                    ul.menu-list
+                        each channel in channels
+                            li
+                                a(href="/resources?channel=" + encodeURIComponent(channel.id), class=(selected && selected == channel.id ? "is-active" : "")) #{channel.name} 
+            .column.is-three-quarters
+                    

@@ -10,5 +10,6 @@ router.use("/assets", validation.ensureAuthenticated, require('./api_assets'));
 router.use("/batches", validation.ensureAuthenticated, require('./api_batches'));
 router.use("/channels", validation.ensureAuthenticated, require('./api_channels'));
 router.use("/videos", validation.ensureAuthenticated, require('./api_videos'));
+router.use("/resources", validation.ensureAuthenticated, require('./api_resources'));
 
 module.exports = router;
