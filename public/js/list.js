@@ -18,6 +18,7 @@ class List {
         this.limit = Number.parseInt(element.getAttribute("data-list-limit") || 0);
         this.filter = element.getAttribute("data-list-filter") || "*";
         this.disableLoadMore = element.getAttribute("data-list-load") == "false";
+        this.size = element.getAttribute("data-list-size") || null;
 
         this.urlParams = new URLSearchParams(window.location.search);
         this.externalFilters = {};
@@ -123,7 +124,7 @@ class List {
     #insertRowElement(item) {
         switch (this.type) {
             case "videos":
-                return CreateVideoElement(item);
+                return CreateVideoElement(item, this.size);
             case "assets":
                 return MakeAssetElement(item);
             case "users":

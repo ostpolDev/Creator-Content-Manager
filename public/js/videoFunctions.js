@@ -1,8 +1,11 @@
 import { CreateSmartTimeString } from "./helpers.js";
 
-function CreateVideoElement(video) {
+function CreateVideoElement(video, size) {
+    if (!size) {
+        size = "one-fifth";
+    }
     let column = document.createElement("div");
-    column.classList.add("column", "is-one-fifth");
+    column.classList.add("column", `is-${size}`);
     column.setAttribute("data-video", video.id);
 
     let linkElem = document.createElement("a");

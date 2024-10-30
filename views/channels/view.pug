@@ -86,7 +86,7 @@ block content
                                 span.icon.is-small.is-left
                                     span search
                                     
-                    .columns.is-multiline(data-list="videos" data-list-limit="8", data-list-load="true", data-list-filter="channel:" + channel.id)
+                    .columns.is-multiline(data-list="videos" data-list-limit="8", data-list-load="true", data-list-filter="channel:" + channel.id, data-list-size="one-quarter")
 
                 else if view == "comments"
                     div(data-comment=("C-" + channel.id))
