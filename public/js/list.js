@@ -46,7 +46,6 @@ class List {
         this.loadMoreButton.classList.add("button", "is-fullwidth");
         if (!this.disableLoadMore) {
             this.element.insertAdjacentElement("afterend", this.loadMoreButton);
-        } else {
             this.loadMoreButton.addEventListener("click", () => {
                 this.LoadMore();
             })
@@ -103,6 +102,8 @@ class List {
                 if (json.reachedEnd == true) {
                     this.loadMoreButton.classList.add("is-hidden");
                 }
+
+                this.skip += json.items.length;
 
                 json.items.forEach(item => {
                     this.element.appendChild(this.#insertRowElement(item));
