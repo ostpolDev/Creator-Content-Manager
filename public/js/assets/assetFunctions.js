@@ -150,6 +150,8 @@ async function Interact(button, asset) {
             return;
         }
 
+        asset.name = json.asset.name;
+
         switch (type) {
             case "image":
                 const imageModalImage = document.getElementById("imageModalImage");
@@ -176,7 +178,7 @@ async function Interact(button, asset) {
                 break;
             case "music":
             case "soundEffect":
-                await Play(asset);
+                await Play(json.asset);
                 break;
             case "text":
                 const textModalContent = document.getElementById("textModalContent");

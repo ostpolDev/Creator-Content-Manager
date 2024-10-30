@@ -10,6 +10,34 @@ block head
         link(rel="stylesheet", href="/bulma/bulma-list.css")
         script(src="/js/videos/assetSearch.js" type="module" defer) 
 
+block modals
+    if view == "assets"
+        .modal#legalInfoModal
+            .modal-background(data-modal="close")
+            .modal-card
+                header.modal-card-head
+                    p.modal-card-title Legal information
+                    button.delete(data-modal="close")
+
+                section.modal-card-body
+                    .block
+                        p Copy this into your video description to avoid getting copyright claims.
+
+                    .message.is-danger.is-hidden#incompatibleMessage
+                        .message-header Warning
+                        .message-body
+                            .content
+                                p The following assets you've chosen may not be compatible with YouTube:
+                                ul#incompatibleList
+
+                    .notification#legalInfoContent
+
+                footer.modal-card-foot
+                    .buttons
+                        button.button(data-modal="close")
+                            span.icon
+                                span close
+                            span Close
 block content
     .container
 
@@ -72,7 +100,7 @@ block content
 
                 if view == "description"
                     if video.rendered_description
-                        pre.noBackground.block=video.rendered_description
+                        pre.noBackground.block!=replace_content(video.rendered_description)
 
                     if video.tags
                         .tags

@@ -1,5 +1,6 @@
 const { knex } = require("./database");
 const logger = require("./logger");
+const { escapeRegExp } = require("./textHelpers");
 
 const commonToReplace = ["y2matecom", "redditsavecom", "y2mate.com", "redditsave.com", "[Mpgun.com]", "[mpgun.com]", "Mpgun.com", "mpgun.com"];
 
@@ -7,13 +8,13 @@ const fileTypes = [".jpg", ".png", ".mp3", ".mp4", ".wmv", ".webp", ".ogg", ".jp
 const assetTypes = ["music", "soundEffect", "video", "image", "text", "user", "fav"];
 const licenseTypes = {
     "None": {},
-    "Attribution": {url: "https://creativecommons.org/licenses/by/4.0", icon: "https://licensebuttons.net/l/by/3.0/88x31.png"},
-    "Attribution-ShareAlike": {url: "https://creativecommons.org/licenses/by-sa/4.0", icon: "https://licensebuttons.net/l/by-sa/3.0/88x31.png"},
-    "Attribution-NoDerivs": {url: "https://creativecommons.org/licenses/by-nd/4.0", icon: "https://licensebuttons.net/l/by-nd/3.0/88x31.png"},
-    "Attribution-NonCommercial": {url: "https://creativecommons.org/licenses/by-nc/4.0", icon: "https://licensebuttons.net/l/by-nc/3.0/88x31.png"},
-    "Attribution-NonCommercial-ShareAlike": {url: "https://creativecommons.org/licenses/by-nc-sa/4.0", icon: "https://licensebuttons.net/l/by-nc-sa/3.0/88x31.png"},
-    "Attribution-NonCommercial-NoDerivs": {url: "https://creativecommons.org/licenses/by-nc-nd/4.0", icon: "https://licensebuttons.net/l/by-nc-nd/3.0/88x31.png"},
-    "CC0": {url: "https://creativecommons.org/publicdomain/zero/1.0/", icon: "https://i.creativecommons.org/p/zero/1.0/88x31.png"}
+    "Attribution": { url: "https://creativecommons.org/licenses/by/4.0", icon: "/img/cc/att-88x31.png", msg: "You are free to use and share commercially, but you must provide credit." },
+    "Attribution-ShareAlike": { url: "https://creativecommons.org/licenses/by-sa/4.0", icon: "/img/cc/attr-shal88x31.png", msg: "You are free to use and share commercially, but you must provide credit. If you modify this asset in any way, it must be published under the same license." },
+    "Attribution-NoDerivs": { url: "https://creativecommons.org/licenses/by-nd/4.0", icon: "/img/cc/attr-noder88x31.png", msg: "You are free to use and share commercially, but you must provide credit. Modifications made to this asset may not be published or shared." },
+    "Attribution-NonCommercial": { url: "https://creativecommons.org/licenses/by-nc/4.0", icon: "/img/cc/attr-nocom88x31.png", msg: "You are free to use and share but NOT commercially (i.e. YouTube), and you must provide credit." },
+    "Attribution-NonCommercial-ShareAlike": { url: "https://creativecommons.org/licenses/by-nc-sa/4.0", icon: "/img/cc/attr-nocomshal88x31.png", msg: "You are free to use and share but NOT commercially (i.e. YouTube), and you must provide credit. If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original."},
+    "Attribution-NonCommercial-NoDerivs": { url: "https://creativecommons.org/licenses/by-nc-nd/4.0", icon: "/img/cc/attr-nocomnoder88x31.png", msg: "You are free to use and share but NOT commercially (i.e. YouTube), and you must provide credit. Modifications made to this asset may not be published or shared." },
+    "CC0": { url: "https://creativecommons.org/publicdomain/zero/1.0/", icon: "/img/cc/public-88x31.png", msg: "The person who associated a work with this deed has dedicated the work to the public domain by waiving all of their rights to the work worldwide under copyright law, including all related and neighboring rights, to the extent allowed by law." }
 }
 
 async function TriggerDownload(assetId, userId) {
@@ -54,4 +55,28 @@ async function TriggerMassDownload(assetIds, userId) {
     }
 }
 
-module.exports = { fileTypes, assetTypes, licenseTypes, TriggerDownload, TriggerMassDownload }
+let test = "[NAME] is great [NAME]"
+
+function ParseLegalText(legal, asset) {
+    if (!legal || !asset) {
+        return undefined;
+    }
+
+    const map = {
+        "NAME": asset.name
+    }
+
+    Object.keys(map).forEach(m => {
+        let r = new RegExp(`\\[${escapeRegExp(m)}\\]`, "g");
+        legal = legal.replace(r, map[m]);
+    })
+
+    return legal;
+}
+
+console.log(ParseLegalText(test, {
+    name: "Cool asset name"
+}));
+
+
+module.exports = { fileTypes, assetTypes, licenseTypes, TriggerDownload, TriggerMassDownload, ParseLegalText }

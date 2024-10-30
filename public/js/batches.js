@@ -22,6 +22,7 @@ function ActivateType(selectedType, isFirst) {
     }
     type = selectedType;
     skip = 0;
+    GetTarget().innerHTML = "";
     typeButtons.forEach(btn => {
         let t = btn.getAttribute("data-type");
         if (selectedType && t == selectedType) {
@@ -115,7 +116,6 @@ async function LoadMore() {
         }
 
         let itemType = GetTypeString();
-        target.innerHTML = "";
 
         skip += json.items.length;
         json.items.forEach(asset => {

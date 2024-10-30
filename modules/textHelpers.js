@@ -82,4 +82,26 @@ function ParseYouTubeTags(tagString) {
     return tags;
 }
 
-module.exports = { CompressString, UnzipString, RemoveExtension, FormatFileName, ParseYouTubeTags }
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function capitalizeString(string) {
+    if (!string) {
+        return "";
+    }
+    const result = string.replace(/([A-Z])/g, " $1");
+    return result.charAt(0).toUpperCase() + result.slice(1);
+}
+
+function bytesToSize(bytes) {
+    if (!bytes) {
+        return "--"
+    }
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return '0 Byte';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+}
+
+module.exports = { CompressString, UnzipString, RemoveExtension, FormatFileName, ParseYouTubeTags, escapeRegExp, capitalizeString, bytesToSize }

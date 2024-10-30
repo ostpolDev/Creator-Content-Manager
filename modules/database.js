@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const { CreateTables } = require('./databaseTableCreator');
+const logger = require('./logger');
 
 const CONNECTION_INFO = {
     host: process.env.CREATOR_PGHOST,

@@ -220,3 +220,14 @@ img.assetImage {
 .has-text-capitalized {
     text-transform: capitalize;
 }
+
+.image.centered {
+    display: flex;
+    align-items: center;
+}
+
+.image.centered img {
+    flex: 0;
+    width: 100px;
+    height: auto;
+}

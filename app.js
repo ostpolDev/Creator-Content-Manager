@@ -13,6 +13,7 @@ const compression = require('compression');
 const logger = require('./modules/logger');
 const pgSession = require('connect-pg-simple')(session);
 const database = require('./modules/database');
+const { VERSION } = require('./modules/data');
 
 //#endregion
 
@@ -96,7 +97,7 @@ app.get("*", (req, res, next) => {
     res.locals.environment = ENVIRONMENT;
     res.locals.url = `https://${req.get("host")}${req.originalUrl}`;
     res.locals.baseURL = `https://${req.get("host")}`;
-    res.locals.version = "0.1";
+    res.locals.version = VERSION;
 
     if (req.session && req.session.messages) {
         res.locals.messages = req.session.messages;

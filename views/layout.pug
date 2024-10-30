@@ -20,6 +20,11 @@ html(lang="en" data-theme="light")
         script(src="/lib/moment.min.js") 
 
         script.
+            const GLOBAL = {
+                username: "#{user ? user.username : ''}",
+            }
+
+        script.
             let FF_FOUC_FIX;
 
         block head

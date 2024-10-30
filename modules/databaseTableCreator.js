@@ -1,5 +1,6 @@
 const {Knex} = require('knex');
 const logger = require('./logger.js');
+const { VERSION } = require('./data.js');
 
 /**
  * 
@@ -328,6 +329,35 @@ async function CreateTables(knex) {
     }
 
     logger.info(`Successfully checked for table changes in ${Date.now() - start}ms`);
+
+    await MigrateVersion(knex);
+}
+
+/**
+ * 
+ * @param {Knex} knex 
+ */
+async function MigrateVersion(knex) {
+    let current = await knex("system_info").where({key: "version"}).limit(1);
+    if (!current[0]) {
+        await knex("system_info").insert({key: "version", value: VERSION});
+        return;
+    }
+    if (current[0].value == VERSION) {
+        logger.info("Database is up to date");
+        return;
+    }
+
+    logger.info(`Checking migration from version ${current[0].value} > ${VERSION}`);
+
+    switch (current[0].value) {
+        default:
+            logger.info(`No migration instructions found`)
+            break;
+    }
+
+    logger.info("Migration successful");
+    await knex("system_info").where({key: "version"}).update({value: VERSION});
 }
 
 module.exports = { CreateTables };
