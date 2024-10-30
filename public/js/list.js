@@ -66,10 +66,13 @@ class List {
                 }
 
                 if (this.filter != "*") {
-                    let parts = this.filter.split(":");
-                    if (parts.length == 2) {
-                        body[parts[0]] = parts[1]
-                    }
+                    let filterParts = this.filter.split(";")
+                    filterParts.forEach(filter => {
+                        let parts = filter.split(":");
+                        if (parts.length == 2) {
+                            body[parts[0]] = parts[1]
+                        }
+                    })
                 }
 
                 if (Object.keys(this.externalFilters).length > 0) {

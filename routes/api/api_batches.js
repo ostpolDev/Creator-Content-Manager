@@ -29,7 +29,7 @@ router.get("/list", async (req, res, next) => {
             limit = 1;
         }
 
-        let batchesQuery = knex("batches")
+        let batchesQuery = knex("batches").where({"batches.is_resource_batch": false})
             .innerJoin("users", "users.id", "=", "batches.added_by")
             .offset(skip).limit(limit).orderBy("created_at", "desc").select([
                 "batches.id", "batches.name", "batches.type", "batches.asset_count", 

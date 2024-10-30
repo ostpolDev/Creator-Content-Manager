@@ -1,0 +1,54 @@
+extends ../layout
+
+block content
+    .container
+        h1.title #{title}
+        if !selected
+            p.subtitle Files that may be useful to any channel.
+        else
+            p.subtitle Assets for #{channel.name}
+
+        .message
+            .message-body
+                .content
+                    p Resources are a good way to collect assets that your channel may use a lot, like thumbnail templates and intro videos.
+                    p Channel specific resources are private to the people who have access to the channel.
+                    p Global resources are assets that may be useful to every channel, like special license files.
+
+        .columns
+            .column.is-one-quarter
+                aside.menu
+                    p.menu-label General
+                    ul.menu-list
+                        li
+                            a(href="/resources", class=(!selected ? "is-active" : "")) Global resources 
+                    p.menu-label Your Channels
+                    ul.menu-list
+                        each channel in channels
+                            li
+                                a(href="/resources?channel=" + encodeURIComponent(channel.id), class=(selected && selected == channel.id ? "is-active" : "")) #{channel.name} 
+            .column.is-three-quarters
+                .buttons.block
+                    if selected
+                        a.button(href="/assets/add?channel=" + encodeURIComponent(channel.id))
+                            span.icon
+                                span upload
+                            span Upload an asset #{channel.name} 
+                        a.button(href="/channels/v/" + encodeURIComponent(channel.id))
+                            span.icon
+                                span folder
+                            span #{channel.name} 
+                    else if user.level == -1
+                        a.button(href="/assets/add?channel=GLOBAL")
+                            span.icon
+                                span upload
+                            span Upload a global resource asset 
+
+                table.table.is-fullwidth.is-striped.is-hoverable
+                    thead
+                        th Action
+                        th Name
+                        th Author
+                        th Uploaded
+                        th Tags
+                    tbody(data-list="assets" data-list-limit="10" data-list-filter=(selected ? "resource:" + encodeURIComponent(selected) : "resource:GLOBAL"), data-list-load="true")

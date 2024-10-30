@@ -59,20 +59,20 @@ block content
                 br
                 br
 
-                .tabs.is-boxed
+                .tabs.is-boxed#tabs
                     ul
                         li(class=(view == "videos" ? "is-active" : ""))
-                            a(href="?view=videos")
+                            a(href="?view=videos#tabs")
                                 span.icon.is-small
                                     span videocam
                                 span Videos
                         li(class=(view == "comments" ? "is-active" : ""))
-                            a(href="?view=comments")
+                            a(href="?view=comments#tabs")
                                 span.icon.is-small
                                     span comment
                                 span Comments
                         li(class=(view == "members" ? "is-active" : ""))
-                            a(href="?view=members")
+                            a(href="?view=members#tabs")
                                 span.icon.is-small
                                     span people
                                 span Members
@@ -113,6 +113,9 @@ block content
                     a.button.iconButton.is-rounded(href="/videos?channel=" + encodeURIComponent(channel.id))
                         span.icon
                             span videocam
+                    a.button.iconButton.is-rounded(href="/resources?channel=" + encodeURIComponent(channel.id))
+                        span.icon
+                            span description 
                     if isAuthor
                         button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
                             span.icon

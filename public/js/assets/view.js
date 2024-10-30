@@ -9,9 +9,17 @@ if (placeholderButton) {
 async function LoadContent() {
     let content = await GetAssetContents(DEF.asset);
     if (!content) {
-        placeholderButton.classList.remove("is-loading");
-        placeholderButton.classList.add("is-danger");
-        placeholderButton.innerText = "Could not load file content";
+        if (DEF.mime.includes("pdf")) {
+            let frame = document.createElement("iframe");
+            frame.src = `/assets/get/${encodeURIComponent(DEF.asset)}`;
+            frame.classList.add("assetFrame");
+            placeholderButton.insertAdjacentElement("afterend", frame);
+            placeholderButton.classList.add("is-hidden");
+        } else {
+            placeholderButton.classList.remove("is-loading");
+            placeholderButton.classList.add("is-danger");
+            placeholderButton.innerText = "Could not load file content";
+        }
         return;
     }
 

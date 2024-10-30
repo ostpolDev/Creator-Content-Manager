@@ -1,3 +1,3 @@
-const VERSION = "SQL-0.2";
+const VERSION = "SQL-0.3";
 
 module.exports = { VERSION }
