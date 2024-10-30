@@ -260,6 +260,7 @@ router.get("/list", async (req, res, next) => {
         let id = req.query.id;
         let batch = req.query.batch;
         let checkID = req.query.checkId == "true";
+        let resource = req.query.resource;
 
         if (Number.isNaN(skip) || skip < 0) {
             skip = 0;
@@ -279,23 +280,31 @@ router.get("/list", async (req, res, next) => {
         }
 
         let assetQuery;
+        let select = [
+            "assets.id", "assets.name", "assets.type", "assets.tags", "assets.created_at",
+            "users.id as author_id", "users.name as author_name", "users.username as author_username", "users.display_name as author_display_name", "users.profile_image_url as author_image",
+            "asset_likes.created_at as like_creation"
+        ]
+
+        if (resource) {
+            select.push("assets.resource_id");
+        }
 
         if (type && type == "fav" && typeof ref != "undefined") {
             // TODO: check if likes are public
             assetQuery = knex("asset_likes").where({"asset_likes.user": ref})
                 .innerJoin("assets", "assets.id", "=", "asset_likes.asset")
                 .innerJoin("users", "users.id", "=", "assets.added_by")
-                .offset(skip).limit(limit).select([
-                    "assets.id", "assets.name", "assets.type", "assets.tags", "assets.created_at",
-                    "users.id as author_id", "users.name as author_name", "users.username as author_username", "users.display_name as author_display_name", "users.profile_image_url as author_image",
-                    "asset_likes.created_at as like_creation"
-                ])
+                .offset(skip).limit(limit).select(select)
         } else {
-            assetQuery = knex("assets").innerJoin("users", "users.id", "=", "assets.added_by").leftOuterJoin("asset_likes", "asset_likes.asset", "=", "assets.id").offset(skip).limit(limit).select([
-                "assets.id", "assets.name", "assets.type", "assets.tags", "assets.created_at",
-                "users.id as author_id", "users.name as author_name", "users.username as author_username", "users.display_name as author_display_name", "users.profile_image_url as author_image",
-                "asset_likes.asset as like_id", "asset_likes.created_at as like_creation"
-            ])
+            select.push("asset_likes.asset as like_id");
+            assetQuery = knex("assets").innerJoin("users", "users.id", "=", "assets.added_by").leftOuterJoin("asset_likes", "asset_likes.asset", "=", "assets.id").offset(skip).limit(limit).select(select);
+        }
+
+        if (!resource) {
+            assetQuery.whereNull("resource_id");
+        } else {
+            assetQuery.where({"resource_id": resource});
         }
 
         if (id) {

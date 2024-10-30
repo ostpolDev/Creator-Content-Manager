@@ -77,6 +77,7 @@ async function CreateTables(knex) {
             table.integer("size").unsigned().defaultTo(0);
             table.string("extension");
             table.boolean("nsfw").defaultTo(false);
+            table.string("resource_id").index();
             table.foreign("added_by").references("users.id");
             table.foreign("batch").references("batches.id").onDelete("CASCADE");
             table.timestamps(true, true);
@@ -328,6 +329,19 @@ async function CreateTables(knex) {
         logger.info("Created the number_cache table");
     }
 
+    let hasAssetLink = await knex.schema.hasTable("asset_references");
+    if (!hasAssetLink) {
+        logger.info("Creating the asset_references table");
+        await knex.schema.createTable("asset_references", (table) => {
+            table.string("asset_a").notNullable();
+            table.string("asset_b").notNullable();
+            table.primary(["asset_a", "asset_b"]);
+            table.foreign("asset_a").references("assets.id").onDelete("CASCADE");
+            table.foreign("asset_b").references("assets.id").onDelete("CASCADE");
+        })
+        logger.info("Created the asset_references table");
+    }
+
     logger.info(`Successfully checked for table changes in ${Date.now() - start}ms`);
 
     await MigrateVersion(knex);
@@ -351,6 +365,12 @@ async function MigrateVersion(knex) {
     logger.info(`Checking migration from version ${current[0].value} > ${VERSION}`);
 
     switch (current[0].value) {
+        case "SQL-0.2":
+            logger.info("Migration from SQL-0.2");
+            await knex.schema.alterTable("assets", (table) => {
+                table.string("resource_id").index();
+            })
+            break;
         default:
             logger.info(`No migration instructions found`)
             break;
