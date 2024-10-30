@@ -59,20 +59,20 @@ block content
                 br
                 br
 
-                .tabs.is-boxed
+                .tabs.is-boxed#tabs
                     ul
                         li(class=(view == "videos" ? "is-active" : ""))
-                            a(href="?view=videos")
+                            a(href="?view=videos#tabs")
                                 span.icon.is-small
                                     span videocam
                                 span Videos
                         li(class=(view == "comments" ? "is-active" : ""))
-                            a(href="?view=comments")
+                            a(href="?view=comments#tabs")
                                 span.icon.is-small
                                     span comment
                                 span Comments
                         li(class=(view == "members" ? "is-active" : ""))
-                            a(href="?view=members")
+                            a(href="?view=members#tabs")
                                 span.icon.is-small
                                     span people
                                 span Members
