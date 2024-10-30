@@ -75,7 +75,8 @@ router.post("/add", [
         let batch = await knex("batches").insert({
             name: batchName || randomUUID(),
             added_by: req.user.id,
-            asset_count: req.files.assets.length
+            asset_count: req.files.assets.length,
+            is_resource_batch: typeof channel !== "undefined"
         }, "id");
 
         if (!batch[0]) {

@@ -55,6 +55,7 @@ async function CreateTables(knex) {
             table.integer("added_by").unsigned().notNullable();
             table.integer("asset_count").unsigned().defaultTo(0);
             table.integer("failed_assets").unsigned().defaultTo(0);
+            table.boolean("is_resource_batch").defaultTo(false).index();
             table.integer("size").unsigned().defaultTo(0);
             table.foreign("added_by").references("users.id");
             table.timestamps(true, true);
@@ -369,6 +370,9 @@ async function MigrateVersion(knex) {
             logger.info("Migration from SQL-0.2");
             await knex.schema.alterTable("assets", (table) => {
                 table.string("resource_id").index();
+            })
+            await knex.schema.alterTable("batches", (table) => {
+                table.boolean("is_resource_batch").defaultTo(false).index();
             })
             break;
         default:
