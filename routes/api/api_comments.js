@@ -31,13 +31,15 @@ router.post("/add", async (req, res, next) => {
             }
         }
 
-        content = textHelpers.CompressString(sanitizeFull(content), true);
+        content = textHelpers.CompressString(sanitizeFull(content), true).text;
+        
 
         if (parent) {
             let parentCheck = await knex("comments").where({id: parent}).limit(1).select(["id"]);
             if (!parentCheck[0]) {
                 return res.status(404).json({success: false, msg: "Parent comment not found"});
             }
+            await knex("comments").where({id: parent}).increment("replies", 1);
         }
 
         let newComment = await knex("comments").insert({
@@ -81,9 +83,12 @@ router.get("/list", async (req, res, next) => {
             }
         }
 
-        let commentsQuery = knex("comments").where({"comments.target": identifier, "comment_likes.user": req.user.id})
+        let commentsQuery = knex("comments").where({"comments.target": identifier})
             .innerJoin("users", "users.id", "=", "comments.added_by").limit(limit).offset(skip)
-            .leftOuterJoin("comment_likes", "comment_likes.comment", "=", "comments.id")
+            .leftOuterJoin("comment_likes", (f) => {
+                f.on("comment_likes.comment", "=", "comments.id")
+                .andOn("comment_likes.user", "=", req.user.id)
+            }).orderBy("created_at", "desc")
             .select([
                 "comments.id", "comments.likes", "comments.replies", "comments.content",
                 "users.username as author_username", "users.display_name as author_display_name",
@@ -93,6 +98,8 @@ router.get("/list", async (req, res, next) => {
 
         if (parent) {
             commentsQuery.where({"comments.parent": parent});
+        } else {
+            commentsQuery.whereNull("comments.parent");
         }
 
         commentsQuery.then(comments => {

@@ -306,10 +306,13 @@ router.get("/list", async (req, res, next) => {
         }
 
         if (reference) {
-            assetQuery = knex("asset_references").where({asset_a: reference, "asset_likes.user": ref})
+            assetQuery = knex("asset_references").where({asset_a: reference})
                 .innerJoin("assets", "assets.id", "=", "asset_references.asset_b")
                 .innerJoin("users", "users.id", "=", "assets.added_by")
-                .leftOuterJoin("asset_likes", "asset_likes.asset", "=", "assets.id")
+                .leftOuterJoin("asset_likes", (f) => {
+                    f.on("asset_likes.asset", "=", "assets.id")
+                    .andOn("asset_likes.user", "=", req.user.id)
+                })
                 .offset(skip).limit(limit).select(select);
         } else if (type && type == "fav" && typeof ref != "undefined") {
             // TODO: check if likes are public
@@ -321,7 +324,10 @@ router.get("/list", async (req, res, next) => {
             select.push("asset_likes.asset as like_id");
             assetQuery = knex("assets")
                 .innerJoin("users", "users.id", "=", "assets.added_by")
-                .leftOuterJoin("asset_likes", "asset_likes.asset", "=", "assets.id")
+                .leftOuterJoin("asset_likes", (f) => {
+                    f.on("asset_likes.asset", "=", "assets.id")
+                    .andOn("asset_likes.user", "=", req.user.id)
+                })
                 .offset(skip).limit(limit).select(select);
         }
 
@@ -367,7 +373,7 @@ router.get("/list", async (req, res, next) => {
             }
         }
 
-        assetQuery.then((assets) => {
+        assetQuery.then((assets) => {            
             return res.status(200).json({success: true, items: assets.map(x => ({
                 ...x,
                 liked: type == "fav" || x.like_id != null,

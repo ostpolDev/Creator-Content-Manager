@@ -89,7 +89,7 @@ block content
                     .columns.is-multiline(data-list="videos" data-list-limit="8", data-list-load="true", data-list-filter="channel:" + channel.id, data-list-size="one-quarter")
 
                 else if view == "comments"
-                    div(data-comment=("C-" + channel.id))
+                    div(data-comment=("C:" + channel.id))
 
                 else if view == "members"
 

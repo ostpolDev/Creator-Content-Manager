@@ -66,12 +66,13 @@ async function HasAccess(result, user) {
 }
 
 async function Exists(identifier) {
-    let parts = identifier.split("-");
+    let parts = identifier.split(":");
     if (parts.length != 2) {
         return false;
     }
 
     let result;
+    
 
     try {
 
@@ -110,7 +111,7 @@ function GetOptionsFromIdentifier(identifier) {
     if (!identifier) {
         return false;
     }
-    let parts = identifier.split("-");
+    let parts = identifier.split(":");
     if (parts.length != 2) {
         return false;
     }
