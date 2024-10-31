@@ -46,7 +46,8 @@ class List {
         this.loadMoreButton.innerText = "Load More";
         this.loadMoreButton.classList.add("button", "is-fullwidth");
         if (!this.disableLoadMore) {
-            this.element.insertAdjacentElement("afterend", this.loadMoreButton);
+            let targetAdjElem = this.element.parentElement.nodeName == "TABLE" ? this.element.parentElement : this.element;
+            targetAdjElem.insertAdjacentElement("afterend", this.loadMoreButton);
             this.loadMoreButton.addEventListener("click", () => {
                 this.LoadMore();
             })

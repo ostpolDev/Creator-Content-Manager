@@ -44,6 +44,13 @@ block content
                                 span upload
                             span Upload a global resource asset 
 
+                .field
+                    label.label Search
+                    .control.has-icons-left
+                        input.input#searchInput(type="text" placeholder="Search..." name="q", data-list-target="assets", data-list-filter="q")
+                        span.icon.is-small.is-left
+                            span search
+
                 table.table.is-fullwidth.is-striped.is-hoverable
                     thead
                         th Action
@@ -52,3 +59,4 @@ block content
                         th Uploaded
                         th Tags
                     tbody(data-list="assets" data-list-limit="10" data-list-filter=(selected ? "resource:" + encodeURIComponent(selected) : "resource:GLOBAL"), data-list-load="true")
+                    

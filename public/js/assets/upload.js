@@ -30,7 +30,7 @@ fileInput?.addEventListener("change", (e) => {
             assetType.value = "image";
         } else if (type.startsWith("video")) {
             assetType.value = "video";
-        } else if (type.startsWith("text")) {
+        } else {
             assetType.value = "text";
         }
 
