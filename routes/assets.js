@@ -188,13 +188,19 @@ router.get("/v/:id", async (req, res, next) => {
             }
         }
 
+        let commentCount = await GetCachedNumber(`${asset[0].id}-comment_count`, async () => {
+            let newCount = await knex("comments").where({target: `A:${asset[0].id}`}).count("id as CNT");
+            return newCount[0].CNT;
+        })
+
         res.render("assets/view", {
             title: asset[0].name,
             asset: asset[0],
             isAuthor: asset[0].added_by == req.user.id,
             view,
             licenseTypes: assetHelpers.licenseTypes,
-            channel: channel ? channel : asset[0].resource_id == "GLOBAL" ? "GLOBAL" : null
+            channel: channel ? channel : asset[0].resource_id == "GLOBAL" ? "GLOBAL" : null,
+            commentCount
         })
     } catch (e) {
         return next(e);

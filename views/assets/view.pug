@@ -134,7 +134,7 @@ block content
                             a(href="?view=comments#tabs")
                                 span.icon.is-small
                                     span comment
-                                span Comments
+                                span Comments#{commentCount > 0 ? ` (${commentCount.toLocaleString()})` : ""}
                         li(class=(view == "references" ? "is-active" : ""))
                             a(href="?view=references#tabs")
                                 span.icon.is-small
