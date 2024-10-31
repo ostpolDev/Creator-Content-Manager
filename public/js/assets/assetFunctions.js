@@ -1,4 +1,4 @@
-import { CreateLikedWhenString, CreateSmartTimeString } from "../helpers.js";
+import { CreateLikedWhenString, CreateSmartTimeString, MakeButton } from "../helpers.js";
 import { Play } from "../player.js";
 
 function MakeAssetElement(asset) {
@@ -344,4 +344,71 @@ async function RenameAssetElement(id) {
     }
 }
 
-export { MakeAssetElement, trimString, GetIconFromType, Interact, GetAssetInfo, GetAssetContents, RenameAssetElement }
+/**
+ * 
+ * @param {object} asset 
+ * @param {"current"|"result"} direction 
+ */
+function MakeAssetListItem(asset, direction, addAsset, removeAsset) {
+    let listItem = document.createElement("div");
+    listItem.classList.add("list-item");
+    listItem.setAttribute("data-asset", asset.id);
+    listItem.setAttribute("data-asset-side", direction);
+
+    let content = document.createElement("div");
+    content.classList.add("list-item-content");
+    listItem.appendChild(content);
+
+    let title = document.createElement("div");
+    title.classList.add("list-item-title");
+    title.innerText = asset.name || asset.id;
+    title.title = asset.name || asset.id;
+    content.appendChild(title);
+
+    let description = document.createElement("div");
+    description.classList.add("list-item-description", "has-text-capitalized");
+    description.innerText = `${asset.tags ? asset.tags : asset.type}`;
+    content.appendChild(description);
+
+    let controls = document.createElement("div");
+    controls.classList.add("list-item-controls");
+    listItem.appendChild(controls);
+
+    let buttons = document.createElement("div");
+    buttons.classList.add("buttons", "is-right");
+    controls.appendChild(buttons);
+
+    let viewButton = MakeButton(GetIconFromType(asset.type));
+    buttons.appendChild(viewButton);
+    viewButton.addEventListener("click", () => {
+        Interact(viewButton, asset);
+    })
+
+    if (direction == "current") {
+        let removeButton = MakeButton("delete");
+        removeButton.addEventListener("click", async () => {
+            if (!removeAsset) {
+                return;
+            }
+
+            await removeAsset(removeButton, asset.id);
+            listItem?.remove();
+        })
+        buttons.appendChild(removeButton);
+    } else {
+        let addButton = MakeButton("add");
+        addButton.addEventListener("click", async () => {
+            if (!addAsset) {
+                return;
+            }
+            
+            await addAsset(addButton, asset.id);
+            listItem?.remove();
+        })
+        buttons.appendChild(addButton);
+    }
+
+    return listItem;
+}
+
+export { MakeAssetElement, trimString, GetIconFromType, Interact, GetAssetInfo, GetAssetContents, RenameAssetElement, MakeAssetListItem }

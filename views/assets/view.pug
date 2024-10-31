@@ -10,6 +10,12 @@ block head
 
     script(src="/js/assets/view.js" type="module" defer) 
 
+    if view == "references"
+        link(rel="stylesheet", href="/bulma/bulma-list.css")
+
+        if asset.added_by == user.id
+            script(src="/js/assets/references.js" type="module" defer) 
+
 block modals
     if isAuthor
         .modal#deleteModal
@@ -117,6 +123,71 @@ block content
                             span.tag 
                                 a.hiddenLink(href="/assets?q=" + encodeURIComponent(tag)) #{tag.trim()}
 
+                .tabs.is-boxed#tabs
+                    ul
+                        li(class=(view == "videos" ? "is-active" : ""))
+                            a(href="?view=videos#tabs")
+                                span.icon.is-small
+                                    span videocam
+                                span Videos
+                        li(class=(view == "comments" ? "is-active" : ""))
+                            a(href="?view=comments#tabs")
+                                span.icon.is-small
+                                    span comment
+                                span Comments
+                        li(class=(view == "references" ? "is-active" : ""))
+                            a(href="?view=references#tabs")
+                                span.icon.is-small
+                                    span attach_file
+                                span References
+
+                if view == "comments"
+
+                    div(data-comment=("A-" + asset.id))
+                
+                else if view == "videos"
+
+                    .columns.is-multiline(data-list="videos", data-list-load="true", data-list-filter="asset:" + asset.id, data-list-size="one-quarter")
+
+                else if view == "references"
+
+                    if asset.added_by == user.id
+                        .field.block
+                            label.label Asset search
+                            .control.has-icons-left
+                                input.input#searchInput(type="text" placeholder="Search for an asset" autocomple="off" value="")
+                                span.icon.is-small.is-left
+                                    span search
+
+                        .columns
+                            .column.is-half
+                                h2.title.is-6 Referenced assets
+                                button.button.is-fullwidth.is-loading#loadingCurrent Loading
+                                .list.has-visible-pointer-controls.has-overflow-ellipsis#currentAssetsContainer
+                                
+                            .column.is-half
+                                h2.title.is-6 Search Results
+                                button.button.is-fullwidth.is-loading.is-hidden#loadingSearch Loading
+                                .list.has-visible-pointer-controls.has-overflow-ellipsis#searchedAssetsContainer
+
+                    else
+
+                        .field
+                            label.label Search
+                            .control.has-icons-left
+                                input.input#searchInput(type="text" placeholder="Search..." name="q", data-list-target="assets", data-list-filter="q")
+                                span.icon.is-small.is-left
+                                    span search
+
+                        table.table.is-fullwidth.is-striped.is-hoverable
+                            thead
+                                th Action
+                                th Name
+                                th Author
+                                th Uploaded
+                                th Tags
+                            tbody(data-list="assets" data-list-filter=(`reference:${asset.id}`), data-list-load="true")
+
             .column.is-one-quarter
                 .buttons
                     if isAuthor
@@ -184,24 +255,3 @@ block content
                         strong ID
                         br
                         span.ellipsed(title=asset.id) #{asset.id}
-
-        .tabs.is-boxed#tabs
-            ul
-                li(class=(view == "comments" ? "is-active" : ""))
-                    a(href="?view=comments#tabs")
-                        span.icon.is-small
-                            span comment
-                        span Comments
-                li(class=(view == "videos" ? "is-active" : ""))
-                    a(href="?view=videos#tabs")
-                        span.icon.is-small
-                            span videocam
-                        span Videos
-
-        if view == "comments"
-
-            div(data-comment=("A-" + asset.id))
-        
-        else if view == "videos"
-
-            .columns.is-multiline(data-list="videos" data-list-limit="8", data-list-load="false", data-list-filter="asset:" + asset.id)

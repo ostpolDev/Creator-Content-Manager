@@ -275,6 +275,7 @@ router.get("/list", async (req, res, next) => {
         let batch = req.query.batch;
         let checkID = req.query.checkId == "true";
         let resource = req.query.resource;
+        let reference = req.query.reference;
 
         if (Number.isNaN(skip) || skip < 0) {
             skip = 0;
@@ -304,7 +305,13 @@ router.get("/list", async (req, res, next) => {
             select.push("assets.resource_id");
         }
 
-        if (type && type == "fav" && typeof ref != "undefined") {
+        if (reference) {
+            assetQuery = knex("asset_references").where({asset_a: reference})
+                .innerJoin("assets", "assets.id", "=", "asset_references.asset_b")
+                .innerJoin("users", "users.id", "=", "assets.added_by")
+                .leftOuterJoin("asset_likes", "asset_likes.asset", "=", "assets.id")
+                .offset(skip).limit(limit).select(select);
+        } else if (type && type == "fav" && typeof ref != "undefined") {
             // TODO: check if likes are public
             assetQuery = knex("asset_likes").where({"asset_likes.user": ref})
                 .innerJoin("assets", "assets.id", "=", "asset_likes.asset")
@@ -312,13 +319,26 @@ router.get("/list", async (req, res, next) => {
                 .offset(skip).limit(limit).select(select)
         } else {
             select.push("asset_likes.asset as like_id");
-            assetQuery = knex("assets").innerJoin("users", "users.id", "=", "assets.added_by").leftOuterJoin("asset_likes", "asset_likes.asset", "=", "assets.id").offset(skip).limit(limit).select(select);
+            assetQuery = knex("assets")
+                .innerJoin("users", "users.id", "=", "assets.added_by")
+                .leftOuterJoin("asset_likes", "asset_likes.asset", "=", "assets.id")
+                .offset(skip).limit(limit).select(select);
+        }
+
+        if (reference) {
+            resource = "PUBLIC";
         }
 
         if (!resource) {
-            assetQuery.whereNull("resource_id");
+            assetQuery.whereNull("assets.resource_id");
         } else {
-            assetQuery.where({"resource_id": resource});
+            if (resource == "PUBLIC") {
+                assetQuery.where((f) => {
+                    f.where({"resource_id": "GLOBAL"}).orWhereNull("assets.resource_id")
+                })
+            } else {
+                assetQuery.where({"resource_id": resource});
+            }
         }
 
         if (id) {
@@ -527,6 +547,52 @@ router.post("/rename", async (req, res, next) => {
             return res.status(500).json({success: false, msg: "Nothing changed"});
         }
         return res.status(200).json({success: true, name: updated[0].name});
+    } catch (e) {
+        return next(e);
+    }
+})
+
+const MODIFY_MODES = ["add", "remove"];
+
+router.post("/modifyReference", async (req, res, next) => {
+    let fromAssetId = req.body.fromAsset;
+    let mode = req.body.mode;
+    let toAssetId = req.body.toAsset;
+
+    if (!fromAssetId || !toAssetId) {
+        return res.status(400).json({success: false, msg: "Assets required"});
+    }
+
+    if (!MODIFY_MODES.includes(mode)) {
+        return res.status(400).json({success: false, msg: "Invalid modification mode"});
+    }
+
+    try {
+
+        // Access check
+        let asset = await knex("assets").where({id: fromAssetId}).limit(1).select(["id", "added_by"]);
+        if (!asset[0]) {
+            return res.status(404).json({success: false, msg: "Asset not found"});
+        }
+
+        if (req.user.level != -1 && asset[0].added_by != req.user.id) {
+            return res.status(404).json({success: false, msg: "Channel not found"});
+        }
+
+        // Existing check
+        let existingItem = await knex("asset_references").where({asset_a: asset[0].id, asset_b: toAssetId}).limit(1);
+        if (!existingItem[0] && mode == "remove" || existingItem[0] && mode == "add") {
+            return res.status(200).json({success: true});
+        }
+
+        if (!existingItem[0] && mode == "add") {
+            await knex("asset_references").insert({asset_a: asset[0].id, asset_b: toAssetId});
+        } else if (existingItem[0] && mode == "remove") {
+            await knex("asset_references").where({asset_a: asset[0].id, asset_b: toAssetId}).delete();
+        }
+
+        return res.status(200).json({success: true});
+
     } catch (e) {
         return next(e);
     }

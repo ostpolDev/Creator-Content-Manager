@@ -84,20 +84,20 @@ block content
 
                     br
 
-                .tabs.is-boxed
+                .tabs.is-boxed#tabs
                     ul
                         li(class=(view == "assets" ? "is-active" : ""))
-                            a(href="?view=assets")
+                            a(href="?view=assets#tabs")
                                 span.icon.is-small
                                     span files
                                 span Assets
                         li(class=(view == "comments" ? "is-active" : ""))
-                            a(href="?view=comments")
+                            a(href="?view=comments#tabs")
                                 span.icon.is-small
                                     span comment
                                 span Comments
                         li(class=(view == "description" ? "is-active" : ""))
-                            a(href="?view=description")
+                            a(href="?view=description#tabs")
                                 span.icon.is-small
                                     span description
                                 span Description

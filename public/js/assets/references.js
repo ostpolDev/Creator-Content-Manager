@@ -1,4 +1,4 @@
-import { MakeAssetListItem } from "../assets/assetFunctions.js";
+import { MakeAssetListItem } from "./assetFunctions.js";
 
 const searchInput = document.getElementById("searchInput");
 
@@ -91,7 +91,7 @@ async function Search() {
             q: searchInput.value.trim(),
             checkId: true
         })
-        let res = await fetch(`/api/assets/list?${body.toString()}`);
+        let res = await fetch(`/api/assets/list?${body.toString()}&resource=PUBLIC`);
         let json = await res.json();
 
         if (!json.success) {
@@ -120,12 +120,12 @@ async function ModifyItem(button, id, mode) {
     button.classList.add("is-loading");
     try {
 
-        let res = await fetch("/api/videos/modifyAsset", {
+        let res = await fetch("/api/assets/modifyReference", {
             method: "POST",
             body: JSON.stringify({
-                asset: id,
+                toAsset: id,
                 mode,
-                video: DEF.video
+                fromAsset: DEF.asset
             }),
             headers: {
                 "Content-Type": "application/json"
@@ -152,7 +152,7 @@ async function ReloadCurrent() {
 
     try {
 
-        let res = await fetch(`/api/videos/assets/${encodeURIComponent(DEF.video)}`);
+        let res = await fetch(`/api/assets/list?reference=${encodeURIComponent(DEF.asset)}`);
         let json = await res.json();
 
         if (!json.success) {
@@ -173,73 +173,3 @@ async function ReloadCurrent() {
 
 ReloadCurrent();
 searchInput.value = "";
-
-//#region Legal info modal
-
-const legalInfoButton = document.getElementById("legalInfoButton");
-const incompatibleMessage = document.getElementById("incompatibleMessage");
-const incompatibleList = document.getElementById("incompatibleList");
-const legalInfoContent = document.getElementById("legalInfoContent");
-
-legalInfoButton.addEventListener("click", () => {
-    incompatibleMessage.classList.add("is-hidden");
-    incompatibleList.innerHTML = "";
-    legalInfoContent.innerHTML = "";
-    ShowLegalSummary();
-})
-
-async function ShowLegalSummary() {
-    legalInfoButton.classList.add("is-loading");
-
-    try {
-
-        let res = await fetch("/api/videos/legal/" + encodeURIComponent(DEF.video));
-        let json = await res.json();
-
-        if (!json.success) {
-            console.error(json.msg || "Something went wrong...");
-            return;
-        }
-        
-        json.infos.forEach(info => {
-            MakeInfoElement(info, json.issues || {});
-        })
-
-        SetModalOpen("#legalInfoModal", true);
-
-    } catch (e) {
-        console.error(e);
-    } finally {
-        legalInfoButton.classList.remove("is-loading");
-    }
-}
-
-function MakeInfoElement(info, issues) {
-    // Info element
-    if (info.text && info.text.trim() != "") {
-        let p = document.createElement("p");
-        p.innerText = info.text;
-        legalInfoContent.appendChild(p);
-    }
-
-    // Check issues
-    if (issues[info.id]) {
-        let issue = issues[info.id];
-        incompatibleMessage.classList.remove("is-hidden");
-
-        let listElement = document.createElement("li");
-        listElement.innerText = info.name;
-        incompatibleList.appendChild(listElement);
-
-        let subList = document.createElement("ul");
-        listElement.appendChild(subList);
-
-        issue.forEach(i => {
-            let subListElement = document.createElement("li");
-            subListElement.innerText = i;
-            subList.appendChild(subListElement);
-        })
-    }
-}
-
-//#endregion
