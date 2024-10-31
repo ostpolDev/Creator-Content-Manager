@@ -306,7 +306,7 @@ router.get("/list", async (req, res, next) => {
         }
 
         if (reference) {
-            assetQuery = knex("asset_references").where({asset_a: reference})
+            assetQuery = knex("asset_references").where({asset_a: reference, "asset_likes.user": ref})
                 .innerJoin("assets", "assets.id", "=", "asset_references.asset_b")
                 .innerJoin("users", "users.id", "=", "assets.added_by")
                 .leftOuterJoin("asset_likes", "asset_likes.asset", "=", "assets.id")
