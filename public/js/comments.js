@@ -239,9 +239,24 @@ function MakeCommentElement(comment, layer) {
         }))
     }
 
-    interactionsContainer.appendChild(CreateCommentButton(comment, "star", () => {
-        console.log("LIKE");
+    interactionsContainer.appendChild(CreateCommentButton(comment, comment.isLiked ? "award_star" : "star", async (e) => {
+        let iconElem = e.currentTarget.querySelector("span.icon>span");
+        let current = iconElem.innerText;
+        iconElem.innerText = "hourglass";
+        let res = await LikeComment(comment.id);
+        
+        if (!res) {
+            iconElem.innerText = current;
+            return;
+        }
+
+        if (res.isLiked) {
+            iconElem.innerText = "award_star";
+        } else {
+            iconElem.innerText = "star";
+        }
     }))
+
     if (comment.isAuthor) {
         let interactionsRight = document.createElement("div");
         interactionsRight.classList.add("level-right");
@@ -329,5 +344,44 @@ function CreateCommentButton(comment, icon, onClick) {
         levelElem.appendChild(additionalText);
     }
 
+    if ((icon == "star" || icon == "award_star") && comment.likes > 0) {
+        let additionalText = document.createElement("span");
+        additionalText.innerText = `(${comment.likes.toLocaleString()})`;
+        additionalText.classList.add("ml-1");
+        levelElem.appendChild(additionalText);
+    }
+
     return levelElem;
+}
+
+async function LikeComment(id) {
+    try {
+
+        if (!id) {
+            return false;
+        }
+
+        let res = await fetch("/api/comments/like", {
+            method: "POST",
+            body: JSON.stringify({
+                comment: id
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        let json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            return false;
+        }
+
+        return json;
+
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
 }

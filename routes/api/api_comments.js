@@ -118,4 +118,32 @@ router.get("/list", async (req, res, next) => {
     }
 })
 
+router.post("/like", async (req, res, next) => {
+
+    let commentId = req.body.comment;
+
+    if (!commentId) {
+        return res.status(400).json({success: false, msg: "Comment required"});
+    }
+
+    try {
+
+        let existingLike = await knex("comment_likes").where({comment: commentId, user: req.user.id}).select("comment");
+
+        if (existingLike[0]) {
+            await knex("comment_likes").where({comment: commentId, user: req.user.id}).delete();
+            await knex("comments").where({id: commentId}).decrement("likes", 1);
+            return res.status(200).json({success: true, isLiked: false});
+        } else {
+            await knex("comment_likes").insert({comment: commentId, user: req.user.id});
+            await knex("comments").where({id: commentId}).increment("likes", 1);
+            return res.status(200).json({success: true, isLiked: true});
+        }
+
+    } catch (e) {
+        return next(e);
+    }
+
+})
+
 module.exports = router;
