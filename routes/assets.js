@@ -188,7 +188,7 @@ router.get("/v/:id", async (req, res, next) => {
             }
         }
 
-        let commentCount = await GetCachedNumber(`${asset[0].id}-comment_count`, async () => {
+        let commentCount = await GetCachedNumber(`A:${asset[0].id}-comment_count`, async () => {
             let newCount = await knex("comments").where({target: `A:${asset[0].id}`}).count("id as CNT");
             return newCount[0].CNT;
         })
