@@ -343,6 +343,19 @@ async function CreateTables(knex) {
         logger.info("Created the asset_references table");
     }
 
+    let hasChannelDescriptions = await knex.schema.hasTable("channel_descriptions");
+    if (!hasChannelDescriptions) {
+        logger.info("Creating the channel_descriptions table");
+        await knex.schema.createTable("channel_descriptions", (table) => {
+            table.string("id").primary().notNullable();
+            table.binary("description");
+            table.string("compression").notNullable().defaultTo("none");
+            table.foreign("id").references("channels.id").onDelete("CASCADE");
+            table.timestamps(true, true);
+        })
+        logger.info("Created the channel_descriptions table");
+    }
+
     logger.info(`Successfully checked for table changes in ${Date.now() - start}ms`);
 
     await MigrateVersion(knex);
