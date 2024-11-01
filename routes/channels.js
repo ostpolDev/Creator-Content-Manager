@@ -76,10 +76,9 @@ router.get("/v/:id", async (req, res, next) => {
             let presetQuery = await knex("channel_descriptions").where({id: channel[0].id}).limit(1);
             if (presetQuery[0]) {
                 presetQuery[0].description = UnzipString(presetQuery[0].description, presetQuery[0].compression);
+                preset = presetQuery[0].description || null;
             }
-            preset = presetQuery[0].description || null;
         }
-        
 
         return res.render("channels/view", {
             title: channel[0].name,
