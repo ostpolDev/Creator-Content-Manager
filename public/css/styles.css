@@ -217,6 +217,11 @@ img.assetImage {
     cursor: pointer;
 }
 
+.tag.removeable:hover {
+    opacity: 0.8;
+    text-decoration: line-through;
+}
+
 .has-text-capitalized {
     text-transform: capitalize;
 }
