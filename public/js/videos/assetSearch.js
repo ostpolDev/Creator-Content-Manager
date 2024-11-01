@@ -181,6 +181,15 @@ const incompatibleMessage = document.getElementById("incompatibleMessage");
 const incompatibleList = document.getElementById("incompatibleList");
 const legalInfoContent = document.getElementById("legalInfoContent");
 
+const descriptionButton = document.getElementById("descriptionButton");
+
+descriptionButton.addEventListener("click", () => {
+    incompatibleMessage.classList.add("is-hidden");
+    incompatibleList.innerHTML = "";
+    legalInfoContent.innerHTML = "";
+    MakeDescription();
+})
+
 legalInfoButton.addEventListener("click", () => {
     incompatibleMessage.classList.add("is-hidden");
     incompatibleList.innerHTML = "";
@@ -193,16 +202,13 @@ async function ShowLegalSummary() {
 
     try {
 
-        let res = await fetch("/api/videos/legal/" + encodeURIComponent(DEF.video));
-        let json = await res.json();
-
-        if (!json.success) {
-            console.error(json.msg || "Something went wrong...");
+        let info = await GetLegalInfo();
+        if (!info) {
             return;
         }
         
-        json.infos.forEach(info => {
-            MakeInfoElement(info, json.issues || {});
+        info.infos.forEach(info => {
+            MakeInfoElement(info, info.issues || {});
         })
 
         SetModalOpen("#legalInfoModal", true);
@@ -214,9 +220,9 @@ async function ShowLegalSummary() {
     }
 }
 
-function MakeInfoElement(info, issues) {
+function MakeInfoElement(info, issues, disableText) {
     // Info element
-    if (info.text && info.text.trim() != "") {
+    if (info.text && info.text.trim() != "" && !disableText) {
         let p = document.createElement("p");
         p.innerText = info.text;
         legalInfoContent.appendChild(p);
@@ -240,6 +246,81 @@ function MakeInfoElement(info, issues) {
             subList.appendChild(subListElement);
         })
     }
+}
+
+async function GetLegalInfo() {
+    try {
+        let res = await fetch("/api/videos/legal/" + encodeURIComponent(DEF.video));
+        let json = await res.json();
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            return null;
+        }
+        return json;
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+async function MakeDescription() {
+    try {
+
+        descriptionButton.classList.add("is-loading");
+
+        let res = await fetch(`/api/videos/description/${encodeURIComponent(DEF.video)}`);
+        let json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            legalInfoContent.innerText = "This channel does not seem to have a description template set up.";
+            SetModalOpen("#legalInfoModal", true);
+            return;
+        }
+
+        let containsLegal = json.template.includes("[LEGAL]");
+        let legalInfo;
+
+        if (containsLegal) {
+            let res = await GetLegalInfo();
+            if (!res) {
+                return;
+            }
+            let texts = [];
+            res.infos.forEach(info => {
+                MakeInfoElement(info, json.issues || {}, true);
+                texts.push(info.text);
+            })
+            legalInfo = texts.join("\n\n");
+        }
+
+        const REPLACEMENT_MAP = {
+            "TITLE": json.params.title,
+            "EDITORS": json.params.editors,
+            "STARRING": json.params.starring,
+            "LEGAL": legalInfo
+        }
+
+        let newTemplate = json.template;
+
+        Object.keys(REPLACEMENT_MAP).forEach(m => {
+            let r = new RegExp(`\\[${escapeRegExp(m)}\\]`, "g");
+            newTemplate = newTemplate.replace(r, REPLACEMENT_MAP[m]);
+        })
+
+        legalInfoContent.innerText = newTemplate;
+
+        SetModalOpen("#legalInfoModal", true);
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        descriptionButton.classList.remove("is-loading");
+    }
+}
+
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 //#endregion

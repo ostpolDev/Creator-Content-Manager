@@ -378,4 +378,44 @@ router.get("/legal/:id", async (req, res, next) => {
     }
 })
 
+
+router.get("/description/:id", async (req, res, next) => {
+    try {
+
+        let video = await knex("videos").where({"videos.id": req.params.id}).limit(1)
+            .select([
+                "videos.id", "videos.channel", "videos.youtube_id", "videos.title"
+            ])
+    
+        if (req.user.level != -1) {
+            let channelCheck = await knex("channel_members").where({user: req.user.id, channel: video[0].channel}).limit(1);
+            if (!channelCheck[0]) {
+                return res.status(404).json({success: false, msg: "Video not found"});
+            }
+        }
+
+        let template = await knex("channel_descriptions").where({id: video[0].channel}).limit(1);
+        if (!template[0]) {
+            return res.status(404).json({success: false, msg: "No preset found"});
+        }
+
+        let text = UnzipString(template[0].description, template[0].compression);
+
+        // TODO: Add game info
+
+        let people = await knex("video_members").where({"video_members.video": video[0].id})
+            .innerJoin("users", "users.id", "=", "video_members.user")
+            .select(["users.id", "users.username", "users.display_name", "video_members.starring", "video_members.editor"]);
+
+        return res.status(200).json({success: true, template: text, params: {
+            editors: people.filter(x => x.editor).map(x => x.display_name).join(", "),
+            starring: people.filter(x => x.starring).map(x => x.display_name).join(", "),
+            title: video[0].title
+        }})
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
 module.exports = router;
