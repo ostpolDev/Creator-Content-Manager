@@ -295,7 +295,7 @@ async function DoSearch(input, result, tagElement, target) {
                 tagElem.remove();
 
                 let newTag = document.createElement("div");
-                newTag.classList.add("tag", "clickable", "is-link");
+                newTag.classList.add("tag", "clickable", "is-link", "removeable");
                 newTag.innerText = user.display_name;
                 newTag.title = user.username;
 

@@ -361,9 +361,15 @@ function MakeAssetListItem(asset, direction, addAsset, removeAsset) {
 
     let title = document.createElement("div");
     title.classList.add("list-item-title");
-    title.innerText = asset.name || asset.id;
-    title.title = asset.name || asset.id;
     content.appendChild(title);
+
+    let titleLink = document.createElement("a");
+    titleLink.href = `/assets/v/${asset.id}`;
+    titleLink.classList.add("hiddenLink")
+    
+    titleLink.innerText = asset.name || asset.id;
+    titleLink.title = asset.name || asset.id;
+    title.appendChild(titleLink);
 
     let description = document.createElement("div");
     description.classList.add("list-item-description", "has-text-capitalized");

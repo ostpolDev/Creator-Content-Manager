@@ -38,6 +38,11 @@ block content
 
                 .columns.is-multiline(data-list="videos" data-list-limit="10", data-list-load="false")
 
+                a.button(href="/videos") 
+                    span.icon
+                        span movie
+                    span View more
+
             .block
                 h1.title.is-4 Latest assets
                 p.subtitle.is-6 The 10 latest assets
@@ -50,3 +55,8 @@ block content
                         th Uploaded
                         th Tags
                     tbody(data-list="assets" data-list-limit="10" data-list-filter="*", data-list-load="false")
+
+                a.button(href="/assets") 
+                    span.icon
+                        span files
+                    span View more

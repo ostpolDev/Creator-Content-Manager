@@ -1,3 +1,4 @@
+const { CHANNEL_KEYWORDS } = require('../modules/data');
 const { knex } = require('../modules/database');
 const { GetCachedNumber } = require('../modules/numberCache');
 const { UnzipString, ParseYouTubeTags } = require('../modules/textHelpers');
@@ -29,7 +30,7 @@ router.get("/", async (req, res, next) => {
     }
 })
 
-const VIEWS = ["videos", "comments", "members"];
+const VIEWS = ["videos", "comments", "members", "description_preset"];
 
 router.get("/v/:id", async (req, res, next) => {
     try {
@@ -70,13 +71,25 @@ router.get("/v/:id", async (req, res, next) => {
             return newCommentCount[0].CNT;
         })
 
+        let preset;
+        if (view == "description_preset") {
+            let presetQuery = await knex("channel_descriptions").where({id: channel[0].id}).limit(1);
+            if (presetQuery[0]) {
+                presetQuery[0].description = UnzipString(presetQuery[0].description, presetQuery[0].compression);
+            }
+            preset = presetQuery[0].description || null;
+        }
+        
+
         return res.render("channels/view", {
             title: channel[0].name,
             channel: channel[0],
             isAuthor: channel[0].added_by == req.user.id,
             canUpdate: canUpdate,
             view,
-            videoCount, commentCount
+            videoCount, commentCount,
+            preset,
+            keywords: CHANNEL_KEYWORDS
         })
 
     } catch (e) {
