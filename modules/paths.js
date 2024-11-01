@@ -9,8 +9,9 @@ const uploads = path.join(ROOT, "uploads");
 const covers = path.join(uploads, "covers");
 const tmp = path.join(ROOT, "tmp");
 const resources = path.join(uploads, "resources");
+const profiles = path.join(uploads, "profiles");
 
-const CREATE_IF_MISSING = [res, uploads, covers, tmp, resources];
+const CREATE_IF_MISSING = [res, uploads, covers, tmp, resources, profiles];
 CREATE_IF_MISSING.forEach(dir => {
     if (!fs.existsSync(dir)) {
         logger.info(`Creating directory: ${dir}`);

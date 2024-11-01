@@ -106,13 +106,18 @@ router.get("/v/:id", async (req, res, next) => {
             return newCount[0].CNT;
         })
 
+        let commentCount = await GetCachedNumber(`V:${video[0].id}-comment_count`, async () => {
+            let newCommentCount = await knex("comments").where({target: `V:${video[0].id}`}).count("id as CNT");
+            return newCommentCount[0].CNT;
+        })
+
         res.render("videos/view", {
             title: video[0].title || video[0].id,
             video: video[0],
             isAuthor: video[0].added_by == req.user.id,
             subtitle,
             view,
-            assetCount
+            assetCount, commentCount
         })
 
     } catch (e) {

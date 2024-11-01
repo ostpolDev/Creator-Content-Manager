@@ -268,7 +268,7 @@ async function CreateTables(knex) {
             table.integer("added_by").unsigned().notNullable();
             table.integer("likes").unsigned().defaultTo(0);
             table.integer("replies").unsigned().defaultTo(0);
-            table.text("content");
+            table.binary("content");
             table.foreign("added_by").references("users.id").onDelete("CASCADE");
             table.foreign("parent").references("comments.id").onDelete("CASCADE");
             table.timestamps(true, true);
@@ -373,6 +373,15 @@ async function MigrateVersion(knex) {
             })
             await knex.schema.alterTable("batches", (table) => {
                 table.boolean("is_resource_batch").defaultTo(false).index();
+            })
+            break;
+        case "SQL-0.3":
+            logger.info("Migration from SQL-0.3");
+            await knex.schema.alterTable("comments", (table) => {
+                table.dropColumn("content");
+            })
+            await knex.schema.alterTable("comments", (table) => {
+                table.binary("content");
             })
             break;
         default:

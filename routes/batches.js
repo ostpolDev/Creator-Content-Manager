@@ -77,13 +77,18 @@ router.get("/v/:id", async (req, res, next) => {
             }
         }
 
+        let commentCount = await GetCachedNumber(`B:${batch[0].id}-comment_count`, async () => {
+            let newCommentCount = await knex("comments").where({target: `B:${batch[0].id}`}).count("id as CNT");
+            return newCommentCount[0].CNT;
+        })
+
         res.render("batches/view", {
             title: batch[0].name,
             batch: batch[0],
             firstAsset: assetInBatch[0],
             isAuthor: assetInBatch[0].author_id == req.user.id,
             view,
-            licenseTypes
+            licenseTypes, commentCount
         })
 
     } catch (e) {

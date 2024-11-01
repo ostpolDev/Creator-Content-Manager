@@ -1,5 +1,6 @@
 import { CreateSmartTimeString } from "./helpers.js";
 import "./contextMenu.js"
+import "./comments.js";
 
 //#region Forms
 const messagesSection = document.getElementById("messagesSection");
