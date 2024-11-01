@@ -76,6 +76,11 @@ block content
                                 span.icon.is-small
                                     span people
                                 span Members
+                        li(class=(view == "description_preset" ? "is-active" : ""))
+                            a(href="?view=description_preset#tabs")
+                                span.icon.is-small
+                                    span description
+                                span Description preset
 
                 if view == "videos"
                     .block
@@ -105,6 +110,44 @@ block content
                     
                     button.button.is-fullwidth.is-loading#membersLoading Loading
                     .list.has-visible-pointer-controls.has-overflow-ellipsis#userBody
+
+                else if view == "description_preset"
+                    .message
+                        .message-body
+                            .content
+                                p Description preset allow you to quickly generate descriptions for your videos by swapping out keywords.
+                                if channel.added_by == user.id
+                                    p Keywords have to be placed between brackets. For example [TITLE], which will be replaced with the title of the current video.
+
+                    if channel.added_by == user.id
+                        .block
+                            .field
+                                label.label Preset
+                                .control
+                                    textarea.textarea#preset(placeholder="Enter your description preset here...", autocomple="off")
+                                        | #{preset || ""}
+
+                            button.button.is-fullwidth#savePresetButton
+                                span.icon
+                                    span save
+                                span Save preset
+
+                        table.table.is-fullwidth.is-striped
+                            thead
+                                th Keyword
+                                th Value
+                            tbody
+                                each keyword in Object.keys(keywords)
+                                    tr
+                                        td #{keyword}
+                                        td #{keywords[keyword]}
+
+                    else
+                        if preset
+                            pre
+                                .content #{preset || ""}
+                        else
+                            p This channel does not yet have a preset.
 
             .column.is-one-quarter
                 .buttons

@@ -69,3 +69,52 @@ async function LeaveChannel() {
         console.error(e);
     }
 }
+
+const savePresetButton = document.getElementById("savePresetButton");
+const presetInput = document.getElementById("preset");
+
+if (savePresetButton && presetInput) {
+    savePresetButton.addEventListener("click", () => {
+        SavePreset();
+    })
+}
+
+async function SavePreset() {
+    let val = presetInput.value;
+    savePresetButton.classList.add("is-loading");
+
+    try {
+
+        let res = await fetch("/api/channels/savePreset", {
+            method: "POST",
+            body: JSON.stringify({
+                channel: DEF.channel,
+                preset: val
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        let json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            savePresetButton.classList.add("is-danger");
+            setTimeout(() => {
+                savePresetButton.classList.remove("is-danger");
+            }, 1500)
+            return;
+        }
+
+        savePresetButton.classList.add("is-success");
+            setTimeout(() => {
+                savePresetButton.classList.remove("is-success");
+            }, 1500)
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        savePresetButton.classList.remove("is-loading");
+    }
+}

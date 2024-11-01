@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { knex } = require('../../modules/database');
 const logger = require('../../modules/logger');
+const { CompressString } = require('../../modules/textHelpers');
 const YoutubeHelpers = require('../../modules/youtubeHelpers');
 
 router.post("/add", async (req, res, next) => {
@@ -218,6 +219,65 @@ router.post("/modifyMember", async (req, res, next) => {
                 channel: channelId,
                 user: user[0].id
             });
+        }
+
+        return res.status(200).json({success: true});
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
+router.post("/savePreset", async (req, res, next) => {
+    let channelId = req.body.channel;
+    let preset = req.body.preset;
+
+    if (!channelId) {
+        return res.status(400).json({success: false, msg: "Channel required"});
+    }
+
+    if (preset && preset.length > 5000) {
+        return res.status(400).json({success: false, msg: "Preset too long (max. 5000)"});
+    }
+
+    try {
+
+        if (req.user.level != -1) {
+            let channelAccess = await knex("channel_members").where({channel: channelId, user: req.user.id}).whereIn("acces", [1, -1]);
+            if (!channelAccess[0]) {
+                return res.status(401).json({success: false, msg: "Access denied"});
+            }
+        }
+
+        let existingDescription = await knex("channel_descriptions").where({id: channelId}).select("id");
+        if (!existingDescription[0]) {
+            if (preset) {
+                let compressed = CompressString(preset);
+                await knex("channel_descriptions").insert({
+                    id: channelId,
+                    description: compressed.text,
+                    compression: compressed.compression
+                })
+            } else {
+                await knex("channel_descriptions").insert({
+                    id: channelId
+                })
+            }
+        } else {
+            if (preset) {
+                let compressed = CompressString(preset);
+                await knex("channel_descriptions").where({id: channelId}).limit(1).update({
+                    description: compressed.text || null,
+                    compression: compressed.compression,
+                    updated_at: new Date()
+                })
+            } else {
+                await knex("channel_description").where({id: channelId}).limit(1).update({
+                    description: null,
+                    compression: "none",
+                    updated_at: new Date()
+                })
+            }
         }
 
         return res.status(200).json({success: true});
