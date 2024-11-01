@@ -262,8 +262,18 @@ function MakeCommentElement(comment, layer) {
         interactionsRight.classList.add("level-right");
         interactionsNav.appendChild(interactionsRight);
 
-        interactionsRight.appendChild(CreateCommentButton(comment, "delete", () => {
-            console.log("DELETE")
+        interactionsRight.appendChild(CreateCommentButton(comment, "delete", async (e) => {
+            let iconElem = e.currentTarget.querySelector("span.icon>span");
+            let current = iconElem.innerText;
+            iconElem.innerText = "hourglass";
+
+            let res = await DeleteComment(comment.id);
+            if (!res) {
+                iconElem.innerText = current;
+                return;
+            }
+
+            commentElement.remove();
         }))
     }
 
@@ -379,6 +389,38 @@ async function LikeComment(id) {
         }
 
         return json;
+
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+async function DeleteComment(id) {
+    try {
+
+        if (!id) {
+            return false;
+        }
+
+        let res = await fetch("/api/comments/delete", {
+            method: "POST",
+            body: JSON.stringify({
+                comment: id
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        let json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            return false;
+        }
+
+        return true;
 
     } catch (e) {
         console.error(e);

@@ -146,4 +146,31 @@ router.post("/like", async (req, res, next) => {
 
 })
 
+router.post("/delete", async (req, res, next) => {
+    let commentId = req.body.comment;
+
+    if (!commentId) {
+        return res.status(400).json({success: false, msg: "Comment required"});
+    }
+
+    try {
+
+        let comment = await knex("comments").where({id: commentId}).select(["id", "added_by"]);
+        if (!comment[0]) {
+            return res.status(404).json({success: false, msg: "Comment not found"});
+        }
+
+        if (comment[0].added_by != req.user.id && req.user.level != -1) {
+            return res.status(401).json({success: false, msg: "Access denied"});
+        }
+
+        await knex("comments").where({id: comment[0].id}).delete();
+
+        return res.status(200).json({success: true});
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
 module.exports = router;
