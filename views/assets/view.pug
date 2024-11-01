@@ -125,11 +125,12 @@ block content
 
                 .tabs.is-boxed#tabs
                     ul
-                        li(class=(view == "videos" ? "is-active" : ""))
-                            a(href="?view=videos#tabs")
-                                span.icon.is-small
-                                    span videocam
-                                span Videos
+                        if !channel
+                            li(class=(view == "videos" ? "is-active" : ""))
+                                a(href="?view=videos#tabs")
+                                    span.icon.is-small
+                                        span videocam
+                                    span Videos
                         li(class=(view == "comments" ? "is-active" : ""))
                             a(href="?view=comments#tabs")
                                 span.icon.is-small
