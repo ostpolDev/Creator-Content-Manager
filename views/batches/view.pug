@@ -91,16 +91,16 @@ block content
                                 span.icon.is-small
                                     span files
                                 span Assets
-                        li(class=(view == "comments" ? "is-active" : ""))
-                            a(href="?view=comments#tabs")
-                                span.icon.is-small
-                                    span comment
-                                span Comments
                         li(class=(view == "description" ? "is-active" : ""))
                             a(href="?view=description#tabs")
                                 span.icon.is-small
                                     span description
                                 span Description
+                        li(class=(view == "comments" ? "is-active" : ""))
+                            a(href="?view=comments#tabs")
+                                span.icon.is-small
+                                    span comment
+                                span Comments#{commentCount > 0 ? ` (${commentCount.toLocaleString()})` : ""}
 
                 if view == "assets"
                     .field.block

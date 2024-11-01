@@ -96,7 +96,7 @@ block content
                             a(href="?view=comments#tabs")
                                 span.icon.is-small
                                     span comment
-                                span Comments 
+                                span Comments#{commentCount > 0 ? ` (${commentCount.toLocaleString()})` : ""}
 
                 if view == "description"
                     if video.rendered_description
@@ -135,6 +135,9 @@ block content
                             h2.title.is-6 Results
                             button.button.is-fullwidth.is-loading.is-hidden#loadingSearch Loading
                             .list.has-visible-pointer-controls.has-overflow-ellipsis#searchedAssetsContainer
+
+                else if view == "comments"
+                    div(data-comment=("V:" + video.id))
 
             .column.is-one-quarter
                 .buttons
