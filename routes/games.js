@@ -35,9 +35,13 @@ router.get("/v/:id", async (req, res, next) => {
         const decompressed = UnzipString(game[0].description, game[0].compression);
         game[0].description = decompressed;
 
+        const diff = Date.now() - game[0].updated_at;
+        const canUpdate = diff > 1000 * 60 * 60 * 24;
+
         return res.render("games/view", {
             title: game[0].name,
-            game: game[0]
+            game: game[0],
+            canUpdate
         })
 
     } catch (e) {

@@ -66,9 +66,15 @@ router.post("/updateSteam", async (req, res, next) => {
             }
         }
 
-        const existing = await knex("games").where({id}).limit(1).select(["id", "steam_id"]);
+        const existing = await knex("games").where({id}).limit(1).select(["id", "steam_id", "updated_at"]);
         if (!existing[0]) {
             return res.status(404).json({success: false, msg: "Game not found"});
+        }
+
+        const diff = Date.now() - game[0].updated_at;
+        const canUpdate = diff > 1000 * 60 * 60 * 24;
+        if (!canUpdate) {
+            return res.status(400).json({success: false, msg: "Can only update once every 24 hours"});
         }
 
         const gameData = await Steam.GetSteamGameInfo(steam || existing[0].steam_id);
