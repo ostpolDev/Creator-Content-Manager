@@ -72,6 +72,32 @@ block modals
                             span close
                         span Cancel
 
+    .modal#importGameModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title Add a new game
+                button.delete(data-modal="close")
+            section.modal-card-body
+
+                .field
+                    label.label(for="steamID") Steam ID or URL *
+                    .control.has-icons-left
+                        input.input#steamID(type="text" placeholder="Steam ID or URL" required) 
+                        span.icon.is-small.is-left
+                            span storefront
+
+            footer.modal-card-foot
+                .buttons
+                    button.button.is-link#steamGameButton
+                        span.icon
+                            span add
+                        span.text Add game
+                    button.button(data-modal="close")
+                        span.icon
+                            span close
+                        span Cancel
+
 block content
     .container
         h1.title Games

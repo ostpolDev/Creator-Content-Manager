@@ -83,6 +83,9 @@ const createGameButton = document.getElementById("createGameButton");
 const gameWebsite = document.getElementById("gameWebsite");
 const addGameTitle = document.getElementById("addGameTitle");
 
+const steamGameButton = document.getElementById("steamGameButton");
+const steamID = document.getElementById("steamID");
+
 let currentMethod = "add";
 let reference = undefined;
 
@@ -97,6 +100,7 @@ function ClearInputs() {
     createGameButton.querySelector(".text").innerText = "Add game";
     createGameButton.querySelector(".icon>span").innerText = "add";
     addGameTitle.innerText = "Add a new game";
+    steamID.value = "";
 
     currentMethod = "add";
     reference = undefined;
@@ -109,7 +113,7 @@ addGameButton.addEventListener("click", () => {
 
 if (focus == "steam") {
     ClearInputs();
-
+    SetModalOpen("#importGameModal", true);
 } else if (focus == "add") {
     ClearInputs();
     const ref = urlParams.get("ref");
@@ -204,6 +208,47 @@ async function EditGame(id) {
     }
 }
 
+importGameButton.addEventListener("click", () => {
+    ClearInputs();
+    SetModalOpen("#importGameModal", true);
+})
+
+steamGameButton.addEventListener("click", async () => {
+    const id = steamID.value;
+    if (!id) {
+        return;
+    }
+    steamGameButton.classList.add("is-loading");
+    try {
+
+        const res = await fetch("/api/games/addSteam", {
+            method: "POST",
+            body: JSON.stringify({
+                id
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong");
+            if (json.redirect) {
+                window.location = json.redirect;
+            }
+            return;
+        }
+
+        window.location = `/games/v/${encodeURIComponent(json.id)}`;
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        steamGameButton.classList.remove("is-loading");
+    }
+})
 
 
 //#endregion

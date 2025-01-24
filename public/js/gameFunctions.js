@@ -19,13 +19,10 @@ function CreateGameElement(game, size) {
     cardImageElem.classList.add("card-image");
     cardElem.appendChild(cardImageElem);
 
-    let cardFigure = document.createElement("figure");
-    cardFigure.classList.add("image", "is-16by9", "is-rounded");
-    cardImageElem.appendChild(cardFigure);
-
-    let cardImage = document.createElement("img");
-    cardImage.src = game.image_url || "https://placehold.co/1280x720";
-    cardFigure.appendChild(cardImage);
+    let cardImage = document.createElement("div");
+    cardImage.classList.add("dynamic");
+    cardImage.style.backgroundImage = `url('${game.image_url || "https://placehold.co/1280x720"}')`;
+    cardImageElem.appendChild(cardImage);
 
     let cardContent = document.createElement("div");
     cardContent.classList.add("card-content");
