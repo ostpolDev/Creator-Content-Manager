@@ -226,4 +226,27 @@ router.get("/get/:id", async (req, res, next) => {
     }
 })
 
+router.post("/delete", async (req, res, next) => {
+    try {
+        
+        const id = req.body.game;
+        if (!id) {
+            return res.status(400).json({success: false, msg: "Game not found"});
+        }
+
+        const deletedId = await knex("games").where({id, added_by: req.user.id}).limit(1).delete("id");
+        if (!deletedId[0]) {
+            return next();
+        }
+
+        await knex("game_infos").where({id: deletedId[0].id}).limit(1).delete();
+        await knex("video_games").where({game: deletedId[0].id}).delete();
+
+        return res.status(200).json({success: true});
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
 module.exports = router;

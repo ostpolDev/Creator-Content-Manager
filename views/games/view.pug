@@ -1,5 +1,34 @@
 extends ../layout
 
+block head
+    script.
+        const DEF = {
+            game: "#{game.id}",
+        }
+    script(src="/js/games/view.js" type="module" defer) 
+
+block modals
+    .modal#deleteModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title Are you sure?
+                button.delete(data-modal="close")
+            section.modal-card-body
+                .content
+                    p Deleting this game cannot be undone. Any videos that use this game will 
+                        | still exists, but have their game removed.
+            footer.modal-card-foot
+                .buttons
+                    button.button(data-modal="close")
+                        span.icon
+                            span cancel
+                        span Cancel
+                    button.button.is-danger#confirmDeleteButton
+                        span.icon
+                            span delete
+                        span Yes, delete
+
 block content
     .container
 
@@ -19,6 +48,11 @@ block content
                     | , 
                 span Published by #{game.publisher}
 
+        if game.tags
+            .tags
+                each tag in game.tags.split(",")
+                    span.tag=tag
+
             .buttons.block
                 if game.added_by == user.id
                     if !game.steam_id
@@ -31,6 +65,10 @@ block content
                             span.icon
                                 span refresh
                             span Refresh 
+                    a.button.is-danger.is-outlined#deleteButton(href="javascript:void(0);")
+                        span.icon
+                            span delete
+                        span Remove 
                 if game.website
                     a.button(href=game.website, target="_BLANK")
                         span.icon
