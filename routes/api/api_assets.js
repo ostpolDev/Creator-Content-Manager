@@ -460,11 +460,13 @@ router.post("/like", async (req, res, next) => {
         let isLikedCheck = await knex("asset_likes").where({user: req.user.id, asset: assetId}).limit(1);
         if (!isLikedCheck[0]) { // Like the asset
             await knex("asset_likes").insert({asset: assetId, user: req.user.id});
-            await knex("asset_infos").where({id: assetId}).increment("favorite_count", 1);
+            await knex("asset_infos").where({id: assetId}).increment("favorites", 1);
+            await knex("users").where({id: req.user.id}).increment("favorite_count", 1);
             isLiked = true;
         } else { // Un-like the asset
             await knex("asset_likes").where({asset: assetId, user: req.user.id}).delete();
-            await knex("asset_infos").where({id: assetId}).decrement("favorite_count", 1);
+            await knex("asset_infos").where({id: assetId}).decrement("favorites", 1);
+            await knex("users").where({id: req.user.id}).decrement("favorite_count", 1);
         }
 
         return res.status(200).json({success: true, isLiked});
