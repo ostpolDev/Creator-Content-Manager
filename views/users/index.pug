@@ -1,0 +1,20 @@
+extends ../layout
+
+block head
+    script(src="/js/users/index.js" type="module" defer) 
+
+block content
+    .container
+        h1.title Users
+        p.subtitle There #{userCount == 1 ? "is" : "are"} currently #{userCount} user#{userCount == 1 ? "" : "s"} registered.
+
+        table.table.striped.hoverable.is-fullwidth
+            thead
+                th Username
+                th Name
+                th Assets
+                th Member since
+            tbody#userContainer
+
+        button.button.is-link.is-loading.is-fullwidth#loadMoreButton Load more
+        

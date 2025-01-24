@@ -172,6 +172,7 @@ router.post("/add", [
         await Promise.all(proms);
 
         await knex("batches").where({id: batch[0].id}).limit(1).update({size, failed_assets: failed, asset_count: count});
+        await knex("users").where({id: req.user.id}).limit(1).increment("asset_count", count)
 
         if (count == 1 && firstAsset) {
             return res.status(200).json({success: true, redirect: `/assets/v/${encodeURIComponent(firstAsset)}`});
