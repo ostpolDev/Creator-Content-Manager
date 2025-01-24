@@ -38,7 +38,8 @@ async function Recount() {
                 try {
 
                     const assetCount = await knex("assets").where({added_by: users[i].id}).count("id as CNT");
-                    await knex("users").where({id: users[i].id}).limit(1).update("asset_count", assetCount[0].CNT);
+                    const favoriteCount = await knex("asset_likes").where({user: users[i].id}).count("user as CNT");
+                    await knex("users").where({id: users[i].id}).limit(1).update("asset_count", assetCount[0].CNT).update("favorite_count", favoriteCount);
 
                     return res();
 
