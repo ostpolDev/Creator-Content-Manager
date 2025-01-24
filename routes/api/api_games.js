@@ -169,5 +169,36 @@ router.post("/add", [
 
 })
 
+router.get("/list", async (req, res, next) => {
+    try {
+
+        let search = req.query.q;
+        let skip = req.query.skip || 0;
+        let limit = req.query.limit || 50;
+        if (Number.isNaN(limit) || limit < 0 || limit > 200) {
+            limit = 50;
+        }
+        
+        const select = [
+            "games.name", "games.id", "games.steam_id", "games.image_url", "games.created_at"
+        ];
+
+        const query = knex("games").select(select).limit(limit).offset(skip).orderBy("games.name", "asc");
+
+        if (search) {
+            query.whereILike("games.name", `%${search}%`);
+        }
+
+        query.then((games) => {
+            return res.status(200).json({success: true, items: games, reachedEnd: games.length < limit});
+        }).catch((err) => {
+            return next(err);
+        })
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
 
 module.exports = router;
