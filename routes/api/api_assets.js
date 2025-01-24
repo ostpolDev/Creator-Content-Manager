@@ -277,6 +277,7 @@ router.get("/list", async (req, res, next) => {
         let checkID = req.query.checkId == "true";
         let resource = req.query.resource;
         let reference = req.query.reference;
+        let user = req.query.user;
 
         if (Number.isNaN(skip) || skip < 0) {
             skip = 0;
@@ -320,6 +321,14 @@ router.get("/list", async (req, res, next) => {
             assetQuery = knex("asset_likes").where({"asset_likes.user": ref})
                 .innerJoin("assets", "assets.id", "=", "asset_likes.asset")
                 .innerJoin("users", "users.id", "=", "assets.added_by")
+                .offset(skip).limit(limit).select(select)
+        } else if (user) {
+            assetQuery = knex("assets").where({"assets.added_by": user})
+                .innerJoin("users", "users.id", "=", "assets.added_by")
+                .leftOuterJoin("asset_likes", (f) => {
+                    f.on("asset_likes.asset", "=", "assets.id")
+                    .andOn("asset_likes.user", "=", req.user.id)
+                })
                 .offset(skip).limit(limit).select(select)
         } else {
             select.push("asset_likes.asset as like_id");
