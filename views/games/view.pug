@@ -1,0 +1,27 @@
+extends ../layout
+
+block content
+    .container
+
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/games") Games
+                li.is-active
+                    a(href="#") #{title}
+
+        h1.title #{title}
+
+        if game.added_by == user.id
+            .buttons.block
+                if !game.steam_id
+                    a.button(href=("/games?focus=add&ref=" + encodeURIComponent(game.id))) 
+                        span.icon
+                            span settings
+                        span Edit game
+                else
+                    a.button#refreshButton(href="javascript:void(0);")
+                        span.icon
+                            span refresh
+                        span Refresh 
+            

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Steam = require('../../modules/steamHelper');
 const { knex } = require('../../modules/database');
 const { body, validationResult } = require('express-validator');
-const { CompressString } = require('../../modules/textHelpers')
+const { CompressString, UnzipString } = require('../../modules/textHelpers')
 
 router.post("/addSteam", async (req, res, next) => {
     try {
@@ -37,10 +37,10 @@ router.post("/addSteam", async (req, res, next) => {
 
         await knex("game_infos").insert({
             ...gameData.info,
-            id: newID
+            id: newID[0].id
         });
 
-        return res.status(200).json({success: true, id: newID});
+        return res.status(200).json({success: true, id: newID[0].id});
 
     } catch (e) {
         return next(e);
@@ -128,11 +128,11 @@ router.post("/add", [
             }, "id")
     
             await knex("game_infos").insert({
-                id: newID,
+                id: newID[0].id,
                 tags
             })
     
-            return res.status(200).json({success: true, id: newID});
+            return res.status(200).json({success: true, id: newID[0].id});
 
         } else if (method == "edit" && typeof reference !== "undefined") {
 
@@ -180,7 +180,7 @@ router.get("/list", async (req, res, next) => {
         }
         
         const select = [
-            "games.name", "games.id", "games.steam_id", "games.image_url", "games.created_at"
+            "games.name", "games.id", "games.steam_id", "games.image_url", "games.created_at", "games.developer"
         ];
 
         const query = knex("games").select(select).limit(limit).offset(skip).orderBy("games.name", "asc");
@@ -200,5 +200,29 @@ router.get("/list", async (req, res, next) => {
     }
 })
 
+
+router.get("/get/:id", async (req, res, next) => {
+    try {
+
+        const game = await knex("games").where({"games.id": req.params.id}).limit(1)
+            .innerJoin("game_infos", "game_infos.id", "=", "games.id")
+            .select(
+                ["games.id", "name", "description", "compression", "website", "developer", "publisher", "image_url", "game_infos.tags", "created_at"]
+            );
+
+        if (!game[0]) {
+            return res.status(404).json({success: false, msg: "Game not found"});
+        }
+
+        const decompressed = UnzipString(game[0].description, game[0].compression);
+
+        game[0].description = decompressed;
+
+        return res.status(200).json({success: true, game: game[0]});
+
+    } catch (e) {
+        return next(e);
+    }
+})
 
 module.exports = router;

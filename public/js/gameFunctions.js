@@ -1,15 +1,13 @@
-import { CreateSmartTimeString } from "./helpers.js";
-
-function CreateVideoElement(video, size) {
+function CreateGameElement(game, size) {
     if (!size) {
         size = "one-fifth";
     }
     let column = document.createElement("div");
     column.classList.add("column", `is-${size}`);
-    column.setAttribute("data-video", video.id);
+    column.setAttribute("data-game", game.id);
 
     let linkElem = document.createElement("a");
-    linkElem.href = `/videos/v/${video.id}`;
+    linkElem.href = `/games/v/${game.id}`;
     linkElem.classList.add("hiddenLink");
     column.appendChild(linkElem);
 
@@ -26,7 +24,7 @@ function CreateVideoElement(video, size) {
     cardImageElem.appendChild(cardFigure);
 
     let cardImage = document.createElement("img");
-    cardImage.src = video.thumbnail_url || "https://placehold.co/1280x720";
+    cardImage.src = game.image_url || "https://placehold.co/1280x720";
     cardFigure.appendChild(cardImage);
 
     let cardContent = document.createElement("div");
@@ -34,19 +32,16 @@ function CreateVideoElement(video, size) {
     cardElem.appendChild(cardContent);
 
     let name = document.createElement("strong");
-    name.innerText = video.title || video.id;
+    name.innerText = game.name || game.id;
     cardContent.appendChild(name);
 
-    let infoText = document.createElement("p");
-    infoText.innerText = `${video.channel_name}`;
-    cardContent.appendChild(infoText);
-
-    let small = document.createElement("small");
-    small.innerText = CreateSmartTimeString(video.created_at)
-    small.title = CreateSmartTimeString(video.created_at, true)
-    cardContent.appendChild(small)
+    if (game.developer) {
+        let infoText = document.createElement("p");
+        infoText.innerText = `${game.developer}`;
+        cardContent.appendChild(infoText);
+    }
 
     return column;
 }
 
-export { CreateVideoElement };
+export { CreateGameElement };

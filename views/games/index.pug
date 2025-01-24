@@ -1,0 +1,99 @@
+extends ../layout
+
+block head
+    script(src="/js/games/index.js" type="module" defer) 
+
+block modals
+    .modal#addGameModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title#addGameTitle Add a new game
+                button.delete(data-modal="close")
+            section.modal-card-body
+
+                .field
+                    label.label(for="gameName") Name *
+                    .control.has-icons-left
+                        input.input#gameName(type="text" placeholder="Game name" required) 
+                        span.icon.is-small.is-left
+                            span stadia_controller
+
+                .field
+                    label.label(for="gameDescription") Description
+                    .control
+                        textarea.textarea#gameDescription(placeholder="Description...")
+
+                .field
+                    label.label(for="gameImage") Image URL
+                    .control.has-icons-left
+                        input.input#gameImage(type="url" placeholder="https://example.com/")
+                        span.icon.is-small.is-left
+                            span image
+
+                .field
+                    label.label(for="developers") Developers
+                    .control.has-icons-left
+                        input.input#developers(type="text" placeholder="Developers...")
+                        span.icon.is-small.is-left
+                            span person
+
+                .field
+                    label.label(for="publishers") Publishers
+                    .control.has-icons-left
+                        input.input#publishers(type="text" placeholder="Publishers...")
+                        span.icon.is-small.is-left
+                            span person
+
+                .field
+                    label.label(for="tags") Tags
+                    .control.has-icons-left
+                        input.input#tags(type="text" placeholder="Tags...")
+                        span.icon.is-small.is-left
+                            span tag
+
+                .field
+                    label.label(for="gameWebsite") Website
+                    .control.has-icons-left
+                        input.input#gameWebsite(type="url" placeholder="Game website")
+                        span.icon.is-small.is-left
+                            span link
+
+                            
+
+            footer.modal-card-foot
+                .buttons
+                    button.button.is-link#createGameButton
+                        span.icon
+                            span add
+                        span.text Add game
+                    button.button(data-modal="close")
+                        span.icon
+                            span close
+                        span Cancel
+
+block content
+    .container
+        h1.title Games
+        p.subtitle There #{gameCount == 1 ? "is" : "are"} currently #{gameCount.toLocaleString()} game#{gameCount == 1 ? "" : "s"} registered.
+
+        .buttons.block
+            button.button#addGameButton
+                span.icon
+                    span add
+                span Add a game
+            button.button#importGameButton
+                span.icon
+                    span storefront
+                span Import a game from Steam
+
+        .field.block
+            label.label Search
+            .control.has-icons-left
+                input.input#searchInput(type="text" placeholder="Search..." name="q" value=(search || ""))
+                span.icon.is-small.is-left
+                    span search
+
+        .columns.mb-2#gameContainer
+
+        button.button.is-link.is-loading.is-fullwidth#loadMoreButton Load more
