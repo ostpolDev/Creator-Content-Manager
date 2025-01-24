@@ -27,7 +27,7 @@ async function LoadMore() {
         json.items.forEach(user => {
             userContainer.innerHTML += `
                 <tr>
-                    <td title="${user.username}">${user.display_name}</td>
+                    <td title="${user.username}"><a href="/users/v/${user.username}">${user.display_name}</a></td>
                     <td>${user.name || "--"}</td>
                     <td>${(user.asset_count || 0).toLocaleString()}</td>
                     <td title="${CreateSmartTimeString(user.created_at, true)}">${CreateSmartTimeString(user.created_at)}</td>
