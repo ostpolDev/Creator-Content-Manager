@@ -1,0 +1,27 @@
+extends ../layout
+
+block head
+    script(src="/js/users/index.js" type="module" defer) 
+
+block content
+    .container
+        h1.title Users
+        p.subtitle There #{userCount == 1 ? "is" : "are"} currently #{userCount} user#{userCount == 1 ? "" : "s"} registered.
+
+        .field.block
+            label.label Search
+            .control.has-icons-left
+                input.input#searchInput(type="text" placeholder="Search..." name="q" value=(search || ""))
+                span.icon.is-small.is-left
+                    span search
+
+        table.table.striped.hoverable.is-fullwidth
+            thead
+                th Username
+                th Name
+                th Assets
+                th Member since
+            tbody#userContainer
+
+        button.button.is-link.is-loading.is-fullwidth#loadMoreButton Load more
+        

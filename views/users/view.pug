@@ -1,0 +1,73 @@
+extends ../layout
+
+block head
+    script(src="/js/assets.js" type="module" defer) 
+
+block content
+    .container
+
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/users") Users
+                li.is-active
+                    a(href="#") #{toView.display_name}
+
+        h1.title #{toView.display_name}
+        p.subtitle #{toView.name}
+
+        .level.block
+            .level-item.has-text-centered
+                div
+                    p.heading Assets
+                    p.title #{(toView.asset_count || 0).toLocaleString()}
+            .level-item.has-text-centered
+                div
+                    p.heading Favorites
+                    p.title #{(toView.favorite_count || 0).toLocaleString()}
+            .level-item.has-text-centered
+                div
+                    p.heading Member since
+                    p.title
+                        time(datetime=toView.created_at, data-format="smart")
+
+        .field.block
+            label.label Search
+            .control.has-icons-left
+                input.input#searchInput(type="text" placeholder="Search..." name="q" value=(search || ""))
+                span.icon.is-small.is-left
+                    span search
+
+        .buttons.is-justify-content-center
+            button.button.iconButton.is-rounded(data-type="music") 
+                span.icon
+                    span music_note
+            button.button.iconButton.is-rounded(data-type="soundEffect") 
+                span.icon
+                    span volume_up
+            button.button.iconButton.is-rounded(data-type="image") 
+                span.icon
+                    span image
+            button.button.iconButton.is-rounded(data-type="video") 
+                span.icon
+                    span videocam
+            button.button.iconButton.is-rounded(data-type="text") 
+                span.icon
+                    span description
+            button.button.iconButton.is-rounded(data-type="fav" data-ref=toView.id) 
+                span.icon
+                    span star
+
+            br
+                    
+            table.table.is-fullwidth.is-striped.is-hoverable
+                thead
+                    th Action
+                    th Name
+                    th Author
+                    th Uploaded
+                    th Tags
+                tbody(data-filter=("user:" + toView.id))#assetList
+
+            button.button.is-link.is-fullwidth.is-outlined#loadMoreButton
+                span Load More

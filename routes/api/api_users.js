@@ -83,7 +83,7 @@ router.get("/list", validation.ensureAuthenticated, async (req, res, next) => {
         }
 
         let userQuery = knex("users").limit(limit).offset(skip).select([
-            "username", "display_name", "name", "created_at", "level"
+            "username", "display_name", "name", "created_at", "level", "asset_count"
             ]);
 
         if (exclude) {
