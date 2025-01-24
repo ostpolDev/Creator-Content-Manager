@@ -104,6 +104,53 @@ router.post("/add", async (req, res, next) => {
     }
 })
 
+router.post("/refresh", async (req, res, next) => {
+
+    const id = req.body.id;
+    if (!id) {
+        return res.status(400).json({success: false, msg: "Video ID required"});
+    }
+
+    try {
+
+        const video = await knex("videos").where({id}).select(["updated_at", "id", "youtube_id"]).limit(1);
+        if (!video[0]) {
+            return res.status(404).json({success: false, msg: "Video not found"});
+        }
+
+        if (!video[0].youtube_id) {
+            return res.status(400).json({success: false, msg: "No YouTube ID attached to video"});
+        }
+
+        let diff = Date.now() - video[0].updated_at.getTime();
+        let canUpdate = diff > 1000 * 60 * 60;
+
+        if (!canUpdate) {
+            return res.status(400).json({success: false, msg: "Please wait before refreshing the video again"});
+        }
+
+        let videoResult = await GetVideoInfo(video[0].youtube_id);
+        if (!videoResult) {
+            return res.status(500).json({success: false, msg: "Something went wrong"});
+        }
+
+        await knex("videos").where({id}).limit(1).update({
+            ...videoResult.video,
+            updated_at: new Date()
+        });
+
+        await knex("video_infos").where({id}).limit(1).update({
+            ...videoResult.video_info
+        })
+
+        return res.status(200).json({success: true});
+
+    } catch (e) {
+        return next(e);
+    }
+
+})
+
 router.get("/list", async (req, res, next) => {
     let search = req.query.q;
     let skip = req.query.skip;

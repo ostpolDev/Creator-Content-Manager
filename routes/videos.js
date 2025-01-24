@@ -111,13 +111,17 @@ router.get("/v/:id", async (req, res, next) => {
             return newCommentCount[0].CNT;
         })
 
+        let diff = Date.now() - video[0].updated_at.getTime();
+        let canUpdate = diff > 1000 * 60 * 60;
+
         res.render("videos/view", {
             title: video[0].title || video[0].id,
             video: video[0],
             isAuthor: video[0].added_by == req.user.id,
             subtitle,
             view,
-            assetCount, commentCount
+            assetCount, commentCount,
+            canUpdate
         })
 
     } catch (e) {
