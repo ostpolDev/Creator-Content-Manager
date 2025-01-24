@@ -3,6 +3,7 @@ const Steam = require('../../modules/steamHelper');
 const { knex } = require('../../modules/database');
 const { body, validationResult } = require('express-validator');
 const { CompressString, UnzipString } = require('../../modules/textHelpers')
+const { sanitizeFull } = require('../../modules/marked');
 
 router.post("/addSteam", async (req, res, next) => {
     try {
@@ -103,7 +104,7 @@ router.post("/add", [
     }
 
     const name = req.body.name;
-    const description = req.body.description;
+    const description = sanitizeFull(req.body.description);
 
     const compressed = CompressString(description);
 

@@ -157,7 +157,7 @@ router.get("/list", async (req, res, next) => {
     let limit = req.query.limit;
     let channel = req.query.channel;
     let asset = req.query.asset;
-    let video = req.query.video;
+    let game = req.query.game;
 
     if (isNaN(skip) || skip < 0) {
         skip = 0;
@@ -187,7 +187,7 @@ router.get("/list", async (req, res, next) => {
                     "videos.id", "videos.title", "videos.created_at", "videos.thumbnail_url", "videos.added_by",
                     "channels.id as channel_id", "channels.name as channel_name"
                 ])
-        } else if (video) {
+        } else if (game) {
             videoQuery = knex("video_games").where({"video_games.game": game})
                 .innerJoin("videos", "videos.id", "=", "video_games.video")
                 .innerJoin("channels", "channels.id", "=", "videos.channel").orderBy("videos.created_at", "desc")
