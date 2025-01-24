@@ -2,16 +2,25 @@ import { CreateSmartTimeString } from "../helpers.js";
 
 const userContainer = document.getElementById("userContainer");
 const loadMoreButton = document.getElementById("loadMoreButton");
+const searchInput = document.getElementById("searchInput");
 
 let skip = 0;
 
+function ResetAndLoad() {
+    skip = 0;
+    userContainer.innerHTML = "";
+    LoadMore();
+}
+
 async function LoadMore() {
     loadMoreButton.classList.add("is-loading");
+    loadMoreButton.classList.remove("is-hidden");
 
     try {
 
         const params = new URLSearchParams({
-            skip
+            skip,
+            q: searchInput.value
         })
 
         const res = await fetch(`/api/users/list?${params.toString()}`);
@@ -47,4 +56,21 @@ async function LoadMore() {
 }
 
 LoadMore();
+
+const urlParams = new URLSearchParams(window.location.search);
+const focus = urlParams.get("focus");
+
+if (focus == "search") {
+    searchInput.focus();
+    searchInput.select();
+}
+
+let searchTimeout;
+
+searchInput.addEventListener("input", () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        ResetAndLoad();
+    }, 200)
+})
 

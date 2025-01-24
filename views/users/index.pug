@@ -8,6 +8,13 @@ block content
         h1.title Users
         p.subtitle There #{userCount == 1 ? "is" : "are"} currently #{userCount} user#{userCount == 1 ? "" : "s"} registered.
 
+        .field.block
+            label.label Search
+            .control.has-icons-left
+                input.input#searchInput(type="text" placeholder="Search..." name="q" value=(search || ""))
+                span.icon.is-small.is-left
+                    span search
+
         table.table.striped.hoverable.is-fullwidth
             thead
                 th Username
