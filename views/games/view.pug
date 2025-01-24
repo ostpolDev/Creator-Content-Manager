@@ -39,6 +39,9 @@ block content
                 li.is-active
                     a(href="#") #{title}
 
+        if game.image_url
+            .headerThumbnail(style='background-image: url("' + game.image_url + '")')
+
         h1.title #{title}
         p.subtitle
             if game.developer
