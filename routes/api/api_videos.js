@@ -535,4 +535,34 @@ router.get("/getGame/:id", async (req, res, next) => {
     }
 })
 
+router.post("/delete", async (req, res, next) => {
+    const videoId = req.body.video;
+    if (!videoId) {
+        return res.status(400).json({success: false, msg: "Video ID required"});
+    }
+
+    try {
+
+        const video = await knex("videos").where({id: videoId}).limit(1);
+        if (!video[0]) {
+            return res.status(404).json({success: false, msg: "Video not found"});
+        }
+
+        if (req.user.level != -1) {
+            const channelCheck = await knex("channel_members").where({user: req.user.id, channel: video[0].channel}).limit(1);
+            if (!channelCheck[0]) {
+                return res.status(404).json({success: false, msg: "Video not found"});
+            }
+        }
+
+        // Deleting the video should cascade everything else
+        await knex("videos").where({id: video[0].id}).limit(1).delete();
+
+        return res.status(200).json({success: true});
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
 module.exports = router;
