@@ -81,7 +81,7 @@ async function GetSteamGameInfo(id) {
         
         gameInfo.info.platforms = platforms.join(", ");
         gameInfo.info.dlc = data.dlc ? data.dlc.length : 0;
-        gameInfo.info.tags = [...data.categories.map(x => x.description), ...data.genres.map(x => x.description)].join(",");
+        gameInfo.info.tags = [...data.categories.map(x => x.description), ...data.genres.map(x => x.description)].join(",").substring(0, 255);
 
         return gameInfo;
 
