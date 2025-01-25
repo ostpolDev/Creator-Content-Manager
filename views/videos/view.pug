@@ -42,6 +42,27 @@ block modals
                             span.icon
                                 span close
                             span Close
+
+    .modal#deleteModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title Are you sure?
+                button.delete(data-modal="close")
+            section.modal-card-body
+                .content
+                    p Deleting this video cannot be undone.
+            footer.modal-card-foot
+                .buttons
+                    button.button(data-modal="close")
+                        span.icon
+                            span cancel
+                        span Cancel
+                    button.button.is-danger#confirmDeleteButton
+                        span.icon
+                            span delete
+                        span Yes, delete
+
 block content
     .container
 
@@ -194,9 +215,10 @@ block content
                         button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
                             span.icon
                                 span delete
-                        button.button.iconButton.is-rounded#refreshButton(disabled=!canUpdate)
-                            span.icon
-                                span refresh
+                        if video.youtube_id
+                            button.button.iconButton.is-rounded#refreshButton(disabled=!canUpdate)
+                                span.icon
+                                    span refresh
                         a.button.iconButton.is-rounded(href="/videos/edit/"+encodeURIComponent(video.id))
                             span.icon
                                 span edit

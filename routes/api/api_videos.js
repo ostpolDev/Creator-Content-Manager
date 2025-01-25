@@ -303,6 +303,24 @@ router.post("/edit/:id", async (req, res, next) => {
         let youtube = req.body.youtube;
         let title = req.body.title;
 
+        let editors = req.body.editors;
+        let starring = req.body.starring;
+        
+        if (editors) {
+            editors = JSON.parse(editors);
+        }
+        if (starring) {
+            starring = JSON.parse(starring);
+        }
+
+        if (starring && !Array.isArray(starring)) {
+            return res.status(400).json({success: false, msg: "Starring format invalid"});
+        }
+
+        if (editors && !Array.isArray(editors)) {
+            return res.status(400).json({success: false, msg: "Editors format invalid"});
+        }
+
         let video = await knex("videos").where({"videos.id": req.params.id}).limit(1)
             .select([
                 "videos.id", "videos.channel", "videos.youtube_id", "videos.title"
@@ -361,6 +379,31 @@ router.post("/edit/:id", async (req, res, next) => {
             }
 
             await knex("videos").where({id: video[0].id}).update(updateBody);
+        }
+
+        let usernames = [];
+        if (editors) {
+            usernames.push(...editors);
+        }
+        if (starring) {
+            usernames.push(...starring);
+        }
+        
+        if (usernames.length > 0) {
+            let usersToFetch = [...new Set(usernames)];
+            let users = await knex("users").whereIn("username", usersToFetch).select(["id", "username"]);
+            let members = [];
+            users.forEach(user => {
+                members.push({
+                    user: user.id,
+                    video: video[0].id,
+                    starring: starring.includes(user.username),
+                    editor: editors.includes(user.username)
+                })
+            })
+
+            await knex("video_members").where({video: video[0].id}).delete();
+            await knex("video_members").insert(members);
         }
 
         return res.status(200).json({success: true, redirect: `/videos/v/${video[0].id}`});
@@ -529,6 +572,36 @@ router.get("/getGame/:id", async (req, res, next) => {
             .select(["games.id", "games.name", "games.image_url"]);
 
         return res.status(200).json({success: true, game: videoGame[0]});
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
+router.post("/delete", async (req, res, next) => {
+    const videoId = req.body.video;
+    if (!videoId) {
+        return res.status(400).json({success: false, msg: "Video ID required"});
+    }
+
+    try {
+
+        const video = await knex("videos").where({id: videoId}).limit(1);
+        if (!video[0]) {
+            return res.status(404).json({success: false, msg: "Video not found"});
+        }
+
+        if (req.user.level != -1) {
+            const channelCheck = await knex("channel_members").where({user: req.user.id, channel: video[0].channel}).limit(1);
+            if (!channelCheck[0]) {
+                return res.status(404).json({success: false, msg: "Video not found"});
+            }
+        }
+
+        // Deleting the video should cascade everything else
+        await knex("videos").where({id: video[0].id}).limit(1).delete();
+
+        return res.status(200).json({success: true});
 
     } catch (e) {
         return next(e);
