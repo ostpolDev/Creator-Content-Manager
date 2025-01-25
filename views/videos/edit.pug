@@ -1,5 +1,8 @@
 extends ../layout
 
+block head
+    script(src="/js/videos/edit.js" type="module" defer) 
+
 block content
     .container
         nav.breadcrumb.has-succeeds-separator
@@ -40,6 +43,26 @@ block content
                     input.input#videoName(type="text" placeholder="Title of your video" name="title", value=video.title)
                     span.icon.is-small.is-left
                         span title
+
+            -
+                const starring = members.filter(x => x.starring == true);
+                const editor = members.filter(x => x.editor == true);
+
+            .field(data-search="user")
+                label.label(for="starring") Starring
+                .control.has-icons-left
+                    input.input#starring(type="text" placeholder="Enter a name..." autocomplete="off")
+                    input#starringResult(type="hidden" autocomplete="off" value=(JSON.stringify(starring.map(x => x.username))) name="starring")
+                    span.icon.is-small.is-left
+                        span person
+
+            .field(data-search="user")
+                label.label(for="editors") Editors
+                .control.has-icons-left
+                    input.input#editors(type="text" placeholder="Enter a name..." autocomplete="off")
+                    input#editorsResult(type="hidden" autocomplete="off" value=(JSON.stringify(editor.map(x => x.username))) name="editors")
+                    span.icon.is-small.is-left
+                        span person
 
             button.button.is-fullwidth.is-link
                 span.icon

@@ -160,10 +160,15 @@ router.get("/edit/:id", async (req, res, next) => {
             .innerJoin("channels", "channels.id", "=", "channel_members.channel")
             .select(["channels.id", "channels.name"])
 
+        const members = await knex("video_members").where({video: video[0].id})
+            .innerJoin("users", "users.id", "=", "video_members.user")
+            .select(["users.id", "users.display_name", "users.username", "video_members.starring", "video_members.editor"])
+
         res.render("videos/edit", {
             title: "Edit video",
             video: video[0],
-            channels
+            channels,
+            members
         })
 
     } catch (e) {

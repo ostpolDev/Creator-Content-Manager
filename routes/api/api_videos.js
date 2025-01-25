@@ -303,6 +303,24 @@ router.post("/edit/:id", async (req, res, next) => {
         let youtube = req.body.youtube;
         let title = req.body.title;
 
+        let editors = req.body.editors;
+        let starring = req.body.starring;
+        
+        if (editors) {
+            editors = JSON.parse(editors);
+        }
+        if (starring) {
+            starring = JSON.parse(starring);
+        }
+
+        if (starring && !Array.isArray(starring)) {
+            return res.status(400).json({success: false, msg: "Starring format invalid"});
+        }
+
+        if (editors && !Array.isArray(editors)) {
+            return res.status(400).json({success: false, msg: "Editors format invalid"});
+        }
+
         let video = await knex("videos").where({"videos.id": req.params.id}).limit(1)
             .select([
                 "videos.id", "videos.channel", "videos.youtube_id", "videos.title"
@@ -361,6 +379,31 @@ router.post("/edit/:id", async (req, res, next) => {
             }
 
             await knex("videos").where({id: video[0].id}).update(updateBody);
+        }
+
+        let usernames = [];
+        if (editors) {
+            usernames.push(...editors);
+        }
+        if (starring) {
+            usernames.push(...starring);
+        }
+        
+        if (usernames.length > 0) {
+            let usersToFetch = [...new Set(usernames)];
+            let users = await knex("users").whereIn("username", usersToFetch).select(["id", "username"]);
+            let members = [];
+            users.forEach(user => {
+                members.push({
+                    user: user.id,
+                    video: video[0].id,
+                    starring: starring.includes(user.username),
+                    editor: editors.includes(user.username)
+                })
+            })
+
+            await knex("video_members").where({video: video[0].id}).delete();
+            await knex("video_members").insert(members);
         }
 
         return res.status(200).json({success: true, redirect: `/videos/v/${video[0].id}`});

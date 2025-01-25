@@ -229,6 +229,16 @@ searchInputs.forEach(search => {
     tagElement.classList.add("tags", "mt-2");
     search.querySelector(".control").appendChild(tagElement);
 
+    const existingResult = resultInput.value;
+    if (existingResult) {
+        const existingJson = JSON.parse(existingResult);
+        if (Array.isArray(existingJson) && existingJson.length > 0) {
+            existingJson.forEach(item => {
+                tagElement.appendChild(MakeRemoveableTag({username: item}, resultInput));
+            })
+        }
+    }
+
     let searchTimer;
     input.addEventListener("input", () => {
         input.classList.remove("is-skeleton");
@@ -236,6 +246,7 @@ searchInputs.forEach(search => {
         searchTimer = setTimeout(() => {
             let val = input.value;
             let resultTags = tagElement.querySelector(".tags.result");
+            console.log(resultTags)
             if (resultTags) {
                 resultTags.remove();
             }
@@ -276,44 +287,7 @@ async function DoSearch(input, result, tagElement, target) {
         resultTagContainer.classList.add("tags", "result");
 
         json.items.forEach(user => {
-            let tagElem = document.createElement("span");
-            tagElem.classList.add("tag", "clickable");
-            tagElem.innerText = user.display_name;
-            tagElem.title = user.username;
-            resultTagContainer.appendChild(tagElem);
-
-            tagElem.addEventListener("click", () => {
-                if (!result.value) {
-                    result.value = JSON.stringify([user.username]);
-                } else {
-                    let currentRes = JSON.parse(result.value);
-                    if (!currentRes.includes(user.username)) {
-                        currentRes.push(user.username);
-                        result.value = JSON.stringify(currentRes);
-                    }
-                }
-                tagElem.remove();
-
-                let newTag = document.createElement("div");
-                newTag.classList.add("tag", "clickable", "is-link", "removeable");
-                newTag.innerText = user.display_name;
-                newTag.title = user.username;
-
-                newTag.addEventListener("click", () => {
-                    if (!result.value) {
-                        return;
-                    }
-                    let currentRes = JSON.parse(result.value);
-                    let index = currentRes.findIndex(x => x == user.username);
-                    if (index != -1) {
-                        currentRes.splice(index, 1);
-                    }
-                    result.value = JSON.stringify(currentRes);
-                    newTag.remove();
-                })
-
-                resultTagContainer.insertAdjacentElement("beforebegin", newTag);
-            })
+            MakeTagElement(user, resultTagContainer, result);
         })
 
         tagElement.appendChild(resultTagContainer);
@@ -323,6 +297,51 @@ async function DoSearch(input, result, tagElement, target) {
     } finally {
         input.classList.remove("is-skeleton");
     }
+}
+
+function MakeTagElement(user, resultTagContainer, result) {
+    let tagElem = document.createElement("span");
+    tagElem.classList.add("tag", "clickable");
+    tagElem.innerText = user.username;
+    tagElem.title = user.username;
+    resultTagContainer.appendChild(tagElem);
+
+    tagElem.addEventListener("click", () => {
+        if (!result.value) {
+            result.value = JSON.stringify([user.username]);
+        } else {
+            let currentRes = JSON.parse(result.value);
+            if (!currentRes.includes(user.username)) {
+                currentRes.push(user.username);
+                result.value = JSON.stringify(currentRes);
+            }
+        }
+        tagElem.remove();
+
+        resultTagContainer.insertAdjacentElement("beforebegin", MakeRemoveableTag(user, result));
+    })
+}
+
+function MakeRemoveableTag(user, result) {
+    let newTag = document.createElement("div");
+    newTag.classList.add("tag", "clickable", "is-link", "removeable");
+    newTag.innerText = user.username;
+    newTag.title = user.username;
+
+    newTag.addEventListener("click", () => {
+        if (!result.value) {
+            return;
+        }
+        let currentRes = JSON.parse(result.value);
+        let index = currentRes.findIndex(x => x == user.username);
+        if (index != -1) {
+            currentRes.splice(index, 1);
+        }
+        result.value = JSON.stringify(currentRes);
+        newTag.remove();
+    })
+
+    return newTag;
 }
 
 //#endregion
