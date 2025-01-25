@@ -194,9 +194,10 @@ block content
                         button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
                             span.icon
                                 span delete
-                        button.button.iconButton.is-rounded#refreshButton(disabled=!canUpdate)
-                            span.icon
-                                span refresh
+                        if video.youtube_id
+                            button.button.iconButton.is-rounded#refreshButton(disabled=!canUpdate)
+                                span.icon
+                                    span refresh
                         a.button.iconButton.is-rounded(href="/videos/edit/"+encodeURIComponent(video.id))
                             span.icon
                                 span edit
