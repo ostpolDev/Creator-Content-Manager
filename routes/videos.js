@@ -44,7 +44,7 @@ router.get("/", async (req, res, next) => {
     }
 })
 
-const VIEWS = ["description", "assets", "comments"];
+const VIEWS = ["description", "assets", "game", "comments"];
 
 router.get("/v/:id", async (req, res, next) => {
     try {
@@ -66,6 +66,10 @@ router.get("/v/:id", async (req, res, next) => {
 
         if (!video[0]) {
             return next();
+        }
+
+        if (!video[0].youtube_id && view == "description") {
+            view = "assets"
         }
 
         if (req.user.level != -1) {

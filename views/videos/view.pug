@@ -9,6 +9,8 @@ block head
     if view == "assets"
         link(rel="stylesheet", href="/bulma/bulma-list.css")
         script(src="/js/videos/assetSearch.js" type="module" defer) 
+    else if view == "game"
+        script(src="/js/videos/game.js" type="module" defer) 
 
     script(src="/js/videos/view.js" type="module" defer) 
 
@@ -84,11 +86,12 @@ block content
                 
                 .tabs.is-boxed#tabs
                     ul
-                        li(class=(view == "description" ? "is-active" : ""))
-                            a(href="?view=description#tabs")
-                                span.icon.is-small
-                                    span description
-                                span Description 
+                        if video.youtube_id
+                            li(class=(view == "description" ? "is-active" : ""))
+                                a(href="?view=description#tabs")
+                                    span.icon.is-small
+                                        span description
+                                    span Description 
                         li(class=(view == "assets" ? "is-active" : ""))
                             a(href="?view=assets#tabs")
                                 span.icon.is-small
@@ -99,6 +102,11 @@ block content
                                 span.icon.is-small
                                     span comment
                                 span Comments#{commentCount > 0 ? ` (${commentCount.toLocaleString()})` : ""}
+                        li(class=(view == "game" ? "is-active" : ""))
+                            a(href="?view=game#tabs")
+                                span.icon.is-small
+                                    span stadia_controller
+                                span Game 
 
                 if view == "description"
                     if video.rendered_description
@@ -144,6 +152,34 @@ block content
 
                 else if view == "comments"
                     div(data-comment=("V:" + video.id))
+
+                else if view == "game"
+                    .block
+                        p If your video is about a video game, you can add it here to help catalogue your video library.
+
+                    .field.block
+                        label.label(for="gameSearchInput")  Search for a game
+                        .control.has-icons-left
+                            input.input#gameSearchInput(type="text" placeholder="Search for a game..." name="q" value=(search || ""), autocomplete="off")
+                            span.icon.is-small.is-left
+                                span search
+
+                    table.table.is-fullwidth.is-striped.is-hoverable
+                        tbody#gameSearchResults
+
+                    #existingGameContainer.is-hidden
+                        .headerThumbnail#gameThumbnail
+                        h2.title.is-4#gameTitle
+
+                        .buttons
+                            a.button#viewGame
+                                span.icon
+                                    span visibility
+                                span View game
+                            button.button#removeGame
+                                span.icon
+                                    span clear
+                                span Clear game
 
             .column.is-one-quarter
                 .buttons
