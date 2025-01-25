@@ -1,0 +1,99 @@
+extends ../layout
+
+block head
+    script.
+        const DEF = {
+            game: "#{game.id}",
+        }
+    script(src="/js/games/view.js" type="module" defer) 
+
+block modals
+    .modal#deleteModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title Are you sure?
+                button.delete(data-modal="close")
+            section.modal-card-body
+                .content
+                    p Deleting this game cannot be undone. Any videos that use this game will 
+                        | still exists, but have their game removed.
+            footer.modal-card-foot
+                .buttons
+                    button.button(data-modal="close")
+                        span.icon
+                            span cancel
+                        span Cancel
+                    button.button.is-danger#confirmDeleteButton
+                        span.icon
+                            span delete
+                        span Yes, delete
+
+block content
+    .container
+
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/games") Games
+                li.is-active
+                    a(href="#") #{title}
+
+        if game.image_url
+            .headerThumbnail(style='background-image: url("' + game.image_url + '")')
+
+        h1.title #{title}
+        p.subtitle
+            if game.developer
+                span Developed by #{game.developer}
+            if game.publisher
+                if game.developer
+                    | , 
+                span Published by #{game.publisher}
+
+        if game.tags
+            .tags
+                each tag in game.tags.split(",")
+                    span.tag=tag
+
+            .buttons.block
+                if game.added_by == user.id
+                    if !game.steam_id
+                        a.button(href=("/games?focus=add&ref=" + encodeURIComponent(game.id))) 
+                            span.icon
+                                span settings
+                            span Edit game
+                    else
+                        a.button#refreshButton(href="javascript:void(0);", disabled=!canUpdate)
+                            span.icon
+                                span refresh
+                            span Refresh 
+                    a.button.is-danger.is-outlined#deleteButton(href="javascript:void(0);")
+                        span.icon
+                            span delete
+                        span Remove 
+                if game.website
+                    a.button(href=game.website, target="_BLANK")
+                        span.icon
+                            span link
+                        span Official website 
+
+        .block
+            if game.description
+                pre.noBackground
+                    .content!=game.description
+
+        hr
+
+        h2.title.is-4 Videos
+        
+        .block
+            .field
+                label.label Search
+                .control.has-icons-left
+                    input.input#searchInput(type="text" placeholder="Search..." name="q", data-list-target="videos", data-list-filter="q")
+                    span.icon.is-small.is-left
+                        span search
+
+        .columns.is-multiline(data-list="videos" data-list-limit="10", data-list-load="true", data-list-filter=("game:" + encodeURIComponent(game.id)))
+            

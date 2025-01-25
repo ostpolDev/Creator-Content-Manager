@@ -217,7 +217,7 @@ async function CreateTables(knex) {
         await knex.schema.createTable("games", (table) => {
             table.increments("id").primary().notNullable();
             table.string("name");
-            table.text("description");
+            table.binary("description");
             table.string("compression");
             table.integer("added_by");
             table.string("image_url");
@@ -395,6 +395,15 @@ async function MigrateVersion(knex) {
             })
             await knex.schema.alterTable("comments", (table) => {
                 table.binary("content");
+            })
+            break;
+        case "SQL-0.6":
+            logger.info("Migration from SQL-0.6");
+            await knex.schema.alterTable("games", (table) => {
+                table.dropColumn("description");
+            })
+            await knex.schema.alterTable("games", (table) => {
+                table.binary("description");
             })
             break;
         default:

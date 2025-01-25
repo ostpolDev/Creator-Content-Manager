@@ -157,6 +157,7 @@ router.get("/list", async (req, res, next) => {
     let limit = req.query.limit;
     let channel = req.query.channel;
     let asset = req.query.asset;
+    let game = req.query.game;
 
     if (isNaN(skip) || skip < 0) {
         skip = 0;
@@ -180,6 +181,15 @@ router.get("/list", async (req, res, next) => {
         if (asset) {
             videoQuery = knex("video_assets").where({"video_assets.asset": asset})
                 .innerJoin("videos", "videos.id", "=", "video_assets.video")
+                .innerJoin("channels", "channels.id", "=", "videos.channel").orderBy("videos.created_at", "desc")
+                .whereIn("videos.channel", channels).limit(limit).offset(skip)
+                .select([
+                    "videos.id", "videos.title", "videos.created_at", "videos.thumbnail_url", "videos.added_by",
+                    "channels.id as channel_id", "channels.name as channel_name"
+                ])
+        } else if (game) {
+            videoQuery = knex("video_games").where({"video_games.game": game})
+                .innerJoin("videos", "videos.id", "=", "video_games.video")
                 .innerJoin("channels", "channels.id", "=", "videos.channel").orderBy("videos.created_at", "desc")
                 .whereIn("videos.channel", channels).limit(limit).offset(skip)
                 .select([
@@ -459,6 +469,66 @@ router.get("/description/:id", async (req, res, next) => {
             starring: people.filter(x => x.starring).map(x => x.display_name).join(", "),
             title: video[0].title
         }})
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
+router.post("/setGame", async (req, res, next) => {
+
+    const gameId = req.body.game;
+    const videoId = req.body.video;
+
+    if (!videoId) {
+        return res.status(400).json({success: false, msg: "Video ID required"});
+    }
+
+    try {
+
+        let game;
+        if (gameId) {
+            game = await knex("games").where({id: gameId}).select("id").limit(1)
+        }
+
+        const video = await knex("videos").where({id: videoId}).select(["id", "channel"]).limit(1);
+        if (!video[0]) {
+            return res.status(404).json({success: false, msg: "Video not found"});
+        }
+
+        if (req.user.level != -1) {
+            let channelCheck = await knex("channel_members").where({user: req.user.id, channel: video[0].channel}).limit(1);
+            if (!channelCheck[0]) {
+                return res.status(404).json({success: false, msg: "Video not found"});
+            }
+        }
+
+        const existingVideoGame = await knex("video_games").where({video: video[0].id}).limit(1);
+        if (existingVideoGame[0]) {
+            if (!game || !game[0]) {
+                await knex("video_games").where({video: video[0].id}).limit(1).delete();
+            } else {
+                await knex("video_games").where({video: video[0].id}).limit(1).update({game: game[0].id});
+            }
+        } else {
+            await knex("video_games").insert({video: video[0].id, game: game[0].id});
+        }
+
+        return res.status(200).json({success: true});
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
+router.get("/getGame/:id", async (req, res, next) => {
+    try {
+
+        const videoGame = await knex("video_games").where({video: req.params.id}).limit(1)
+            .innerJoin("games", "games.id", "=", "video_games.game")
+            .select(["games.id", "games.name", "games.image_url"]);
+
+        return res.status(200).json({success: true, game: videoGame[0]});
 
     } catch (e) {
         return next(e);

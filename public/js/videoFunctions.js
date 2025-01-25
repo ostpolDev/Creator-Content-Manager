@@ -26,7 +26,7 @@ function CreateVideoElement(video, size) {
     cardImageElem.appendChild(cardFigure);
 
     let cardImage = document.createElement("img");
-    cardImage.src = video.thumbnail_url || "/img/defaultThumbnail.webp";
+    cardImage.src = video.thumbnail_url || "https://placehold.co/1280x720";
     cardFigure.appendChild(cardImage);
 
     let cardContent = document.createElement("div");
