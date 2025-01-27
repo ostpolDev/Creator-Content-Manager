@@ -17,7 +17,7 @@ let dayElements = [];
 let currentDate = new Date();
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const COLORS = ["#ec273f", "#e98537", "#f3a833", "#5ab552", "#3859b3", "#3e3b65", "#9a4d76", "#ffa2ac"];
+const COLORS = ["#ec273f", "#e98537", "#5ab552", "#3859b3", "#3e3b65", "#9a4d76", "#ffa2ac"];
 const CHANNEL_LOOKUP = {};
 const CHANNEL_NAME_LOOKUP = {};
 
