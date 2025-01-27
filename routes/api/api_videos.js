@@ -345,6 +345,11 @@ router.post("/edit/:id", async (req, res, next) => {
 
         let editors = req.body.editors;
         let starring = req.body.starring;
+
+        let plannedRelease = req.body.plannedRelease;
+        if (plannedRelease) {
+            plannedRelease = new Date(plannedRelease)
+        }
         
         if (editors) {
             editors = JSON.parse(editors);
@@ -417,6 +422,8 @@ router.post("/edit/:id", async (req, res, next) => {
             if (video[0].youtube_id && !youtube) {
                 updateBody["youtube_id"] = null;
             }
+
+            updateBody["uploaded_at"] = plannedRelease;
 
             await knex("videos").where({id: video[0].id}).update(updateBody);
         }

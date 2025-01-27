@@ -1,5 +1,16 @@
 extends ../layout
 
+block head
+    link(rel="stylesheet", href="/bulma/calendar/bulma-calendar.min.css")
+    script(src="/bulma/calendar/bulma-calendar.min.js") 
+
+    script.
+        const DEF = {
+            uploaded: "#{video.uploaded_at}",
+        }
+
+    script(src="/js/videos/edit.js" type="module" defer) 
+
 block content
     .container
         nav.breadcrumb.has-succeeds-separator
@@ -40,6 +51,12 @@ block content
                     input.input#videoName(type="text" placeholder="Title of your video" name="title", value=video.title)
                     span.icon.is-small.is-left
                         span title
+
+            if !video.youtube_id
+                .field#plannedReleaseField
+                    label.label(for="plannedRelease") Planned release date
+                    .control
+                        input#plannedRelease(type="datetime", name="plannedRelease" placeholder="Planned release date")
 
             -
                 const starring = members.filter(x => x.starring == true);
