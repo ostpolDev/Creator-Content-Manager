@@ -5,6 +5,8 @@ const starringResult = document.getElementById("starringResult");
 const editors = document.getElementById("editors");
 const editorsResult = document.getElementById("editorsResult");
 const videoName = document.getElementById("videoName");
+const plannedRelease = document.getElementById("plannedRelease");
+const plannedReleaseField = document.getElementById("plannedReleaseField");
 
 const createVideoButton = document.getElementById("createVideoButton");
 
@@ -30,7 +32,9 @@ addVideoButton.addEventListener("click", () => {
 youtubeId.addEventListener("input", () => {
     if (youtubeId.value.trim() != "") {
         videoName.setAttribute("disabled", true);
+        plannedReleaseField.classList.add("is-hidden");
     } else {
+        plannedReleaseField.classList.remove("is-hidden");
         videoName.removeAttribute("disabled");
     }
 })
@@ -58,6 +62,7 @@ async function CreateVideo() {
         let edit = editorsResult.value;
         let star = starringResult.value;
         let name = videoName.value;
+        let plannedReleaseDate = plannedRelease.value ?  new Date(plannedRelease.value) : null;
 
         if (!channel) {
             return;
@@ -69,7 +74,8 @@ async function CreateVideo() {
                 channel, id,
                 editors: edit ? JSON.parse(edit) : null,
                 starring: star ? JSON.parse(star) : null,
-                name
+                name,
+                plannedReleaseDate
             }),
             headers: {
                 "Content-Type": "application/json"
@@ -91,3 +97,9 @@ async function CreateVideo() {
         createVideoButton.classList.remove("is-loading");
     }
 }
+
+//#region Calendars
+
+const calendars = bulmaCalendar.attach('[type="datetime"', {displayMode: "dialog"});
+
+//#endregion

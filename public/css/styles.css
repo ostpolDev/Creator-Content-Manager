@@ -289,3 +289,86 @@ article.media[data-comment] {
     filter: blur(6px);
     background-size: cover;
 }
+
+.calendar {
+    --border-color: #e0e0e0;
+
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+}
+
+.calendar > .day {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border: 1px solid var(--border-color);
+    background-color: #f3f3f3;
+}
+
+.calendar > .day span.number {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 22px;
+    color: var(--border-color);
+}
+
+.calendar > .day.active {
+    border: 1px solid #b5b5b5;
+    cursor: pointer;
+    background-color: white;
+}
+
+.calendar > .day.active span.number {
+    color: #444444;
+}
+
+.calendar > .day span.name {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+
+.calendar > .day.active:hover span.name {
+    opacity: 0.5;
+}
+
+.index {
+    display: flex;
+    gap: 15px;
+}
+
+.index > span.item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.index > span.item .color {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.calendar > .day .videos {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.calendar > .day .videos span {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}

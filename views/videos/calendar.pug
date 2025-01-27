@@ -1,0 +1,74 @@
+extends ../layout
+
+block head
+    script(src="/js/videos/calendar.js" type="module" defer) 
+
+block modals
+    .modal#infoModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title#infoModalTitle
+                button.delete(data-modal="close")
+            section.modal-card-body
+                table.table.is-fullwidth.is-striped.is-hoverable
+                    thead
+                        th Channel
+                        th Video
+                    tbody#infoModalBody
+            footer.modal-card-foot
+                .buttons
+                    button.button(data-modal="close")
+                        span.icon
+                            span close
+                        span Close
+
+block content
+    .container
+
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/videos") Videos
+                li.is-active
+                    a(href="/videos/calendar") Schedule
+
+        h1.title Video schedule
+        p.subtitle An overview of videos that have been released and will release
+        
+        .block#settings
+            .columns
+                .column
+                    .field
+                        .control
+                            input.input#yearInput(type="number" placeholder=(new Date().getFullYear()), min="0")
+                .column
+                    .field
+                        .control
+                            .select.is-fullwidth
+                                select.input.channelSelect#monthSelect(autocomplete="off")
+                                    option(value="0") January
+                                    option(value="1") Feburary
+                                    option(value="2") March
+                                    option(value="3") April
+                                    option(value="4") May
+                                    option(value="5") June
+                                    option(value="6") July
+                                    option(value="7") August
+                                    option(value="8") September
+                                    option(value="9") October
+                                    option(value="10") November
+                                    option(value="11") December
+                .column.is-2
+                    .buttons.is-justify-content-space-between
+                        button.button.iconButton.is-rounded#prevMonthButton
+                            span.icon
+                                span arrow_back
+                        button.button.iconButton.is-rounded#nextMonthButton
+                            span.icon
+                                span arrow_forward
+
+        .block.index#channelIndex
+            
+
+        .calendar

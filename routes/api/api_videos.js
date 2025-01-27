@@ -13,6 +13,7 @@ router.post("/add", async (req, res, next) => {
     let starring = req.body.starring;
     let editors = req.body.editors;
     let name = req.body.name;
+    let plannedReleaseDate = req.body.plannedReleaseDate;
 
     if (!channelId) {
         return res.status(400).json({success: false, msg: "Channel required"});
@@ -60,7 +61,8 @@ router.post("/add", async (req, res, next) => {
             let newVideo = await knex("videos").insert({
                 added_by: req.user.id,
                 channel: accessCheck[0].channel,
-                title: name || randomUUID()
+                title: name || randomUUID(),
+                uploaded_at: plannedReleaseDate
             }, "id");
 
             if (!newVideo[0]) {
@@ -218,6 +220,44 @@ router.get("/list", async (req, res, next) => {
         }).catch(e => {
             return next(e);
         })
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
+router.get("/list/date/:year/:month", async (req, res, next) => {
+    try {
+
+        const year = req.params.year;
+        const month = req.params.month;
+
+        if (isNaN(year) || year < 0) {
+            return res.status(400).json({success: false, msg: "Invalid year"});
+        }
+        if (isNaN(month) || year < 0) {
+            return res.status(400).json({success: false, msg: "Invalid year"});
+        }
+
+        const startDate = new Date();
+        startDate.setFullYear(year);
+        startDate.setMonth(month);
+        startDate.setDate(0);
+
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+        endDate.setDate(1);
+
+        const channels = await knex("channel_members").where({user: req.user.id}).select("channel");
+        const channelIds = channels.map(x => x.channel);
+
+        const videos = await knex("videos")
+            .whereIn("channel", channelIds)
+            .whereNotNull("uploaded_at")
+            .where("uploaded_at", ">", startDate).andWhere("uploaded_at", "<", endDate)
+            .select(["id", "channel", "title", "created_at", "uploaded_at as release_date"]).limit(50);
+
+        return res.status(200).json({success: true, videos})
 
     } catch (e) {
         return next(e);
