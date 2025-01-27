@@ -13,6 +13,7 @@ router.post("/add", async (req, res, next) => {
     let starring = req.body.starring;
     let editors = req.body.editors;
     let name = req.body.name;
+    let plannedReleaseDate = req.body.plannedReleaseDate;
 
     if (!channelId) {
         return res.status(400).json({success: false, msg: "Channel required"});
@@ -60,7 +61,8 @@ router.post("/add", async (req, res, next) => {
             let newVideo = await knex("videos").insert({
                 added_by: req.user.id,
                 channel: accessCheck[0].channel,
-                title: name || randomUUID()
+                title: name || randomUUID(),
+                uploaded_at: plannedReleaseDate
             }, "id");
 
             if (!newVideo[0]) {

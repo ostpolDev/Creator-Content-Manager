@@ -1,6 +1,9 @@
 extends ../layout
 
 block head
+    link(rel="stylesheet", href="/bulma/calendar/bulma-calendar.min.css")
+    script(src="/bulma/calendar/bulma-calendar.min.js") 
+
     script(src="/js/videos.js" type="module" defer) 
 
 block modals
@@ -34,6 +37,11 @@ block modals
                         span.icon.is-small.is-left
                             span title
                     p.help Use this if your video isn't on YouTube yet. This will be overridden once you add the YouTube link.
+
+                .field#plannedReleaseField
+                    label.label(for="plannedRelease") Planned release date
+                    .control
+                        input#plannedRelease(type="datetime", name="plannedRelease" placeholder="Planned release date")
 
                 .field(data-search="user")
                     label.label(for="starring") Starring

@@ -248,7 +248,8 @@ block content
                         p
                             strong Upload date
                             br
-                            time(datetime=video.uploaded_at, data-format="smart")
+                            a(href=("/videos/calendar?date=" + encodeURIComponent(video.uploaded_at.toDateString()))) 
+                                time(datetime=video.uploaded_at, data-format="smart")
                     if video.youtube_id
                         p
                             strong YouTube ID
@@ -278,6 +279,13 @@ block content
                                 strong Licensed content
                                 br
                                 span #{formatString(video.properties.contentDetails.licensedContent.toString())}
+                    if !video.youtube_id && video.uploaded_at
+                        p
+                            strong Planned release
+                            br
+                            a(href=("/videos/calendar?date=" + encodeURIComponent(video.uploaded_at.toDateString()))) 
+                                time(datetime=video.uploaded_at, data-format="smart")
+                    
                     p
                         strong Assets
                         br
