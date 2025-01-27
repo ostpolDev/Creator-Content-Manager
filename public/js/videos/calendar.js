@@ -7,6 +7,8 @@ const channelIndex = document.getElementById("channelIndex");
 const infoModalBody = document.getElementById("infoModalBody");
 const infoModalTitle = document.getElementById("infoModalTitle");
 
+const jumpToNowButton = document.getElementById("jumpToNowButton");
+
 const calendar = document.querySelector(".calendar");
 
 /**
@@ -77,6 +79,12 @@ Initialize();
 async function UpdateElements() {
     currentVideos = [];
     currentVideoLookup = {};
+
+    if (currentDate.getMonth() == CURRENT.getMonth() && currentDate.getFullYear() == CURRENT.getFullYear()) {
+        jumpToNowButton.setAttribute("disabled", true);
+    } else {
+        jumpToNowButton.removeAttribute("disabled");
+    }
 
     const firstDay = new Date();
     firstDay.setFullYear(currentDate.getFullYear());
@@ -170,6 +178,14 @@ yearInput.addEventListener("input", () => {
         currentDate.setFullYear(yearInput.value);
         UpdateElements();
     }, 200)
+})
+
+jumpToNowButton.addEventListener("click", () => {
+    currentDate.setMonth(CURRENT.getMonth());
+    currentDate.setFullYear(CURRENT.getFullYear());
+    yearInput.value = currentDate.getFullYear();
+    monthSelect.value = currentDate.getMonth();
+    UpdateElements();
 })
 
 async function LoadChannels() {
