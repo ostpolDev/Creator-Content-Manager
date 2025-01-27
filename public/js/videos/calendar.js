@@ -7,6 +7,8 @@ const channelIndex = document.getElementById("channelIndex");
 const infoModalBody = document.getElementById("infoModalBody");
 const infoModalTitle = document.getElementById("infoModalTitle");
 
+const jumpToNowButton = document.getElementById("jumpToNowButton");
+
 const calendar = document.querySelector(".calendar");
 
 /**
@@ -16,14 +18,16 @@ let dayElements = [];
 
 let currentDate = new Date();
 
-const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const COLORS = ["#ec273f", "#e98537", "#f3a833", "#5ab552", "#3859b3", "#3e3b65", "#9a4d76", "#ffa2ac"];
+const DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const COLORS = ["#ec273f", "#e98537", "#5ab552", "#3859b3", "#3e3b65", "#9a4d76", "#ffa2ac"];
 const CHANNEL_LOOKUP = {};
 const CHANNEL_NAME_LOOKUP = {};
 
 let dayIndexLookup = {};
 let currentVideos = [];
 let currentVideoLookup = {};
+
+const CURRENT = new Date();
 
 async function Initialize() {
 
@@ -76,6 +80,12 @@ async function UpdateElements() {
     currentVideos = [];
     currentVideoLookup = {};
 
+    if (currentDate.getMonth() == CURRENT.getMonth() && currentDate.getFullYear() == CURRENT.getFullYear()) {
+        jumpToNowButton.setAttribute("disabled", true);
+    } else {
+        jumpToNowButton.removeAttribute("disabled");
+    }
+
     const firstDay = new Date();
     firstDay.setFullYear(currentDate.getFullYear());
     firstDay.setMonth(currentDate.getMonth());
@@ -89,6 +99,7 @@ async function UpdateElements() {
     prevMonth.setDate(prevMonth.getDate() - 1);
 
     dayIndexLookup = {};
+    const firstDayIndex = firstDay.getDay() == 0 ? 6 : firstDay.getDay() - 1;
 
     for (let i = 0; i < dayElements.length; i++) {
         const elem = dayElements[i];
@@ -96,14 +107,15 @@ async function UpdateElements() {
         const videoContainer = elem.querySelector(".videos");
         videoContainer.innerHTML = "";
 
-        if (i < firstDay.getDay() || i >= firstDay.getDay() + lastDay.getDate()) {
+
+        if (i < firstDayIndex || i >= firstDayIndex + lastDay.getDate()) {
             // Reset field
             elem.classList.remove("active");
 
-            if (i < firstDay.getDay()) {
-                numberElem.innerText = prevMonth.getDate() - (firstDay.getDay() - i - 1);
+            if (i < firstDayIndex) {
+                numberElem.innerText = prevMonth.getDate() - (firstDayIndex - i) + 1;
             } else {
-                numberElem.innerText = i + 1 - (lastDay.getDate() + firstDay.getDay());
+                numberElem.innerText = i + 1 - (lastDay.getDate() + firstDayIndex);
             }
 
             elem.setAttribute("data-date", "-1");
@@ -111,7 +123,7 @@ async function UpdateElements() {
             continue;
         }
         
-        const dateIndex = i - firstDay.getDay() + 1; 
+        const dateIndex = i - (firstDayIndex) + 1; 
         numberElem.innerText = dateIndex;
 
         elem.setAttribute("data-date", dateIndex);
@@ -120,8 +132,14 @@ async function UpdateElements() {
         const newDate = new Date(firstDay.getTime());
         newDate.setDate(dateIndex);
 
+        if (newDate.getFullYear() == CURRENT.getFullYear() && newDate.getDate() == CURRENT.getDate() && newDate.getMonth() == CURRENT.getMonth()) {
+            elem.classList.add("current");
+        } else {
+            elem.classList.remove("current");
+        }
+
         const dayName = elem.querySelector("span.name");
-        dayName.innerText = DAY_NAMES[newDate.getDay()];
+        dayName.innerText = DAY_NAMES[Math.floor(i % 7)];
 
         elem.classList.add("active");
     }
@@ -162,6 +180,14 @@ yearInput.addEventListener("input", () => {
         currentDate.setFullYear(yearInput.value);
         UpdateElements();
     }, 200)
+})
+
+jumpToNowButton.addEventListener("click", () => {
+    currentDate.setMonth(CURRENT.getMonth());
+    currentDate.setFullYear(CURRENT.getFullYear());
+    yearInput.value = currentDate.getFullYear();
+    monthSelect.value = currentDate.getMonth();
+    UpdateElements();
 })
 
 async function LoadChannels() {
