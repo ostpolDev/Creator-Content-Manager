@@ -232,6 +232,8 @@ router.get("/list/date/:year/:month", async (req, res, next) => {
         const year = req.params.year;
         const month = req.params.month;
 
+        console.log(year, month);
+
         if (isNaN(year) || year < 0) {
             return res.status(400).json({success: false, msg: "Invalid year"});
         }
@@ -242,11 +244,14 @@ router.get("/list/date/:year/:month", async (req, res, next) => {
         const startDate = new Date();
         startDate.setFullYear(year);
         startDate.setMonth(month);
-        startDate.setDate(0);
-
-        const endDate = new Date(startDate);
-        endDate.setMonth(endDate.getMonth() + 1);
-        endDate.setDate(1);
+        startDate.setDate(1);
+        startDate.setHours(0, 0, 0, 0);
+        
+        const endDate = new Date();
+        endDate.setFullYear(startDate.getFullYear());
+        endDate.setMonth(startDate.getMonth() + 1);
+        endDate.setHours(0, 0, 0, 0);
+        endDate.setDate(2);
 
         const channels = await knex("channel_members").where({user: req.user.id}).select("channel");
         const channelIds = channels.map(x => x.channel);
