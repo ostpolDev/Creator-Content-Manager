@@ -372,3 +372,7 @@ article.media[data-comment] {
     height: 10px;
     border-radius: 50%;
 }
+
+.calendar > .day.current span.number::before {
+    content: "*"
+}

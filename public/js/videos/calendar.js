@@ -25,6 +25,8 @@ let dayIndexLookup = {};
 let currentVideos = [];
 let currentVideoLookup = {};
 
+const CURRENT = new Date();
+
 async function Initialize() {
 
     await LoadChannels();
@@ -119,6 +121,12 @@ async function UpdateElements() {
 
         const newDate = new Date(firstDay.getTime());
         newDate.setDate(dateIndex);
+
+        if (newDate.getFullYear() == CURRENT.getFullYear() && newDate.getDate() == CURRENT.getDate() && newDate.getMonth() == CURRENT.getMonth()) {
+            elem.classList.add("current");
+        } else {
+            elem.classList.remove("current");
+        }
 
         const dayName = elem.querySelector("span.name");
         dayName.innerText = DAY_NAMES[newDate.getDay()];
