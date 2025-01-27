@@ -176,4 +176,10 @@ router.get("/edit/:id", async (req, res, next) => {
     }
 })
 
+router.get("/calendar", (_req, res) => {
+    return res.render("videos/calendar", {
+        title: "Calendar"
+    })
+})
+
 module.exports = router;

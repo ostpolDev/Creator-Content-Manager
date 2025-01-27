@@ -226,6 +226,44 @@ router.get("/list", async (req, res, next) => {
     }
 })
 
+router.get("/list/date/:year/:month", async (req, res, next) => {
+    try {
+
+        const year = req.params.year;
+        const month = req.params.month;
+
+        if (isNaN(year) || year < 0) {
+            return res.status(400).json({success: false, msg: "Invalid year"});
+        }
+        if (isNaN(month) || year < 0) {
+            return res.status(400).json({success: false, msg: "Invalid year"});
+        }
+
+        const startDate = new Date();
+        startDate.setFullYear(year);
+        startDate.setMonth(month);
+        startDate.setDate(0);
+
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+        endDate.setDate(1);
+
+        const channels = await knex("channel_members").where({user: req.user.id}).select("channel");
+        const channelIds = channels.map(x => x.channel);
+
+        const videos = await knex("videos")
+            .whereIn("channel", channelIds)
+            .whereNotNull("uploaded_at")
+            .where("uploaded_at", ">", startDate).andWhere("uploaded_at", "<", endDate)
+            .select(["id", "channel", "title", "created_at", "uploaded_at as release_date"]).limit(50);
+
+        return res.status(200).json({success: true, videos})
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
 const MODIFY_MODES = ["add", "remove"];
 
 router.post("/modifyAsset", async (req, res, next) => {

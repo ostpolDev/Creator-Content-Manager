@@ -81,6 +81,10 @@ block content
                 span.icon
                     span add
                 span Add a new video
+            a.button(href="/videos/calendar")
+                span.icon
+                    span calendar_month
+                span Release schedule 
 
         .block
             .columns
@@ -88,9 +92,10 @@ block content
                     .field
                         label.label(for="channelSearch") Channel
                         .control
-                            select.input.channelSelect#channelSearch(autocomplete="off", data-list-target="videos", data-list-filter="channel")
-                                each channel in channels
-                                    option(value=channel.id, selected=(!selected_channel ? false : selected_channel == channel.id)) #{channel.name} 
+                            .select.is-fullwidth
+                                select.input.channelSelect#channelSearch(autocomplete="off", data-list-target="videos", data-list-filter="channel")
+                                    each channel in channels
+                                        option(value=channel.id, selected=(!selected_channel ? false : selected_channel == channel.id)) #{channel.name} 
                 .column.is-three-quarters
                     .field
                         label.label Search
