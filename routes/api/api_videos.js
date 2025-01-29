@@ -238,16 +238,16 @@ router.get("/list/date/:year/:month", async (req, res, next) => {
         }
 
         const startDate = new Date();
+        startDate.setDate(1);
         startDate.setFullYear(year);
         startDate.setMonth(month);
-        startDate.setDate(1);
         startDate.setHours(0, 0, 0, 0);
         
         const endDate = new Date();
+        endDate.setDate(1)
         endDate.setFullYear(startDate.getFullYear());
         endDate.setMonth(startDate.getMonth() + 1);
         endDate.setHours(0, 0, 0, 0);
-        endDate.setDate(2);
 
         const channels = await knex("channel_members").where({user: req.user.id}).select("channel");
         const channelIds = channels.map(x => x.channel);
