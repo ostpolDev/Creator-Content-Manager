@@ -152,50 +152,50 @@ block content
                             .content!=firstAsset.rendered_description
 
             .column.is-one-quarter
-
-                .buttons
-                    if isAuthor
-                        a.button.iconButton.is-rounded(href="/assets/batches/edit/" + batch.id) 
+                .is-position-sticky(style="height: fit-content; top: 10px;")
+                    .buttons
+                        if isAuthor
+                            a.button.iconButton.is-rounded(href="/assets/batches/edit/" + batch.id) 
+                                span.icon
+                                    span edit
+                        a.button.iconButton.is-rounded(href="/assets/batches/download/" + batch.id) 
                             span.icon
-                                span edit
-                    a.button.iconButton.is-rounded(href="/assets/batches/download/" + batch.id) 
-                        span.icon
-                            span download
-                    if isAuthor
-                        button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
-                            span.icon
-                                span delete
+                                span download
+                        if isAuthor
+                            button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
+                                span.icon
+                                    span delete
 
-                if batch.type == "album" && batch.image_url
-                    figure.image.is-square.block
-                        img(src=batch.image_url)
+                    if batch.type == "album" && batch.image_url
+                        figure.image.is-square.block
+                            img(src=batch.image_url)
 
-                .box.content
-                    p
-                        strong Uploaded by
-                        br
-                        a.ellipsed(href="/users/v/" + firstAsset.author_id) #{firstAsset.author_display_name} 
-                    p
-                        strong Upload date
-                        br
-                        time(datetime=batch.created_at, data-format="smart")
-                    p
-                        strong Files
-                        br
-                        span #{batch.asset_count.toLocaleString()}
-                    p
-                        strong Failed files
-                        br
-                        span #{batch.failed_assets.toLocaleString()}
-                    p
-                        strong Total size
-                        br
-                        span #{bytesToSize(batch.size)}
-                    p
-                        strong Type
-                        br
-                        span #{formatString(batch.type)}
-                    p
-                        strong ID
-                        br
-                        span.ellipsed(title=batch.id) #{batch.id}
+                    .box.content
+                        p
+                            strong Uploaded by
+                            br
+                            a.ellipsed(href="/users/v/" + firstAsset.author_id) #{firstAsset.author_display_name} 
+                        p
+                            strong Upload date
+                            br
+                            time(datetime=batch.created_at, data-format="smart")
+                        p
+                            strong Files
+                            br
+                            span #{batch.asset_count.toLocaleString()}
+                        p
+                            strong Failed files
+                            br
+                            span #{batch.failed_assets.toLocaleString()}
+                        p
+                            strong Total size
+                            br
+                            span #{bytesToSize(batch.size)}
+                        p
+                            strong Type
+                            br
+                            span #{formatString(batch.type)}
+                        p
+                            strong ID
+                            br
+                            span.ellipsed(title=batch.id) #{batch.id}
