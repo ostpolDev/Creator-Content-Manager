@@ -425,7 +425,7 @@ router.get("/info/:id", async (req, res, next) => {
             }
 
             if (!asset[0].mime.startsWith("text/")) {
-                return res.status(400).json({success: false, msg: "File needs to be embedded"});
+                return res.status(400).json({success: false, type: "embed", msg: "File needs to be embedded"});
             }
 
             let filePath = path.join(paths.uploads, asset[0].path);

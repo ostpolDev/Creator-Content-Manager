@@ -7,7 +7,7 @@ if (placeholderButton) {
 }
 
 async function LoadContent() {
-    let content = await GetAssetContents(DEF.asset);
+    let content = (await GetAssetContents(DEF.asset)).content;
     if (!content) {
         if (DEF.mime.includes("pdf")) {
             let frame = document.createElement("iframe");
