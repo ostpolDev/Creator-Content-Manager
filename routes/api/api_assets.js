@@ -265,6 +265,21 @@ router.post("/edit", [
 
 })
 
+const ORDERS = {
+    "1": "asc",
+    "-1": "desc"
+}
+
+const SORTS = {
+    "created_at": "assets.created_at",
+    "name": "assets.name",
+    "size": "assets.size",
+    "type": "assets.type"
+}
+
+const ORDER_KEYS = Object.keys(ORDERS);
+const SORT_KEYS = Object.keys(SORTS);
+
 router.get("/list", async (req, res, next) => {
     try {
         let start = Date.now();
@@ -278,6 +293,19 @@ router.get("/list", async (req, res, next) => {
         let resource = req.query.resource;
         let reference = req.query.reference;
         let user = req.query.user;
+
+        let sort = req.query.sort;
+        let order = req.query.order;
+
+        if (!SORT_KEYS.includes(sort)) {
+            sort = SORT_KEYS[0];
+        }
+        if (!ORDER_KEYS.includes(order)) {
+            order = ORDER_KEYS[0];
+        }
+
+        const sort_by = SORTS[sort];
+        const order_dir = ORDERS[order];
 
         if (Number.isNaN(skip) || skip < 0) {
             skip = 0;
@@ -372,7 +400,7 @@ router.get("/list", async (req, res, next) => {
                 assetQuery.orWhereILike("assets.id", `%${search}%`)
             }
         } else {
-            assetQuery.orderBy("assets.created_at", "desc")
+            assetQuery.orderBy(sort_by, order_dir)
         }
 
         if (type) {
@@ -388,7 +416,7 @@ router.get("/list", async (req, res, next) => {
                 ...x,
                 liked: type == "fav" || x.like_id != null,
                 is_author: x.author_id == req.user.id
-            })), duration: Date.now() - start, reachedEnd: assets.length < limit});
+            })), duration: Date.now() - start, reachedEnd: assets.length < limit, sort, order});
         }).catch((err) => {
             return next(err);
         })

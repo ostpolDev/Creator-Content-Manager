@@ -103,12 +103,32 @@ block content
                                 span Comments#{commentCount > 0 ? ` (${commentCount.toLocaleString()})` : ""}
 
                 if view == "assets"
-                    .field.block
-                        label.label Search
-                        .control.has-icons-left
-                            input.input#searchInput(type="text" placeholder="Search..." name="q" value=(search || ""))
-                            span.icon.is-small.is-left
-                                span search
+                    .columns.block
+                        .column
+                            .field
+                                label.label(for="searchInput") Search
+                                .control.has-icons-left
+                                    input.input#searchInput(type="text" placeholder="Search..." name="q" value=(search || ""), autocomplete="off")
+                                    span.icon.is-small.is-left
+                                        span search
+                        .column.is-3
+                            .field
+                                label.label(for="sort") Sort by 
+                                .control
+                                    .select.is-fullwidth
+                                        select#sort(autocomplete="off")
+                                            option(value="created_at" selected) Upload date
+                                            option(value="name") Name
+                                            option(value="size") Size
+                                            option(value="type") Type
+                        .column.is-3
+                            .field
+                                label.label(for="order") Order 
+                                .control
+                                    .select.is-fullwidth
+                                        select#order(autocomplete="off")
+                                            option(value="1") Ascending
+                                            option(value="-1" selected) Descending
 
                     .buttons.is-justify-content-center
                         button.button.iconButton.is-rounded(data-type="music") 

@@ -41,45 +41,58 @@ block content
 
         hr
 
-        h2.title.is-4 Asset search
+        h2.title.is-4#search Asset search
         p.subtitle.is-6 Search through all of the existing assets here.
         
-        .field.block
-            label.label Search
-            .control.has-icons-left
-                input.input#searchInput(type="text" placeholder="Search..." name="q" value=(search || ""))
-                span.icon.is-small.is-left
-                    span search
+        .columns.block
+            .column
+                .field
+                    label.label(for="searchInput") Search
+                    .control.has-icons-left
+                        input.input#searchInput(type="text" placeholder="Search..." name="q" value=(search || ""), autocomplete="off")
+                        span.icon.is-small.is-left
+                            span search
+            .column.is-2
+                .field
+                    label.label(for="sort") Sort by 
+                    .control
+                        .select.is-fullwidth
+                            select#sort(autocomplete="off")
+                                option(value="created_at" selected) Upload date
+                                option(value="name") Name
+                                option(value="size") Size
+                                option(value="type") Type
+            .column.is-2
+                .field
+                    label.label(for="order") Order 
+                    .control
+                        .select.is-fullwidth
+                            select#order(autocomplete="off")
+                                option(value="1") Ascending
+                                option(value="-1" selected) Descending
 
-        .buttons.fluid
-            button.button(data-type="music") 
+        .buttons.is-justify-content-center
+            button.button.iconButton.is-rounded(data-type="music") 
                 span.icon
                     span music_note
-                span Music
-            button.button(data-type="soundEffect") 
+            button.button.iconButton.is-rounded(data-type="soundEffect") 
                 span.icon
                     span volume_up
-                span Sound effects
-            button.button(data-type="image") 
+            button.button.iconButton.is-rounded(data-type="image") 
                 span.icon
                     span image
-                span Images
-            button.button(data-type="video") 
+            button.button.iconButton.is-rounded(data-type="video") 
                 span.icon
                     span videocam
-                span Videos
-            button.button(data-type="text") 
+            button.button.iconButton.is-rounded(data-type="text") 
                 span.icon
                     span description
-                span Text
-            button.button(data-type="user", data-ref=user.id) 
+            button.button.iconButton.is-rounded(data-type="user", data-ref=user.id) 
                 span.icon
                     span person
-                span My assets
-            button.button(data-type="fav", data-ref=user.id) 
+            button.button.iconButton.is-rounded(data-type="fav", data-ref=user.id) 
                 span.icon
                     span star
-                span My favorites
 
         br
         
