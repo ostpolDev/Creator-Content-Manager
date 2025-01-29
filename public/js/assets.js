@@ -7,6 +7,8 @@ const assetList = document.getElementById("assetList");
 const searchInput = document.getElementById("searchInput");
 const playRandomButton = document.getElementById("playRandomButton");
 
+let currentlyLoading = false;
+
 playRandomButton?.addEventListener("click", async () => {
     try {
         playRandomButton.classList.add("is-loading");
@@ -81,6 +83,7 @@ if (type) {
 }
 
 function SetLoading(isLoading) {
+    currentlyLoading = isLoading;
     if (isLoading) {
         loadMoreButton.classList.add("is-loading")
         loadMoreButton.classList.remove("is-outlined")
@@ -93,6 +96,7 @@ function SetLoading(isLoading) {
 loadMoreButton.addEventListener("click", () => {
     LoadMore();
 })
+
 
 async function LoadMore() {
     SetLoading(true);
@@ -139,3 +143,12 @@ async function LoadMore() {
         SetLoading(false);
     }
 }
+
+window.addEventListener("scroll", (event) => {
+    const { scrollHeight, scrollTop, clientHeight } = event.target.scrollingElement;
+    if (!currentlyLoading && Math.abs(scrollHeight - clientHeight - scrollTop) < 250) {
+        if (!loadMoreButton.classList.contains("is-hidden")) {
+            loadMoreButton.click();
+        }
+    }
+})
