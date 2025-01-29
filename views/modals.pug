@@ -41,3 +41,20 @@
                 a.button.iconButton.is-rounded#textModalLink
                     span.icon
                         span link
+
+.modal#embedModal
+    .modal-background(data-modal="close")
+    .modal-card
+        header.modal-card-head
+            p.modal-card-title#embedModalTitle
+            button.delete(data-modal="close")
+        section.modal-card-body
+            iframe.assetFrame#embedModalFrame
+        footer.modal-card-foot
+            .buttons
+                button.button.iconButton.is-rounded(data-modal="close")
+                    span.icon
+                        span close
+                a.button.iconButton.is-rounded#embedModalLink
+                    span.icon
+                        span link

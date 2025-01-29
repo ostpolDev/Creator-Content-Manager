@@ -78,7 +78,8 @@ block content
                 else if asset.type == "video"
                     video(src="/assets/get/" + asset.id, controls, style="display: block; max-height: 25dvh; margin-inline: auto; max-width: 100%;") 
                 else if asset.type == "text"
-                    button.button.is-fullwidth.is-loading#placeholderButton Loading...
+                    .content
+                        button.button.is-fullwidth.is-loading#placeholderButton Loading...
 
                 br
 
@@ -125,12 +126,11 @@ block content
 
                 .tabs.is-boxed#tabs
                     ul
-                        if !channel
-                            li(class=(view == "videos" ? "is-active" : ""))
-                                a(href="?view=videos#tabs")
-                                    span.icon.is-small
-                                        span videocam
-                                    span Videos
+                        li(class=(view == "videos" ? "is-active" : ""))
+                            a(href="?view=videos#tabs")
+                                span.icon.is-small
+                                    span videocam
+                                span Videos
                         li(class=(view == "comments" ? "is-active" : ""))
                             a(href="?view=comments#tabs")
                                 span.icon.is-small

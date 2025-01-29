@@ -158,9 +158,9 @@ async function Interact(button, asset) {
                 const imageModalLabel = document.getElementById("imageModalLabel");
                 const imageModalLink = document.getElementById("imageModalLink");
                 imageModalLabel.innerText = json.asset.name || "";
-                imageModalImage.style.backgroundImage = `url('/assets/get/${id}')`;
-                imageModalLink.href = `/assets/v/${id}`;
-                imageModalImage.onclick = () => {window.location = `/assets/get/${id}`};
+                imageModalImage.style.backgroundImage = `url('/assets/get/${encodeURIComponent(id)}')`;
+                imageModalLink.href = `/assets/v/${encodeURIComponent(id)}`;
+                imageModalImage.onclick = () => {window.location = `/assets/get/${encodeURIComponent(id)}`};
                 SetModalOpen("#imageModal", true);
                 break;
             case "video":
@@ -168,8 +168,8 @@ async function Interact(button, asset) {
                 const videoModalTitle = document.getElementById("videoModalTitle");
                 const videoModalLink = document.getElementById("videoModalLink");
                 videoModalTitle.innerText = json.asset.name || "";
-                videoModalVideo.src = `/assets/get/${id}`;
-                videoModalLink.href = `/assets/v/${id}`;
+                videoModalVideo.src = `/assets/get/${encodeURIComponent(id)}`;
+                videoModalLink.href = `/assets/v/${encodeURIComponent(id)}`;
                 let modal = SetModalOpen("#videoModal", true);
                 modal.addEventListener("modalclose", () => {
                     videoModalVideo.pause();
@@ -184,14 +184,27 @@ async function Interact(button, asset) {
                 const textModalContent = document.getElementById("textModalContent");
                 const textModalLink = document.getElementById("textModalLink");
                 const textModalTitle = document.getElementById("textModalTitle");
-                textModalLink.href = `/assets/v/${id}`;
+                textModalLink.href = `/assets/v/${encodeURIComponent(id)}`;
 
                 textModalTitle.innerText = json.asset.name || "";
 
-                let content = await GetAssetContents(id);
-                if (content) {
-                    textModalContent.innerHTML = content;
-                    SetModalOpen("#textModal", true);
+                let contentResponse = await GetAssetContents(id);
+                if (contentResponse) {
+                    if (contentResponse.type == "embed") {
+
+                        const embedModalTitle = document.getElementById("embedModalTitle");
+                        const embedModalFrame = document.getElementById("embedModalFrame");
+                        const embedModalLink = document.getElementById("embedModalLink");
+
+                        embedModalLink.href = `/assets/v/${encodeURIComponent(id)}`;
+                        embedModalTitle.innerText = json.asset.name || "";
+                        embedModalFrame.src = `/assets/get/${encodeURIComponent(id)}`;
+                        SetModalOpen("#embedModal", true)
+
+                    } else {
+                        textModalContent.innerHTML = contentResponse.content;
+                        SetModalOpen("#textModal", true);
+                    }
                 }
                 
                 break;
@@ -216,7 +229,14 @@ async function GetAssetInfo(id) {
 async function GetAssetContents(id) {
     let res = await fetch(`/api/assets/info/${id}?type=content`);
     let json = await res.json();
-    return json.content || undefined;
+    if (!json.success) {
+        if (!json.type == "embed") {
+            console.error(json.msg || "Something went wrong...")
+            return;
+        }
+        return {type: "embed"};
+    }
+    return {type: "display", content: json.content || undefined};
 }
 
 async function LikeAsset(button, id) {
