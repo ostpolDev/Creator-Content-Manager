@@ -17,6 +17,7 @@ const calendar = document.querySelector(".calendar");
 let dayElements = [];
 
 let currentDate = new Date();
+currentDate.setDate(1);
 
 const DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const COLORS = ["#ec273f", "#e98537", "#5ab552", "#3859b3", "#3e3b65", "#9a4d76", "#ffa2ac"];
@@ -148,22 +149,20 @@ async function UpdateElements() {
 }
 
 prevMonthButton.addEventListener("click", () => {
-    const newDate = new Date(currentDate.getTime());
-    newDate.setMonth(newDate.getMonth() - 1);
-    monthSelect.value = newDate.getMonth();
-    currentDate.setMonth(newDate.getMonth());
-    currentDate.setFullYear(newDate.getFullYear())
-    yearInput.value = newDate.getFullYear();
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    monthSelect.value = currentDate.getMonth();
+    currentDate.setMonth(currentDate.getMonth());
+    currentDate.setFullYear(currentDate.getFullYear())
+    yearInput.value = currentDate.getFullYear();
     UpdateElements();
 })
 
 nextMonthButton.addEventListener("click", () => {
-    const newDate = new Date(currentDate.getTime());
-    newDate.setMonth(newDate.getMonth() + 1);
-    monthSelect.value = newDate.getMonth();
-    currentDate.setMonth(newDate.getMonth());
-    currentDate.setFullYear(newDate.getFullYear())
-    yearInput.value = newDate.getFullYear();
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    monthSelect.value = currentDate.getMonth();
+    currentDate.setMonth(currentDate.getMonth());
+    currentDate.setFullYear(currentDate.getFullYear())
+    yearInput.value = currentDate.getFullYear();
     UpdateElements();
 })
 
