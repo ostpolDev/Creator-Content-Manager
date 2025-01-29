@@ -7,7 +7,8 @@ if (placeholderButton) {
 }
 
 async function LoadContent() {
-    let content = (await GetAssetContents(DEF.asset)).content;
+    let contentResult = await GetAssetContents(DEF.asset);
+    const content = contentResult.content;
     if (!content) {
         if (DEF.mime.includes("pdf")) {
             let frame = document.createElement("iframe");
@@ -25,7 +26,7 @@ async function LoadContent() {
 
     let pre = document.createElement("pre");
     pre.classList.add("overflow");
-    pre.innerText = content;
+    pre.innerHTML = content;
     placeholderButton.insertAdjacentElement("afterend", pre);
     placeholderButton.remove();
 }

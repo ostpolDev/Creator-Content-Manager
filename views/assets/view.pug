@@ -78,7 +78,8 @@ block content
                 else if asset.type == "video"
                     video(src="/assets/get/" + asset.id, controls, style="display: block; max-height: 25dvh; margin-inline: auto; max-width: 100%;") 
                 else if asset.type == "text"
-                    button.button.is-fullwidth.is-loading#placeholderButton Loading...
+                    .content
+                        button.button.is-fullwidth.is-loading#placeholderButton Loading...
 
                 br
 

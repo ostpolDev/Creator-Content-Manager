@@ -419,12 +419,12 @@ router.get("/info/:id", async (req, res, next) => {
             return res.status(200).json({success: true, asset: asset[0]});
         } else if (type == "content") {
             let asset = await knex("assets").where({"assets.id": req.params.id, "assets.type": "text"})
-                .innerJoin("asset_infos", "asset_infos.id", "=", "assets.id").select(["assets.id", "assets.path", "asset_infos.mime"]);
+                .innerJoin("asset_infos", "asset_infos.id", "=", "assets.id").select(["assets.id", "assets.path", "asset_infos.mime", "assets.extension"]);
             if (!asset[0]) {
                 return next();
             }
 
-            if (!asset[0].mime.startsWith("text/")) {
+            if (!asset[0].mime.startsWith("text/") && asset[0].extension != ".md") {
                 return res.status(400).json({success: false, type: "embed", msg: "File needs to be embedded"});
             }
 
@@ -434,7 +434,7 @@ router.get("/info/:id", async (req, res, next) => {
             }
 
             let content = fs.readFileSync(filePath, "utf-8");
-            content = marked.sanitizeFull(content);
+            content = asset[0].extension == ".md" ? await marked.markAndSanitize(content) : marked.sanitizeFull(content);
             return res.status(200).json({success: true, content});
         }
 
