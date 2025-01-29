@@ -85,19 +85,21 @@ router.post("/add", async (req, res, next) => {
             usernames.push(...starring);
         }
         let usersToFetch = [...new Set(usernames)];
-
-        let users = await knex("users").whereIn("username", usersToFetch).select(["id", "username"]);
-        let members = [];
-        users.forEach(user => {
-            members.push({
-                user: user.id,
-                video: createdVideoID,
-                starring: starring.includes(user.username),
-                editor: editors.includes(user.username)
+        
+        if (usernames.length > 0) {
+            let users = await knex("users").whereIn("username", usersToFetch).select(["id", "username"]);
+            let members = [];
+            users.forEach(user => {
+                members.push({
+                    user: user.id,
+                    video: createdVideoID,
+                    starring: starring.includes(user.username),
+                    editor: editors.includes(user.username)
+                })
             })
-        })
-
-        await knex("video_members").insert(members);
+    
+            await knex("video_members").insert(members);
+        }
 
         return res.status(200).json({success: true, video: createdVideoID});
         
@@ -168,6 +170,11 @@ router.get("/list", async (req, res, next) => {
         limit = 50;
     }
 
+    const select = [
+        "videos.id", "videos.title", "videos.created_at", "videos.thumbnail_url", "videos.added_by", "videos.uploaded_at", "videos.youtube_id",
+        "channels.id as channel_id", "channels.name as channel_name"
+    ];
+
     try {
 
         let channels = [];
@@ -185,26 +192,17 @@ router.get("/list", async (req, res, next) => {
                 .innerJoin("videos", "videos.id", "=", "video_assets.video")
                 .innerJoin("channels", "channels.id", "=", "videos.channel").orderBy("videos.created_at", "desc")
                 .whereIn("videos.channel", channels).limit(limit).offset(skip)
-                .select([
-                    "videos.id", "videos.title", "videos.created_at", "videos.thumbnail_url", "videos.added_by",
-                    "channels.id as channel_id", "channels.name as channel_name"
-                ])
+                .select(select)
         } else if (game) {
             videoQuery = knex("video_games").where({"video_games.game": game})
                 .innerJoin("videos", "videos.id", "=", "video_games.video")
                 .innerJoin("channels", "channels.id", "=", "videos.channel").orderBy("videos.created_at", "desc")
                 .whereIn("videos.channel", channels).limit(limit).offset(skip)
-                .select([
-                    "videos.id", "videos.title", "videos.created_at", "videos.thumbnail_url", "videos.added_by",
-                    "channels.id as channel_id", "channels.name as channel_name"
-                ])
+                .select(select)
         } else {
             videoQuery = knex("videos").whereIn("channel", channels).limit(limit).offset(skip)
                 .innerJoin("channels", "channels.id", "=", "videos.channel").orderBy("created_at", "desc")
-                .select([
-                    "videos.id", "videos.title", "videos.created_at", "videos.thumbnail_url", "videos.added_by",
-                    "channels.id as channel_id", "channels.name as channel_name"
-                ])
+                .select(select)
         }
 
             
