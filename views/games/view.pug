@@ -77,6 +77,11 @@ block content
                         span.icon
                             span link
                         span Official website 
+                if game.steam_id
+                    a.button(href="https://store.steampowered.com/app/" + encodeURIComponent(game.steam_id), target="_BLANK")
+                        span.icon
+                            span storefront
+                        span Steam 
 
         .block
             if game.description
