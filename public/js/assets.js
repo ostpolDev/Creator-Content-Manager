@@ -43,6 +43,7 @@ playRandomButton?.addEventListener("click", async () => {
 const urlParams = new URLSearchParams(window.location.search);
 
 let type = urlParams.get('type') || "";
+let currentType = "";
 let skip = 0;
 let query = urlParams.get("q") || "";
 let ref = urlParams.get("ref") || "";
@@ -60,10 +61,10 @@ if (urlParams.has("focus")) {
 let filter = assetList.getAttribute("data-filter");
 
 function ActivateType(selectedType, isFirst) {
-    if (type == selectedType && !isFirst) {
+    if (currentType == selectedType && !isFirst) {
         selectedType = "";
     }
-    type = selectedType;
+    currentType = selectedType;
     typeButtons.forEach(btn => {
         let t = btn.getAttribute("data-type");
         if (selectedType && t == selectedType) {
@@ -101,7 +102,13 @@ typeButtons.forEach(btn => {
 })
 
 if (type) {
-    ActivateType(type, true);
+    const button = document.querySelector(`button[data-type='${type}']`);
+    if (button) {
+        button.click();
+    } else {
+        console.error(`Button not found for type: ${type}`);
+        LoadMore();
+    }
 } else {
     LoadMore();
 }
@@ -131,7 +138,7 @@ async function LoadMore() {
         let body = {
             q: query,
             skip,
-            type,
+            type: currentType,
             ref
         };
 
