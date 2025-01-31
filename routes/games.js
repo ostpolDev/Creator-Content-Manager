@@ -38,10 +38,15 @@ router.get("/v/:id", async (req, res, next) => {
         const diff = Date.now() - game[0].updated_at;
         const canUpdate = diff > 1000 * 60 * 60 * 24;
 
+        const channels = await knex("channel_members").where({user: req.user.id})
+            .innerJoin("channels", "channels.id", "=", "channel_members.channel")
+            .select(["channels.id", "channels.name"])
+
         return res.render("games/view", {
             title: game[0].name,
             game: game[0],
-            canUpdate
+            canUpdate,
+            channels
         })
 
     } catch (e) {
