@@ -7,7 +7,17 @@ const assetList = document.getElementById("assetList");
 const searchInput = document.getElementById("searchInput");
 const playRandomButton = document.getElementById("playRandomButton");
 
+const sort = document.getElementById("sort");
+const order = document.getElementById("order");
+
 let currentlyLoading = false;
+
+sort?.addEventListener("input", () => {
+    ResetAndLoad();
+})
+order?.addEventListener("input", () => {
+    ResetAndLoad();
+})
 
 playRandomButton?.addEventListener("click", async () => {
     try {
@@ -33,21 +43,28 @@ playRandomButton?.addEventListener("click", async () => {
 const urlParams = new URLSearchParams(window.location.search);
 
 let type = urlParams.get('type') || "";
+let currentType = "";
 let skip = 0;
 let query = urlParams.get("q") || "";
 let ref = urlParams.get("ref") || "";
 
+if (urlParams.has("focus")) {
+    switch (urlParams.get("focus")) {
+        case "search":
+            document.querySelector("#searchInput")?.focus();
+            break;
+        default:
+            break;
+    }
+}
+
 let filter = assetList.getAttribute("data-filter");
 
-LoadMore();
-
 function ActivateType(selectedType, isFirst) {
-    if (type == selectedType && !isFirst) {
+    if (currentType == selectedType && !isFirst) {
         selectedType = "";
     }
-    type = selectedType;
-    skip = 0;
-    assetList.innerHTML = "";
+    currentType = selectedType;
     typeButtons.forEach(btn => {
         let t = btn.getAttribute("data-type");
         if (selectedType && t == selectedType) {
@@ -56,6 +73,12 @@ function ActivateType(selectedType, isFirst) {
             btn.classList.remove("is-link")
         }
     })
+    ResetAndLoad();
+}
+
+function ResetAndLoad() {
+    assetList.innerHTML = "";
+    skip = 0;
     LoadMore();
 }
 
@@ -79,7 +102,15 @@ typeButtons.forEach(btn => {
 })
 
 if (type) {
-    ActivateType(type, true);
+    const button = document.querySelector(`button[data-type='${type}']`);
+    if (button) {
+        button.click();
+    } else {
+        console.error(`Button not found for type: ${type}`);
+        LoadMore();
+    }
+} else {
+    LoadMore();
 }
 
 function SetLoading(isLoading) {
@@ -107,9 +138,16 @@ async function LoadMore() {
         let body = {
             q: query,
             skip,
-            type,
+            type: currentType,
             ref
         };
+
+        if (sort) {
+            body["sort"] = sort.value;
+        }
+        if (order) {
+            body["order"] = order.value;
+        }
 
         if (filter) {
             let parts = filter.split(":");

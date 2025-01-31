@@ -193,6 +193,10 @@ router.get("/v/:id", async (req, res, next) => {
             return newCount[0].CNT;
         })
 
+        const channels = await knex("channel_members").where({user: req.user.id})
+            .innerJoin("channels", "channels.id", "=", "channel_members.channel")
+            .select(["channels.id", "channels.name"])
+
         res.render("assets/view", {
             title: asset[0].name,
             asset: asset[0],
@@ -200,7 +204,8 @@ router.get("/v/:id", async (req, res, next) => {
             view,
             licenseTypes: assetHelpers.licenseTypes,
             channel: channel ? channel : asset[0].resource_id == "GLOBAL" ? "GLOBAL" : null,
-            commentCount
+            commentCount,
+            channels
         })
     } catch (e) {
         return next(e);

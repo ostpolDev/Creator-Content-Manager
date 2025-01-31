@@ -77,6 +77,11 @@ block content
                         span.icon
                             span link
                         span Official website 
+                if game.steam_id
+                    a.button(href="https://store.steampowered.com/app/" + encodeURIComponent(game.steam_id), target="_BLANK")
+                        span.icon
+                            span storefront
+                        span Steam 
 
         .block
             if game.description
@@ -88,12 +93,23 @@ block content
         h2.title.is-4 Videos
         
         .block
-            .field
-                label.label Search
-                .control.has-icons-left
-                    input.input#searchInput(type="text" placeholder="Search..." name="q", data-list-target="videos", data-list-filter="q")
-                    span.icon.is-small.is-left
-                        span search
+            .columns
+                .column.is-one-quarter
+                    .field
+                        label.label(for="channelSearch") Channel
+                        .control
+                            .select.is-fullwidth
+                                select.input.channelSelect#channelSearch(autocomplete="off", data-list-target="videos", data-list-filter="channel")
+                                    option(value="") Any
+                                    each channel in channels
+                                        option(value=channel.id) #{channel.name} 
+                .column
+                    .field
+                        label.label Search
+                        .control.has-icons-left
+                            input.input#searchInput(type="text" placeholder="Search..." name="q", data-list-target="videos", data-list-filter="q")
+                            span.icon.is-small.is-left
+                                span search
 
         .columns.is-multiline(data-list="videos" data-list-limit="10", data-list-load="true", data-list-filter=("game:" + encodeURIComponent(game.id)))
             

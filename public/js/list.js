@@ -54,7 +54,7 @@ class List {
         }
     }
 
-    LoadMore() {
+    LoadMore(reset) {
         return new Promise(async (res, rej) => {
             try {
 
@@ -110,6 +110,10 @@ class List {
 
                 this.skip += json.items.length;
 
+                if (reset == true) {
+                    this.element.innerHTML = "";
+                }
+
                 json.items.forEach(item => {
                     this.element.appendChild(this.#insertRowElement(item));
                 })
@@ -159,11 +163,11 @@ class List {
                 this.filterElems.push(elem);
                 elem.addEventListener("input", () => {
                     clearTimeout(this.searchTimeout);
-                    this.searchTimeout = setTimeout(() => {
+                    this.searchTimeout = setTimeout(async () => {
                         this.externalFilters[filterType] = elem.value;
                         this.skip = 0;
-                        this.element.innerHTML = "";
-                        this.LoadMore();
+                        await this.LoadMore(true);
+                        this.element.scrollIntoView()
                     }, 200)
                 })
             }
