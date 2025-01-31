@@ -301,7 +301,7 @@ router.get("/list", async (req, res, next) => {
             sort = SORT_KEYS[0];
         }
         if (!ORDER_KEYS.includes(order)) {
-            order = ORDER_KEYS[0];
+            order = ORDER_KEYS[1];
         }
 
         const sort_by = SORTS[sort];
