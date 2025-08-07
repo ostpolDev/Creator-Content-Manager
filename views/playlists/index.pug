@@ -1,0 +1,57 @@
+extends ../layout
+
+block modals
+    .modal#createPlaylistModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title Create a new playlist
+                button.delete(data-modal="close")
+            section.modal-card-body
+                .field
+                    label.label(for="playlistName") Name
+                    .control
+                        input.input#playlistName(type="text" placeholder="Playlist Name" autocomplete="off")
+                
+                .field
+                    label.label(for="aboutText") Description
+                    .control
+                        textarea.textarea#aboutText(name="description" placeholder="Describe the playlist... (optional)" autocomplete="off")
+
+                .field.block
+                    .checkboxes
+                        label.checkbox
+                            input#playlistPublicCheckbox(type="checkbox" name="public" autocomplete="off") 
+                            |  Public playlist
+            footer.modal-card-foot
+                .buttons
+                    button.button.is-link#createPlaylistButton
+                        span.icon
+                            span playlist_add
+                        sapn Create playlist
+                    button.button(data-modal="close")
+                        span.icon
+                            span close
+                        span Cancel
+
+
+block content
+    .container
+
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/assets") Assets
+                li.is-active
+                    a(href="#") Playlists
+
+        h1.title Playlists
+
+        .buttons.block
+            button.button#playlistModalButton
+                span.icon
+                    span playlist_add
+                span Create a playlist
+
+block scripts
+    script(src="/js/playlists/playlists.js") 

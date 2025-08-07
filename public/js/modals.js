@@ -1,5 +1,6 @@
 const modalButtons = document.querySelectorAll("[data-modal]");
 const CloseEvent = new Event("modalclose");
+const allModals = document.querySelectorAll(".modal");
 
 modalButtons.forEach(modalButton => {
     let type = modalButton.getAttribute("data-modal");
@@ -35,3 +36,9 @@ function SetModalOpen(query, isOpen) {
 
     return element;
 }
+
+document.addEventListener("keydown", (e) => {
+    if (e.key == "Escape") {
+        allModals.forEach(modal => modal.classList.remove("is-active"));
+    }
+})

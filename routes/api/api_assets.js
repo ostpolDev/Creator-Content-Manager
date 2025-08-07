@@ -644,4 +644,6 @@ router.post("/modifyReference", async (req, res, next) => {
     }
 })
 
+router.use("/playlists", require('./api_playlists.js'));
+
 module.exports = router;

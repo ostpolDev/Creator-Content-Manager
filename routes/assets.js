@@ -316,5 +316,6 @@ router.get("/edit/:id", async (req, res, next) => {
 })
 
 router.use("/batches", require('./batches'));
+router.use("/playlists", require('./playlists'));
 
 module.exports = router;

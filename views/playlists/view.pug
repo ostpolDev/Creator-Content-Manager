@@ -1,0 +1,94 @@
+extends ../layout
+
+block content
+    .container
+
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/assets") Assets
+                li
+                    a(href="/assets/playlists") Playlists
+                li.is-active
+                    a(href="#") #{playlist.title}
+
+        .columns
+            .column.is-three-quarters
+                h1.title #{playlist.title}
+                p.subtitle #{assetCount.toLocaleString()} asset#{assetCount == 1 ? '' : 's'}
+
+                .buttons.block
+                    if canAdd
+                        button.button#addAssetsButton
+                            span.icon
+                                span library_add
+                            span Add assets
+
+                if isAuthor
+                    .tabs.is-boxed#tabs
+                        ul
+                            li(class=(view == "assets" ? "is-active" : ""))
+                                a(href="?view=assets#tabs")
+                                    span.icon.is-small
+                                        span files
+                                    span Assets
+                            li(class=(view == "members" ? "is-active" : ""))
+                                a(href="?view=members#tabs")
+                                    span.icon.is-small
+                                        span people
+                                    span Members
+
+                if view == "assets" || !isAuthor
+                    table.table.is-fullwidth.is-striped.is-hoverable
+                        thead
+                            th Action
+                            th Name
+                            th Author
+                            th Uploaded
+                            th Tags
+                        tbody#assetList
+
+                    button.button.is-link.is-fullwidth.is-outlined#loadMoreButton
+                        span Load More
+
+                else if view == "members" && isAuthor
+
+
+            .column.is-one-quarter
+                .is-position-sticky(style="height: fit-content; top: 10px;")
+                    .buttons
+                        if isAuthor
+                            a.button.iconButton.is-rounded(href="/assets/playlists/edit/" + playlist.id) 
+                                span.icon
+                                    span edit
+                        if canAdd
+                            button.button.iconButton.is-rounded#secondAddAssetsButton
+                                span.icon
+                                    span library_add
+                        if isAuthor
+                            button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
+                                span.icon
+                                    span delete
+
+                    .box.content
+                        p
+                            strong Uploaded by
+                            br
+                            a.ellipsed(href="/users/v/" + playlist.author_username) #{playlist.author_display_name}
+                        p
+                            strong Upload date
+                            br
+                            time(datetime=playlist.created_at, data-format="smart")
+                        p
+                            strong Assets
+                            br
+                            span #{assetCount.toLocaleString()}
+                        p
+                            strong Public
+                            br
+                            span #{playlist.public}
+                        p
+                            strong ID
+                            br
+                            span.ellipsed #{playlist.id}
+    
