@@ -1,4 +1,4 @@
-const VERSION = "SQL-0.12";
+const VERSION = "SQL-0.13";
 
 const CHANNEL_KEYWORDS = {
     "TITLE": "The current title of the video.",
