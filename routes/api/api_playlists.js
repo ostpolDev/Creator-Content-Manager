@@ -209,4 +209,61 @@ router.post("/modifyMember", async (req, res, next) => {
     }
 })
 
+router.post("/modifyAssets", async (req, res, next) => {
+    const playlistId = req.body.playlist;
+    let assets = req.body.assets;
+    const mode = req.body.mode;
+
+    if (!MODIFY_MODES.includes(mode)) {
+        return res.status(400).json({success: false, msg: "Invalid Mode"})
+    }
+
+    if (!playlistId) {
+        return res.status(400).json({success: false, msg: "Playlist required"});
+    }
+
+    if (!assets) {
+        return res.status(400).json({success: false, msg: "Assets required"});
+    }
+
+    if (!Array.isArray(assets)) {
+        assets = [assets];
+    }
+
+    try {
+
+        const accessCheck = await knex("playlist_users").where({id: playlistId, user_id: req.user.id}).andWhere("type", ">", 0);
+        if (!accessCheck[0]) {
+            return res.status(403).json({success: false, msg: "Access denied"});
+        }
+
+        if (mode == "add") {
+
+            const validAssets = await knex("assets").whereIn("id", assets).select("id");
+            if (validAssets.length <= 0)
+                return res.status(200).json({success: true});
+
+            const assetIds = validAssets.map(x => x.id);
+
+            await knex("playlist_assets").whereIn("asset_id", assetIds).andWhere({playlist_id: accessCheck[0].id}).delete();
+
+            await knex("playlist_assets").insert(assetIds.map(x => ({
+                playlist_id: accessCheck[0].id,
+                asset_id: x
+            })));
+
+        } else if (mode == "remove") {
+
+            await knex("playlist_assets").whereIn("asset_id", assets).andWhere({playlist_id: accessCheck[0].id}).delete();
+
+        }
+
+        return res.status(200).json({success: true});
+
+    } catch (e) {
+        return next(e);
+    }
+
+})
+
 module.exports = router;

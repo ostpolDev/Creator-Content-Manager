@@ -11,6 +11,22 @@ block head
         link(rel="stylesheet", href="/bulma/bulma-list.css")
         script(src="/js/playlists/members.js" type="module" defer)
 
+block modals
+    .modal.is-active#addAssetsModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title Add assets
+                button.delete(data-modal="close")
+            section.modal-card-body
+            
+            footer.modal-card-foot
+                .buttons
+                    button.button(data-modal="close")
+                        span.icon
+                            span check
+                        span Done
+
 block content
     .container
 

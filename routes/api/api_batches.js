@@ -241,4 +241,18 @@ router.post("/delete", async (req, res, next) => {
     }
 })
 
+router.get("/all/:id", async (req, res, next) => {
+    const id = req.params.id;
+    try {
+
+        const ids = (await knex("assets").where({batch: id}).select("id")).map(x => x.id);
+        
+        res.set('Cache-Control', 'public, max-age=512');
+        return res.status(200).json({success: true, assets: ids});
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
 module.exports = router;
