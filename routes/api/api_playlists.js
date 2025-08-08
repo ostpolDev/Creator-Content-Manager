@@ -54,4 +54,49 @@ router.post("/add", async (req, res, next) => {
 
 })
 
+router.get("/list", async (req, res, next) => {
+    let search = req.query.q;
+    let skip = req.query.skip || 0;
+    let id = req.query.id;
+    let limit = req.query.limit || 50;
+
+    if (Number.isNaN(skip) || skip < 0) {
+        skip = 0;
+    }
+    if (Number.isNaN(limit) || limit < 0 || limit > 200) {
+        limit = 50;
+    }
+    if (id) {
+        limit = 1;
+    }
+
+    try {
+
+        let playlistQuery = knex("playlist_users").where({"playlist_users.user_id": req.user.id})
+            .innerJoin("playlists", "playlists.id", "=", "playlist_users.id")
+            .innerJoin("users", "users.id", "=", "playlists.author_id")
+            .offset(skip).limit(limit).orderBy("created_at", "desc").select([
+                "playlists.id", "playlists.title", "playlists.public", "playlists.created_at", "playlists.asset_count",
+                "users.id as author_id", "users.username as author_username", "users.display_name as author_display_name",
+                "playlist_users.type as access_type"
+            ])
+
+        if (search) {
+            playlistQuery.whereILike("playlists.title", `%${search}%`);
+        }
+
+        playlistQuery.then((playlists) => {
+            return res.status(200).json({success: true, playlists: playlists.map(x => ({
+                ...x,
+                is_author: x.author_id == req.user.id
+            })), reachedEnd: playlists.length < limit});
+        }).catch(e => {
+            return next(e);
+        })
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
 module.exports = router;

@@ -293,6 +293,7 @@ router.get("/list", async (req, res, next) => {
         let resource = req.query.resource;
         let reference = req.query.reference;
         let user = req.query.user;
+        let playlist = req.query.playlist;
 
         let sort = req.query.sort;
         let order = req.query.order;
@@ -358,6 +359,15 @@ router.get("/list", async (req, res, next) => {
                     .andOn("asset_likes.user", "=", req.user.id)
                 })
                 .offset(skip).limit(limit).select(select)
+        } else if (playlist) {
+            assetQuery = knex("playlist_assets").where({"playlist_assets.playlist_id": playlist})
+                .innerJoin("assets", "assets.id", "=", "playlist_assets.asset_id")
+                .innerJoin("users", "users.id", "=", "assets.added_by")
+                .leftOuterJoin("asset_likes", (f) => {
+                    f.on("asset_likes.asset", "=", "assets.id")
+                    .andOn("asset_likes.user", "=", req.user.id)
+                })
+                .offset(skip).limit(limit).select(select);
         } else {
             select.push("asset_likes.asset as like_id");
             assetQuery = knex("assets")

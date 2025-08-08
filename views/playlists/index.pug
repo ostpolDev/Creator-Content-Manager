@@ -53,5 +53,17 @@ block content
                     span playlist_add
                 span Create a playlist
 
+        table.table.is-fullwidth.is-striped.is-hoverable
+            thead
+                tr
+                    th Action
+                    th Name
+                    th Author
+                    th Size
+            tbody#playlist
+
+        button.button.is-link.is-fullwidth.is-outlined#loadMoreButton
+            span Load More
+
 block scripts
     script(src="/js/playlists/playlists.js") 

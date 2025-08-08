@@ -366,6 +366,7 @@ async function CreateTables(knex) {
             table.binary("description");
             table.binary("rendered_description");
             table.string("compression").defaultTo("none");
+            table.integer("asset_count").unsigned().defaultTo(0);
             table.boolean("public").defaultTo(false).index();
             table.foreign("author_id").references("users.id").onDelete("CASCADE");
             table.timestamps(true, true);

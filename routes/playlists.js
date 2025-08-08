@@ -23,7 +23,7 @@ router.get("/v/:id", async (req, res, next) => {
         const playlist = await knex("playlists").where({"playlists.id": id})
         .innerJoin("users", "users.id", "=", "playlists.author_id")
         .select([
-            "playlists.id", "playlists.title", "playlists.rendered_description", "playlists.compression", "playlists.created_at", "playlists.updated_at", "playlists.public",
+            "playlists.id", "playlists.title", "playlists.rendered_description", "playlists.compression", "playlists.created_at", "playlists.updated_at", "playlists.public", "playlists.asset_count",
             "users.id as author_id", "users.username as author_username", "users.display_name as author_display_name"
         ]).limit(1);
         if (!playlist[0]) {

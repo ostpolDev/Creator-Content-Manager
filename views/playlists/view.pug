@@ -1,5 +1,13 @@
 extends ../layout
 
+block head
+    script.
+        const DEF = {
+            playlist: "#{playlist.id}",
+        }
+    if view == "assets"
+        script(src="/js/assets.js" type="module" defer) 
+
 block content
     .container
 
@@ -24,6 +32,12 @@ block content
                                 span library_add
                             span Add assets
 
+                if playlist.rendered_description
+                    .content.block
+                        p!=playlist.rendered_description
+
+                    br
+
                 if isAuthor
                     .tabs.is-boxed#tabs
                         ul
@@ -39,6 +53,32 @@ block content
                                     span Members
 
                 if view == "assets" || !isAuthor
+                    .columns.block
+                        .column
+                            .field
+                                label.label(for="searchInput") Search
+                                .control.has-icons-left
+                                    input.input#searchInput(type="text" placeholder="Search..." name="q" value=(search || ""), autocomplete="off")
+                                    span.icon.is-small.is-left
+                                        span search
+                        .column.is-3
+                            .field
+                                label.label(for="sort") Sort by 
+                                .control
+                                    .select.is-fullwidth
+                                        select#sort(autocomplete="off")
+                                            option(value="created_at" selected) Upload date
+                                            option(value="name") Name
+                                            option(value="size") Size
+                                            option(value="type") Type
+                        .column.is-3
+                            .field
+                                label.label(for="order") Order 
+                                .control
+                                    .select.is-fullwidth
+                                        select#order(autocomplete="off")
+                                            option(value="1") Ascending
+                                            option(value="-1" selected) Descending
                     table.table.is-fullwidth.is-striped.is-hoverable
                         thead
                             th Action
@@ -46,7 +86,7 @@ block content
                             th Author
                             th Uploaded
                             th Tags
-                        tbody#assetList
+                        tbody#assetList(data-filter="playlist:" + playlist.id)
 
                     button.button.is-link.is-fullwidth.is-outlined#loadMoreButton
                         span Load More
@@ -72,11 +112,11 @@ block content
 
                     .box.content
                         p
-                            strong Uploaded by
+                            strong Created by
                             br
                             a.ellipsed(href="/users/v/" + playlist.author_username) #{playlist.author_display_name}
                         p
-                            strong Upload date
+                            strong Creation date
                             br
                             time(datetime=playlist.created_at, data-format="smart")
                         p
