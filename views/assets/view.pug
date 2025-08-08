@@ -271,6 +271,11 @@ block content
                         strong Downloads
                         br
                         span #{asset.downloads.toLocaleString()}
+                    if downloadCount > 0
+                        p
+                            strong Downloaded by you
+                            br
+                            span #{downloadCount.toLocaleString()}
                     p
                         strong ID
                         br

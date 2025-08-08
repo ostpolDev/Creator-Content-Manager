@@ -1,3 +1,3 @@
 # Ideas
-- Display per user file download count
-    - downloads.count
+
+- ~~Display per user file download count~~
