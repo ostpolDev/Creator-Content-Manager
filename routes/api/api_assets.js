@@ -360,6 +360,7 @@ router.get("/list", async (req, res, next) => {
                 })
                 .offset(skip).limit(limit).select(select)
         } else if (playlist) {
+            select.push("asset_likes.asset as like_id");
             assetQuery = knex("playlist_assets").where({"playlist_assets.playlist_id": playlist})
                 .innerJoin("assets", "assets.id", "=", "playlist_assets.asset_id")
                 .innerJoin("users", "users.id", "=", "assets.added_by")

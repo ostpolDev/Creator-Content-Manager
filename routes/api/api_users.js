@@ -62,6 +62,7 @@ router.get("/list", validation.ensureAuthenticated, async (req, res, next) => {
         let skip = req.query.skip;
         let exclude = req.query.exclude;
         let channel = req.query.channel;
+        let playlist = req.query.playlist;
         if (isNaN(limit) || limit < 0 || limit > 200) {
             limit = 50;
         }
@@ -79,6 +80,14 @@ router.get("/list", validation.ensureAuthenticated, async (req, res, next) => {
 
             if (channelUsers.length > 0) {
                 exclude = channelUsers.map(x => x.username);
+            }
+        } else if (playlist) {
+            let playlistUsers = await knex("playlist_users").where({"playlist_users.id": playlist})
+                .innerJoin("users", "users.id", "=", "playlist_users.user_id")
+                .select("users.username");
+
+            if (playlistUsers.length > 0) {
+                exclude = playlistUsers.map(x => x.username);
             }
         }
 

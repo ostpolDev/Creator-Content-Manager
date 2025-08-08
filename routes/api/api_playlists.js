@@ -99,4 +99,114 @@ router.get("/list", async (req, res, next) => {
     }
 })
 
+router.get("/members/:id", async (req, res, next) => {
+    const playlistId = req.params.id;
+
+    let limit = req.query.limit;
+    let skip = req.query.skip;
+    
+    if (typeof skip === "undefined" || Number.isNaN(skip) || skip < 0) {
+        skip = 0;
+    }
+    if (typeof limit === "undefined" || Number.isNaN(limit) || limit <= 0 || limit > 200) {
+        limit = 50;
+    }
+
+    try {
+
+        const accessCheck = await knex("playlist_users").where({id: playlistId, user_id: req.user.id}).andWhere("type", ">", 0);
+        if (!accessCheck[0]) {
+            return next();
+        }
+
+        const users = await knex("playlist_users").where({"playlist_users.id": playlistId})
+            .innerJoin("users", "users.id", "=", "playlist_users.user_id")
+            .offset(skip).limit(limit)
+            .orderBy("playlist_users.type", "desc")
+            .select([
+                "users.id", "users.username", "users.display_name", "users.profile_image_url", "playlist_users.type as access_level"
+            ])
+
+        return res.status(200).json({
+            success: true,
+            items: users.map(x => ({
+                ...x,
+                isAuthor: x.access_level == 5,
+                canRemove: x.access_level != 5 && accessCheck[0].type > 0,
+                isUser: x.id == req.user.id
+            })),
+            reachedEnd: users.length < limit
+        })
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
+const MODIFY_MODES = ["add", "remove"];
+
+router.post("/modifyMember", async (req, res, next) => {
+    let playlistId = req.body.playlist;
+    let username = req.body.user;
+    let mode = req.body.mode;
+
+    if (!playlistId) {
+        return res.status(400).json({success: false, msg: "Playlist required"});
+    }
+    if (!username) {
+        return res.status(400).json({success: false, msg: "User required"});
+    }
+    if (!MODIFY_MODES.includes(mode)) {
+        return res.status(400).json({success: false, msg: "Mode required"});
+    }
+
+    try {
+
+        let user = await knex("users").where({username}).limit(1).select(["id", "username"]);
+        if (!user) {
+            return res.status(404).json({success: false, msg: "User not found"});
+        }
+
+        if (req.user.level != -1) {
+            if (user[0].id == req.user.id) {
+                let playlistAccess = await knex("playlist_users").where({"playlist_users.id": playlistId, user_id: req.user.id});
+                if (!playlistAccess[0]) {
+                    return res.status(401).json({success: false, msg: "Access denied"});
+                }
+            } else {
+                let playlistAccess = await knex("playlist_users").where({"playlist_users.id": playlistId, user_id: req.user.id}).whereIn("access", [5, 1]);
+                if (!playlistAccess[0]) {
+                    return res.status(401).json({success: false, msg: "Access denied"});
+                }
+            }
+        }
+
+        let existingUser = await knex("playlist_users").where({"playlist_users.id": playlistId, user_id: user[0].id})
+            .innerJoin("playlists", "playlists.id", "=", "playlist_users.id")
+            .select(["playlists.author_id"])
+
+        if (existingUser[0] && mode == "add" || !existingUser[0] && mode == "remove") {
+            return res.status(200).json({success: true});
+        }
+
+        if (existingUser[0] && mode == "remove") {
+            if (existingUser[0].author_id == user[0].id) {
+                return res.status(403).json({success: false, msg: "Forbidden"}); 
+            }
+            
+            await knex("playlist_users").where({"playlist_users.id": playlistId, user_id: user[0].id}).delete();
+        } else if (!existingUser[0] && mode == "add") {
+            await knex("playlist_users").insert({
+                id: playlistId,
+                user_id: user[0].id
+            });
+        }
+
+        return res.status(200).json({success: true});
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
 module.exports = router;

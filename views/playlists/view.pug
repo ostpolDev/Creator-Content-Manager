@@ -7,6 +7,9 @@ block head
         }
     if view == "assets"
         script(src="/js/assets.js" type="module" defer) 
+    else if view == "members"
+        link(rel="stylesheet", href="/bulma/bulma-list.css")
+        script(src="/js/playlists/members.js" type="module" defer)
 
 block content
     .container
@@ -92,6 +95,17 @@ block content
                         span Load More
 
                 else if view == "members" && isAuthor
+                    .field.block
+                        label.label Search
+                        .control.has-icons-left
+                            input.input#userSearchInput(type="text" placeholder="Search for people..." autocomplete="off" value="")
+                            span.icon.is-small.is-left
+                                span search
+                    
+                    .tags#userSearchResult
+                    
+                    button.button.is-fullwidth.is-loading#membersLoading Loading
+                    .list.has-visible-pointer-controls.has-overflow-ellipsis#userBody
 
 
             .column.is-one-quarter

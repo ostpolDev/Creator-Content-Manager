@@ -378,8 +378,9 @@ async function CreateTables(knex) {
     if (!hasPlaylistUsers) {
         logger.info("Creating the playlist_users table");
         await knex.schema.createTable("playlist_users", (table) => {
-            table.string("id").primary().notNullable();
+            table.string("id").notNullable();
             table.integer("user_id").notNullable();
+            table.primary(["id", "user_id"]);
             table.tinyint("type").defaultTo(0).unsigned();
             table.foreign("id").references("playlists.id").onDelete("CASCADE");
             table.foreign("user_id").references("users.id").onDelete("CASCADE");
