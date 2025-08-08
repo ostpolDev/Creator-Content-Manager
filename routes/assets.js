@@ -197,7 +197,7 @@ router.get("/v/:id", async (req, res, next) => {
             .innerJoin("channels", "channels.id", "=", "channel_members.channel")
             .select(["channels.id", "channels.name"])
 
-        const downloadCount = await knex("downloads").where({asset: asset[0].id}).select("count").limit(1);
+        const downloadCount = await knex("downloads").where({asset: asset[0].id, user: req.user.id}).select("count").limit(1);
 
         res.render("assets/view", {
             title: asset[0].name,
