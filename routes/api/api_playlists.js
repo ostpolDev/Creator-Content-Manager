@@ -26,9 +26,9 @@ router.post("/add", async (req, res, next) => {
         const createResult = await knex("playlists").insert({
             title: name,
             author_id: req.user.id,
-            description: descCompResult.text,
-            rendered_description: renderedCompResult.text,
-            compression: renderedCompResult.compression,
+            description: descCompResult ? descCompResult.text : null,
+            rendered_description: renderedCompResult ? renderedCompResult.text : null,
+            compression: renderedCompResult ? renderedCompResult.compression : "none",
             public: isPublic
         }, "id");
 
@@ -85,6 +85,10 @@ router.get("/list", async (req, res, next) => {
 
         if (search) {
             playlistQuery.whereILike("playlists.title", `%${search}%`);
+        }
+
+        if (id) {
+            playlistQuery.where({"playlists.id": id});
         }
 
         playlistQuery.then(async (playlists) => {

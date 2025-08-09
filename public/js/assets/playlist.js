@@ -16,7 +16,7 @@ playlistButton.addEventListener("click", () => {
 
 playlistSearchInput.addEventListener("input", () => {
     const val = playlistSearchInput.value.trim();
-    if (!val) {
+    if (!val || val.length > 128) {
         createPlaylistButton.setAttribute("disabled", true)
     } else {
         createPlaylistButton.removeAttribute("disabled");
@@ -26,6 +26,10 @@ playlistSearchInput.addEventListener("input", () => {
     searchTimeout = setTimeout(() => {
         ResetAndLoad();
     }, 500)
+})
+
+playlistLoadMoreButton.addEventListener("click", () => {
+    LoadMore();
 })
 
 let skip = 0;
@@ -44,7 +48,7 @@ async function LoadMore() {
     try {
 
         const params = new URLSearchParams({
-            limit: 5,
+            limit: 10,
             skip,
             q: playlistSearchInput.value,
             asset: DEF.asset,
@@ -77,10 +81,10 @@ async function LoadMore() {
     }
 }
 
-function RefereshCurrent() {
+async function RefereshCurrent() {
     playlistTableBody.innerHTML = "";
     skip = prevSkip;
-    LoadMore();
+    await LoadMore();
 }
 
 ResetAndLoad();
@@ -175,5 +179,63 @@ async function modifyAsset(button, playlist, mode) {
         console.error(e);
     } finally {
         button.classList.remove("is-loading")
+    }
+}
+
+createPlaylistButton.addEventListener("click", () => {
+    CreateNewPlaylist();
+})
+
+async function CreateNewPlaylist() {
+    const name = playlistSearchInput.value;
+    if (!name.trim() || name.length > 128) {
+        return;
+    }
+
+    if (createPlaylistButton.classList.contains("is-loading")) {
+        return;
+    }
+
+    createPlaylistButton.classList.add("is-loading");
+
+    try {
+
+        const res = await fetch("/api/assets/playlists/add", {
+            method: "POST",
+            body: JSON.stringify({
+                name,
+                isPublic: false,
+                description: ""
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        const json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            return;
+        }
+
+        const infoRes = await fetch(`/api/assets/playlists/list?id=${encodeURIComponent(json.playlist)}`);
+        const infoJson = await infoRes.json();
+
+        if (!infoJson.success || infoJson.playlists.length <= 0) {
+            console.error(infoJson.msg || "Something went wrong...");
+            await RefereshCurrent();
+            playlistSearchInput.value = "";
+            return;
+        }
+
+        const elem = createPlaylistElement(infoJson.playlists[0]);
+        playlistTableBody.prepend(elem);
+        playlistSearchInput.value = "";
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        createPlaylistButton.classList.remove("is-loading");
     }
 }
