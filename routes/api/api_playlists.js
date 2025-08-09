@@ -59,6 +59,8 @@ router.get("/list", async (req, res, next) => {
     let skip = req.query.skip || 0;
     let id = req.query.id;
     let limit = req.query.limit || 50;
+    let batch = req.query.batch;
+    let asset = req.query.asset;
 
     if (Number.isNaN(skip) || skip < 0) {
         skip = 0;
@@ -85,11 +87,22 @@ router.get("/list", async (req, res, next) => {
             playlistQuery.whereILike("playlists.title", `%${search}%`);
         }
 
-        playlistQuery.then((playlists) => {
+        playlistQuery.then(async (playlists) => {
+
+            const playlistIds = playlists.map(x => x.id);
+
+            if (asset) {
+                const assetCheck = await knex("playlist_assets").whereIn("playlist_id", playlistIds).andWhere({asset_id: asset});
+                for (let i = 0; i < playlists.length; i++) {
+                    playlists[i].is_included = assetCheck.findIndex(x => x.playlist_id == playlists[i].id) !== -1;
+                }
+            }
+
             return res.status(200).json({success: true, playlists: playlists.map(x => ({
                 ...x,
                 is_author: x.author_id == req.user.id
-            })), reachedEnd: playlists.length < limit});
+            })), reachedEnd: playlists.length < limit, asset, batch: asset ? "ignored" : batch});
+
         }).catch(e => {
             return next(e);
         })

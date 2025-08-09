@@ -38,6 +38,43 @@ block modals
                             span.icon
                                 span delete
                             span Delete forever
+    .modal#playlistModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title Add to playlist
+                button.delete(data-modal="close")
+            section.modal-card-body
+
+                label.label Search
+                .field.has-addons.block
+                    .control.has-icons-left.is-expanded
+                        input.input#playlistSearchInput(type="text" placeholder="Search..." autocomplete="off")
+                        span.icon.is-small.is-left
+                            span search
+                    .control
+                        button.button.is-link#createPlaylistButton
+                            span.icon
+                                span add
+                            span New
+
+                table.table.is-striped.is-hoverable.is-outlined.is-fullwidth.block
+                    thead
+                        tr
+                            th Name
+                            th Action
+                    tbody#playlistTableBody
+
+                button.button.is-fullwidth.is-outlined.is-link#playlistLoadMoreButton
+                    span Load More
+
+            
+            footer.modal-card-foot
+                .buttons
+                    button.button(data-modal="close")
+                        span.icon
+                            span check
+                        span Done
 
 block content
     .container
@@ -224,6 +261,9 @@ block content
                         a.button.iconButton.is-rounded(href=asset.source, title=asset.source)
                             span.icon
                                 span link 
+                    button.button.iconButton.is-rounded#playlistButton
+                        span.icon
+                            span playlist_add
                     if isAuthor
                         button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
                             span.icon
