@@ -44,4 +44,8 @@ function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-export { CreateLikedWhenString, CreateSmartTimeString, MakeButton, escapeRegExp }
+function removeEmpty(obj) {
+    return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null));
+}
+
+export { CreateLikedWhenString, CreateSmartTimeString, MakeButton, escapeRegExp, removeEmpty }

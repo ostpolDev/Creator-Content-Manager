@@ -1,3 +1,5 @@
+import { removeEmpty } from "../helpers.js";
+
 const playlistButton = document.querySelector("#playlistButton");
 const playlistModal = document.querySelector("#playlistModal");
 const playlistLoadMoreButton = playlistModal.querySelector("#playlistLoadMoreButton");
@@ -47,13 +49,13 @@ async function LoadMore() {
 
     try {
 
-        const params = new URLSearchParams({
+        const params = new URLSearchParams(removeEmpty({
             limit: 10,
             skip,
             q: playlistSearchInput.value,
-            asset: DEF.asset,
-            batch: DEF.batch
-        })
+            asset: DEF.asset || null,
+            batch: DEF.batch || null
+        }))
 
         const res = await fetch(`/api/assets/playlists/list?${params.toString()}`)
         const json = await res.json();

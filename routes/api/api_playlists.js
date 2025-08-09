@@ -93,10 +93,19 @@ router.get("/list", async (req, res, next) => {
 
         playlistQuery.then(async (playlists) => {
 
-            const playlistIds = playlists.map(x => x.id);
+            const playlistIds = playlists.map(x => x.id);            
 
             if (asset) {
                 const assetCheck = await knex("playlist_assets").whereIn("playlist_id", playlistIds).andWhere({asset_id: asset});
+                for (let i = 0; i < playlists.length; i++) {
+                    playlists[i].is_included = assetCheck.findIndex(x => x.playlist_id == playlists[i].id) !== -1;
+                }
+
+            } else if (batch) {                
+                const assetCheck = await knex("playlist_assets").whereIn("playlist_id", playlistIds).andWhere({"assets.batch": batch})
+                    .innerJoin("assets", "assets.id", "=", "playlist_assets.asset_id")
+                    .select("playlist_assets.playlist_id");
+                
                 for (let i = 0; i < playlists.length; i++) {
                     playlists[i].is_included = assetCheck.findIndex(x => x.playlist_id == playlists[i].id) !== -1;
                 }

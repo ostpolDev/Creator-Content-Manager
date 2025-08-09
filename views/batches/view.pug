@@ -37,6 +37,8 @@ block modals
                             span.icon
                                 span delete
                             span Delete all assets forever
+    
+    include ../modals/playlistAdd.pug
 
 block content
     .container
@@ -181,6 +183,9 @@ block content
                         a.button.iconButton.is-rounded(href="/assets/batches/download/" + batch.id) 
                             span.icon
                                 span download
+                        button.button.iconButton.is-rounded#playlistButton
+                            span.icon
+                                span playlist_add
                         if isAuthor
                             button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
                                 span.icon
