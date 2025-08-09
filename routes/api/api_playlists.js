@@ -271,6 +271,9 @@ router.post("/modifyAssets", async (req, res, next) => {
 
         }
 
+        const assetCount = await knex("playlist_assets").where({playlist_id: accessCheck[0].id}).count("asset_id as CNT");
+        await knex("playlists").update({asset_count: assetCount[0].CNT}).where({id: accessCheck[0].id}).limit(1);
+
         return res.status(200).json({success: true});
 
     } catch (e) {
