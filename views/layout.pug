@@ -66,12 +66,16 @@ html(lang="en" data-theme="light")
 
         footer.footer
             .container
-                if environment == "development"
-                    p 
+                p.has-text-centered
+                    if environment == "development"
                         small 
                             span.icon
                                 span edit
-                            | This site is running in development mode.
+                            | This site is running in development mode. | 
+                    small v.#{version}
+                p.has-text-centered
+                    small
+                        a(href="https://ostpol.dev" target="_BLANK") ostpol.dev 
                 block footer
 
         block scripts

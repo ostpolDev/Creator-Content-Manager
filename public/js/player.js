@@ -52,8 +52,6 @@ ELEM.playButton.addEventListener("click", () => {
 })
 
 function Play(asset) {
-    console.log(asset);
-    
     return new Promise((res, rej) => {
         if (!asset) {
             musicPlayer.classList.add("is-hidden");

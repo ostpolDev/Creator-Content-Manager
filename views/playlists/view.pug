@@ -10,6 +10,7 @@ block head
     else if view == "members"
         link(rel="stylesheet", href="/bulma/bulma-list.css")
         script(src="/js/playlists/members.js" type="module" defer)
+    script(src="/js/playlists/view.js" type="module" defer) 
 
 block modals
     .modal#addAssetsModal
@@ -19,7 +20,21 @@ block modals
                 p.modal-card-title Add assets
                 button.delete(data-modal="close")
             section.modal-card-body
-            
+                .field
+                    label.label(for="assetSearch") Search
+                    .control.has-icons-left
+                        input.input#assetSearch(type="text" placeholder="Search..." autocomplete="off")
+                        span.icon.is-small.is-left
+                            span search
+
+                table.table.is-striped.is-outlined.is-hoverable.is-fullwidth
+                    thead
+                        tr
+                            th Name
+                            th Action
+                    tbody#assetSearchBody
+
+
             footer.modal-card-foot
                 .buttons
                     button.button(data-modal="close")
@@ -46,7 +61,7 @@ block content
 
                 .buttons.block
                     if canAdd
-                        button.button#addAssetsButton
+                        button.button(data-add-assets)
                             span.icon
                                 span library_add
                             span Add assets
@@ -132,7 +147,7 @@ block content
                                 span.icon
                                     span edit
                         if canAdd
-                            button.button.iconButton.is-rounded#secondAddAssetsButton
+                            button.button.iconButton.is-rounded(data-add-assets)
                                 span.icon
                                     span library_add
                         if isAuthor
