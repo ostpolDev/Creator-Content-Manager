@@ -132,7 +132,7 @@ block content
                             a(href="?view=videos#tabs")
                                 span.icon.is-small
                                     span videocam
-                                span Videos
+                                span Videos#{videoCount > 0 ? ` (${videoCount.toLocaleString()})`: ""}
                         li(class=(view == "comments" ? "is-active" : ""))
                             a(href="?view=comments#tabs")
                                 span.icon.is-small
@@ -282,6 +282,15 @@ block content
                                 strong Downloaded by you
                                 br
                                 span #{downloadCount.toLocaleString()}
+                        if lastDownload !== -1
+                            p
+                                strong Last time downloaded by you
+                                br
+                                time(datetime=lastDownload, data-format="smart")
+                        p
+                            strong My videos with this asset
+                            br
+                            span #{videoCount.toLocaleString()}
                         p
                             strong ID
                             br
