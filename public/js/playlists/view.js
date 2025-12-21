@@ -133,3 +133,42 @@ async function togglePlaylistItem(button, item) {
     }
 }
 
+/**
+ * 
+ * @param {HTMLElement} button 
+ * @param {string} id 
+ * @returns 
+ */
+async function removeFromPlaylist(button, id) {
+    if (!id) {
+        return;
+    }
+
+    try {
+
+        const res = await fetch("/api/assets/playlists/modifyAssets", {
+            method: "POST",
+            body: JSON.stringify({
+                playlist: DEF.playlist,
+                assets: [id],
+                mode: "remove"
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            return;
+        }
+
+        button.closest("tr")?.remove();
+
+    } catch (e) {
+        console.error(e);
+    }
+}
+

@@ -59,6 +59,7 @@ if (urlParams.has("focus")) {
 }
 
 let filter = assetList.getAttribute("data-filter");
+const customAction = assetList.getAttribute("data-custom-action");
 
 function ActivateType(selectedType, isFirst) {
     if (currentType == selectedType && !isFirst) {
@@ -172,7 +173,7 @@ async function LoadMore() {
 
         skip += json.items.length;
         json.items.forEach(asset => {
-            assetList.appendChild(AssetFunctions.MakeAssetElement(asset))
+            assetList.appendChild(AssetFunctions.MakeAssetElement(asset, customAction))
         })
 
     } catch (e) {

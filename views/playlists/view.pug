@@ -5,12 +5,15 @@ block head
         const DEF = {
             playlist: "#{playlist.id}",
         }
+    script(src="/js/playlists/view.js" defer) 
+
+
     if view == "assets"
         script(src="/js/assets.js" type="module" defer) 
     else if view == "members"
         link(rel="stylesheet", href="/bulma/bulma-list.css")
         script(src="/js/playlists/members.js" type="module" defer)
-    script(src="/js/playlists/view.js" type="module" defer) 
+    
 
 block modals
     .modal#addAssetsModal
@@ -120,7 +123,7 @@ block content
                             th Author
                             th Uploaded
                             th Tags
-                        tbody#assetList(data-filter="playlist:" + playlist.id)
+                        tbody#assetList(data-filter="playlist:" + playlist.id, data-custom-action="removeFromPlaylist;remove")
 
                     button.button.is-link.is-fullwidth.is-outlined#loadMoreButton
                         span Load More
