@@ -151,6 +151,11 @@ block content
                                 span.icon.is-small
                                     span playlist_play
                                 span Playlists
+                        li(class=(view == "notes" ? "is-active" : ""))
+                            a(href="?view=notes#tabs")
+                                span.icon.is-small
+                                    span note_stack
+                                span Notes
 
                 if view == "comments"
 
@@ -234,6 +239,9 @@ block content
                         tbody#playlistTabTableBody
 
                     button.button.is-fullwidth.is-loading#loadMorePlaylistButton
+
+                else if view == "notes"
+
 
             .column.is-one-quarter
                 .is-position-sticky(style="height: fit-content; top: 10px;")

@@ -401,6 +401,35 @@ async function CreateTables(knex) {
         logger.info("Creating the playlist_assets table");
     }
 
+    let hasNotes = await knex.schema.hasTable("notes");
+    if (!hasNotes) {
+        logger.info("Creating the notes table");
+        await knex.schema.createTable("notes", (table) => {
+            table.increments("id").notNullable().primary();
+            table.string("title", 255);
+            table.binary("content");
+            table.string("compression", 6);
+            table.timestamps(true, true);
+            table.string("preview", 64);
+            table.integer("author").notNullable();
+            table.foreign("author").references("users.id").onDelete("CASCADE");
+        })
+        logger.info("Created the notes table");
+    }
+
+    let hasAssetNotes = await knex.schema.hasTable("asset_notes");
+    if (!hasAssetNotes) {
+        logger.info("Creating the asset_notes table");
+        await knex.schema.createTable("asset_notes", (table) => {
+            table.increments("id").notNullable().primary();
+            table.integer("note_id").notNullable();
+            table.string("asset_id").notNullable().index();
+            table.foreign("note_id").references("notes.id").onDelete("CASCADE");
+            table.foreign("asset_id").references("assets.id").onDelete("CASCADE");
+        })
+        logger.info("Created the asset_notes table");
+    }
+
     logger.info(`Successfully checked for table changes in ${Date.now() - start}ms`);
 
     await MigrateVersion(knex);

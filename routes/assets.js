@@ -150,7 +150,7 @@ router.get("/download/:id", async (req, res, next) => {
     }
 })
 
-const VIEWS = ["videos", "comments", "references", "playlists"];
+const VIEWS = ["videos", "comments", "references", "playlists", "notes"];
 
 router.get("/v/:id", async (req, res, next) => {
     try {
