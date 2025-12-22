@@ -6,6 +6,7 @@ block head
             playlist: "#{playlist.id}",
         }
     script(src="/js/playlists/view.js" defer) 
+    script(src="/js/playlists/playlistcontrols.js" type="module" defer) 
 
 
     if view == "assets"
@@ -153,6 +154,15 @@ block content
                             button.button.iconButton.is-rounded(data-add-assets)
                                 span.icon
                                     span library_add
+
+                        button.button.iconButton.is-rounded#playlistPlay
+                            span.icon
+                                span playlist_play
+
+                        button.button.iconButton.is-rounded#playlistShuffle
+                            span.icon
+                                span shuffle
+
                         if isAuthor
                             button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
                                 span.icon

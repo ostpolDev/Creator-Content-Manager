@@ -89,7 +89,7 @@ async function LoadMore() {
             return;
         }
 
-        console.log(json);
+        // console.log(json);
 
         if (json.reachedEnd) {
             loadMoreButton.classList.add("is-hidden");
@@ -97,23 +97,6 @@ async function LoadMore() {
         
         json.playlists.forEach(playlist => {
             playlistBody.appendChild(createPlaylistRowElement(playlist));
-            // playlistBody.innerHTML += `
-            //     <tr>
-            //         <td>
-            //             <div class="buttons">
-            //                 <button class="button is-rounded iconButton">
-            //                     <span class="icon"><span>playlist_play</span></span>
-            //                 </button>
-            //                 <button class="button is-rounded iconButton">
-            //                     <span class="icon"><span>shuffle</span></span>
-            //                 </button>
-            //             </div>
-            //         </td>
-            //         <td><a href='/assets/playlists/v/${playlist.id}'>${playlist.title}</a></td>
-            //         <td><a href='/users/v/${encodeURIComponent(playlist.author_username)}'>${playlist.author_display_name}</a></td>
-            //         <td>0</td>
-            //     </tr>
-            // `;
         })
 
     } catch (e) {
