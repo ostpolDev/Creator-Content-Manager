@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { CompressString, UnzipString } = require('../../modules/textHelpers');
 const { knex } = require('../../modules/database');
+const { sanitizeFull } = require('../../modules/marked')
 
 router.post("/create", async (req, res, next) => {
     const asset = req.body.asset;
@@ -30,6 +31,7 @@ router.post("/create", async (req, res, next) => {
             return res.status(404).json({success: false, msg: "Asset not found"});
         }
 
+        content = sanitizeFull(content);
         const zipped = CompressString(content);
 
         const preview = `${content.trim().replace(/[\n\r]/g, " ").substring(0, 64)}...`;
@@ -134,6 +136,27 @@ router.get("/get/:id", async (req, res, next) => {
             ...note[0],
             content: unzipped
         }})
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
+router.post("/delete", async (req, res, next) => {
+    const note = req.body.note;
+
+    if (typeof note !== "number" || isNaN(note)) {
+        return res.status(400).json({success: false, msg: "Invalid note ID"});
+    }
+
+    try {
+
+        const deleted = await knex("notes").where({id: note, author: req.user.id}).limit(1).delete("id");
+        if (!deleted[0]) {
+            return res.status(404).json({success: false, msg: "Note not found"});
+        }
+
+        return res.status(200).json({success: true, deleted: deleted[0].id});
 
     } catch (e) {
         return next(e);

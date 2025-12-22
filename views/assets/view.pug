@@ -19,6 +19,9 @@ block head
     else if view == "playlists"
         script(src="/js/assets/playlist_tab.js" type="module" defer) 
 
+    else if view == "notes"
+        script(src="/js/assets/notes.js" type="module" defer) 
+
 block modals
     if isAuthor
         .modal#deleteModal
@@ -43,6 +46,7 @@ block modals
                             span Delete forever
 
     include ../modals/playlistAdd.pug
+    include ../modals/assetNotes.pug
 
 block content
     .container
@@ -241,6 +245,17 @@ block content
                     button.button.is-fullwidth.is-loading#loadMorePlaylistButton
 
                 else if view == "notes"
+
+                    .block
+                        table.table.is-fullwidth.is-striped.is-hoverable
+                            thead
+                                tr
+                                    th Title 
+                                    th Content
+                                    th Created at
+                            tbody#notesBody
+
+                    button.button.is-fullwidth.is-loading#loadMoreNotesButton Load More
 
 
             .column.is-one-quarter

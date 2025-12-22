@@ -1,0 +1,22 @@
+.modal#assetNotesModal
+    .modal-background(data-modal="close")
+    .modal-card
+        header.modal-card-head
+            p.modal-card-title#assetNotesTitle
+            button.delete(data-modal="close")
+        section.modal-card-body
+            .content
+                pre.nowrap.noBackground#assetNotesContent
+
+
+        
+        footer.modal-card-foot
+            .buttons
+                button.button.is-danger.is-outlined#deleteAssetNoteButton
+                    span.icon
+                        span delete
+                    span Delete
+                button.button(data-modal="close")
+                    span.icon
+                        span check
+                    span Done
