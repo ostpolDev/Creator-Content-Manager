@@ -1,3 +1,5 @@
+import { PlayPlaylist } from "../player.js";
+
 const createPlaylistModal = document.querySelector("#createPlaylistModal");
 const createPlaylistButton = document.querySelector("#createPlaylistButton");
 const playlistNameInput = document.querySelector("#playlistName");
@@ -28,7 +30,7 @@ playlistNameInput.addEventListener("keydown", (e) => {
 
 createPlaylistButton.addEventListener("click", async () => {
     const name = playlistNameInput.value;
-    const public = playlistPublicCheckbox.checked;
+    const isPublic = playlistPublicCheckbox.checked;
     const description = aboutText.value;
     if (!name.trim() || name.length > 128 || description.length > 2048) {
         return;
@@ -39,7 +41,7 @@ createPlaylistButton.addEventListener("click", async () => {
         const res = await fetch("/api/assets/playlists/add", {
             method: "POST",
             body: JSON.stringify({
-                name, public, description
+                name, public: isPublic, description
             }),
             headers: {
                 "Content-Type": "application/json"
@@ -144,7 +146,7 @@ function createPlaylistRowElement(playlist) {
     playIcon.appendChild(playIconText);
 
     playButton.addEventListener("click", () => {
-
+        PlayPlaylist(playButton, playlist.id, false);
     })
 
     const shuffleButton = document.createElement("button");
@@ -158,22 +160,22 @@ function createPlaylistRowElement(playlist) {
     shuffleIcon.appendChild(shuffleIconText);
 
     shuffleButton.addEventListener("click", () => {
-
+        PlayPlaylist(shuffleButton, playlist.id, true);
     })
 
-    const popoutButton = document.createElement("button");
-    popoutButton.classList.add("button", "is-rounded", "iconButton");
-    buttons.appendChild(popoutButton);
-    const popoutIcon = document.createElement("span");
-    popoutIcon.className = "icon";
-    popoutButton.appendChild(popoutIcon);
-    const popoutIconText = document.createElement("span");
-    popoutIconText.innerText = "picture_in_picture";
-    popoutIcon.appendChild(popoutIconText);
+    // const popoutButton = document.createElement("button");
+    // popoutButton.classList.add("button", "is-rounded", "iconButton");
+    // buttons.appendChild(popoutButton);
+    // const popoutIcon = document.createElement("span");
+    // popoutIcon.className = "icon";
+    // popoutButton.appendChild(popoutIcon);
+    // const popoutIconText = document.createElement("span");
+    // popoutIconText.innerText = "picture_in_picture";
+    // popoutIcon.appendChild(popoutIconText);
 
-    popoutButton.addEventListener("click", () => {
+    // popoutButton.addEventListener("click", () => {
 
-    })
+    // })
 
     const nameElement = document.createElement("td");
     row.appendChild(nameElement);
