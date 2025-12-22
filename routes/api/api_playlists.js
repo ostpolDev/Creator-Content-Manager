@@ -61,6 +61,7 @@ router.get("/list", async (req, res, next) => {
     let limit = req.query.limit || 50;
     let batch = req.query.batch;
     let asset = req.query.asset;
+    let exclusive = req.query.exclusive == "true";
 
     if (Number.isNaN(skip) || skip < 0) {
         skip = 0;
@@ -74,14 +75,28 @@ router.get("/list", async (req, res, next) => {
 
     try {
 
-        let playlistQuery = knex("playlist_users").where({"playlist_users.user_id": req.user.id})
-            .innerJoin("playlists", "playlists.id", "=", "playlist_users.id")
-            .innerJoin("users", "users.id", "=", "playlists.author_id")
-            .offset(skip).limit(limit).orderBy("created_at", "desc").select([
-                "playlists.id", "playlists.title", "playlists.public", "playlists.created_at", "playlists.asset_count",
-                "users.id as author_id", "users.username as author_username", "users.display_name as author_display_name",
-                "playlist_users.type as access_type"
-            ])
+        let playlistQuery;
+
+        if (asset && exclusive) {
+            playlistQuery = knex("playlist_assets").where({"playlist_assets.asset_id": asset, "playlist_users.user_id": req.user.id})
+                .innerJoin("playlists", "playlists.id", "=", "playlist_assets.playlist_id")
+                .innerJoin("playlist_users", "playlist_users.id", "=", "playlist_assets.playlist_id")
+                .innerJoin("users", "users.id", "=", "playlists.author_id")
+                .offset(skip).limit(limit).orderBy("created_at", "desc").select([
+                    "playlists.id", "playlists.title", "playlists.public", "playlists.created_at", "playlists.asset_count",
+                    "users.id as author_id", "users.username as author_username", "users.display_name as author_display_name",
+                    "playlist_users.type as access_type"
+                ])
+        } else {
+            playlistQuery = knex("playlist_users").where({"playlist_users.user_id": req.user.id})
+                .innerJoin("playlists", "playlists.id", "=", "playlist_users.id")
+                .innerJoin("users", "users.id", "=", "playlists.author_id")
+                .offset(skip).limit(limit).orderBy("created_at", "desc").select([
+                    "playlists.id", "playlists.title", "playlists.public", "playlists.created_at", "playlists.asset_count",
+                    "users.id as author_id", "users.username as author_username", "users.display_name as author_display_name",
+                    "playlist_users.type as access_type"
+                ])
+        }
 
         if (search) {
             playlistQuery.whereILike("playlists.title", `%${search}%`);
@@ -95,7 +110,7 @@ router.get("/list", async (req, res, next) => {
 
             const playlistIds = playlists.map(x => x.id);            
 
-            if (asset) {
+            if (asset && !exclusive) {
                 const assetCheck = await knex("playlist_assets").whereIn("playlist_id", playlistIds).andWhere({asset_id: asset});
                 for (let i = 0; i < playlists.length; i++) {
                     playlists[i].is_included = assetCheck.findIndex(x => x.playlist_id == playlists[i].id) !== -1;

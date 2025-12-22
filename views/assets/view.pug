@@ -16,6 +16,9 @@ block head
         if asset.added_by == user.id
             script(src="/js/assets/references.js" type="module" defer) 
 
+    else if view == "playlists"
+        script(src="/js/assets/playlist_tab.js" type="module" defer) 
+
 block modals
     if isAuthor
         .modal#deleteModal
@@ -143,6 +146,11 @@ block content
                                 span.icon.is-small
                                     span attach_file
                                 span References
+                        li(class=(view == "playlists" ? "is-active" : ""))
+                            a(href="?view=playlists#tabs")
+                                span.icon.is-small
+                                    span playlist_play
+                                span Playlists
 
                 if view == "comments"
 
@@ -209,6 +217,23 @@ block content
                                 th Uploaded
                                 th Tags
                             tbody(data-list="assets" data-list-filter=(`reference:${asset.id}`), data-list-load="true")
+
+                else if view == "playlists"
+
+                    .block
+                        button.button.has-icon#playlistAddToPlaylistButton
+                            span.icon
+                                span playlist_add
+                            span Add to playlist
+
+                    table.table.is-fullwidth.is-striped.is-hoverable
+                        thead
+                            tr
+                                th Name
+                                th Action
+                        tbody#playlistTabTableBody
+
+                    button.button.is-fullwidth.is-loading#loadMorePlaylistButton
 
             .column.is-one-quarter
                 .is-position-sticky(style="height: fit-content; top: 10px;")
