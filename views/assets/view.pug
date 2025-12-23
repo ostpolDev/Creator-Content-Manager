@@ -159,7 +159,7 @@ block content
                             a(href="?view=notes#tabs")
                                 span.icon.is-small
                                     span note_stack
-                                span Notes
+                                span Notes#{noteCount > 0 ? ` (${noteCount.toLocaleString()})` : ""}
 
                 if view == "comments"
 

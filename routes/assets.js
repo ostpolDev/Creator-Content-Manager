@@ -207,6 +207,12 @@ router.get("/v/:id", async (req, res, next) => {
             return videoCount[0].CNT;
         })
 
+
+        // TODO: Maybe cache?
+        const noteCount = await knex("asset_notes").where({"asset_notes.asset_id": asset[0].id, "notes.author": req.user.id})
+            .innerJoin("notes", "notes.id", "=", "asset_notes.note_id")
+            .count("notes.id as CNT");
+
         res.render("assets/view", {
             title: asset[0].name,
             asset: asset[0],
@@ -218,7 +224,8 @@ router.get("/v/:id", async (req, res, next) => {
             channels,
             downloadCount: downloadCount[0] ? downloadCount[0].count : -1,
             lastDownload: downloadCount[0] ? downloadCount[0].updated_at : -1,
-            videoCount
+            videoCount,
+            noteCount: noteCount[0].CNT
         })
     } catch (e) {
         return next(e);
