@@ -5,8 +5,8 @@ const { sanitizeFull } = require('../../modules/marked')
 
 router.post("/create", async (req, res, next) => {
     const asset = req.body.asset;
-    const content = req.body.content;
-    const title = req.body.title;
+    let content = req.body.content;
+    let title = req.body.title;
 
     if (!asset) {
         return res.status(400).json({success: false, msg: "Asset required"});
@@ -32,9 +32,12 @@ router.post("/create", async (req, res, next) => {
         }
 
         content = sanitizeFull(content);
+        title = sanitizeFull(title);
+
         const zipped = CompressString(content);
 
-        const preview = `${content.trim().replace(/[\n\r]/g, " ").substring(0, 64)}...`;
+        const cleaned = content.trim().replace(/[\n\r]/g, " ");
+        const preview = `${cleaned.substring(0, 60)}${cleaned.length > 64 ? '...' : ''}`;
         
         const note = await knex("notes").insert({
             title,
@@ -97,16 +100,16 @@ router.get("/list", async (req, res, next) => {
 
             const notes = await knex("asset_notes").where({"asset_notes.asset_id": assetCheck[0].id, "notes.author": req.user.id})
                 .innerJoin("notes", "notes.id", "=", "asset_notes.note_id")
-                .limit(limit).offset(skip).orderBy("created_at", "asc")
+                .limit(limit).offset(skip).orderBy("created_at", "desc")
                 .select([
-                    "notes.title", "notes.created_at", "notes.updated_at", "notes.preview"
+                    "notes.title", "notes.created_at", "notes.updated_at", "notes.preview", "notes.id"
                 ]);
             
             return res.status(200).json({success: true, notes, reachedEnd: notes.length < limit});
         } else {
 
             const notes = await knex("notes").where({"notes.author": req.user.id})
-                .limit(limit).offset(offset).orderBy("created_at", "asc")
+                .limit(limit).offset(offset).orderBy("created_at", "desc")
                 .select([
                     "notes.title", "notes.created_at", "notes.updated_at", "notes.preview"
                 ]);
@@ -122,6 +125,9 @@ router.get("/list", async (req, res, next) => {
 
 router.get("/get/:id", async (req, res, next) => {
     const id = req.params.id;
+    if (typeof id === "undefined" || isNaN(id)) {
+        return res.status(400).json({success: false, msg: "Invalid ID"})
+    }
 
     try {
 

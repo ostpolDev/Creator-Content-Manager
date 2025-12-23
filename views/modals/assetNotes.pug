@@ -8,8 +8,6 @@
             .content
                 pre.nowrap.noBackground#assetNotesContent
 
-
-        
         footer.modal-card-foot
             .buttons
                 button.button.is-danger.is-outlined#deleteAssetNoteButton
@@ -20,3 +18,34 @@
                     span.icon
                         span check
                     span Done
+
+.modal#createNotesModal
+    .modal-background(data-modal="close")
+    .modal-card
+        header.modal-card-head
+            p.modal-card-title Add a note
+            button.delete(data-modal="close")
+        section.modal-card-body
+
+            .field
+                label.label Note title
+                .control
+                    input.input#createNoteTitle(type="text" placeholder="Note title (optional)" autocomple="off" maxlength="255")
+                    p.help#noteTitleHelp 0 / 255
+            
+            .field
+                label.label Note content
+                .control
+                    textarea.textarea#createNoteContent(maxlength="2048" autocomplete="off")
+                    p.help#noteContentHelp 0 / 2048
+
+        footer.modal-card-foot
+            .buttons
+                button.button(data-modal="close")
+                    span.icon
+                        span close
+                    span Cancel
+                button.button.is-success#createNoteButton
+                    span.icon
+                        span save
+                    span Save

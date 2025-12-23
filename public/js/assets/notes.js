@@ -1,8 +1,9 @@
 import { CreateSmartTimeString } from "../helpers.js";
-import { ViewNote } from "./noteModal.js";
+import { OpenCreateModal, ViewNote } from "./noteModal.js";
 
 const notesBody = document.getElementById("notesBody");
 const loadMoreNotesButton = document.getElementById("loadMoreNotesButton");
+const newNoteButton = document.getElementById("newNoteButton");
 
 let skip = 0;
 
@@ -54,7 +55,7 @@ async function LoadMore() {
             row.appendChild(preview);
 
             const createdAt = document.createElement("td");
-            let defDate = new Date(datetime);
+            let defDate = new Date(note.created_at);
             createdAt.innerText = CreateSmartTimeString(defDate);
             createdAt.title = CreateSmartTimeString(defDate, true);
             row.appendChild(createdAt);
@@ -78,3 +79,9 @@ loadMoreNotesButton.addEventListener("click", () => {
 })
 
 ResetAndLoad();
+
+newNoteButton.addEventListener("click", () => {
+    OpenCreateModal(DEF.asset, () => {
+        ResetAndLoad();
+    })
+})
