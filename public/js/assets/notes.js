@@ -50,6 +50,16 @@ async function LoadMore() {
             titleLink.innerText = note.title;
             title.appendChild(titleLink);
 
+            if (note.asset_id) {
+                const asset = document.createElement("td");
+                row.appendChild(asset);
+
+                const assetLink = document.createElement("a");
+                assetLink.href = `/assets/v/${encodeURIComponent(note.asset_id)}?view=notes#tabs`;
+                assetLink.innerText = note.asset_title;
+                asset.appendChild(assetLink);
+            }
+
             const preview = document.createElement("td");
             preview.innerText = note.preview || "--";
             row.appendChild(preview);
@@ -80,7 +90,7 @@ loadMoreNotesButton.addEventListener("click", () => {
 
 ResetAndLoad();
 
-newNoteButton.addEventListener("click", () => {
+newNoteButton?.addEventListener("click", () => {
     OpenCreateModal(DEF.asset, () => {
         ResetAndLoad();
     })

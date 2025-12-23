@@ -1,0 +1,34 @@
+extends ../layout
+
+block head
+    script.
+        const DEF = {}
+    script(src="/js/assets/notes.js" type="module" defer)
+
+block modals
+    include ../modals/assetNotes.pug
+
+block content
+    .container
+
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/users") Users
+                li
+                    a(href="/users") #{user.display_name}
+                li.is-active
+                    a(href="#") Notes
+
+        h1.title My notes
+
+        table.table.is-fullwidth.is-striped.is-hoverable
+            thead
+                tr
+                    th Note
+                    th Asset
+                    th Content
+                    th Created at
+            tbody#notesBody
+
+        button.button.is-fullwidth.is-loading#loadMoreNotesButton Load More

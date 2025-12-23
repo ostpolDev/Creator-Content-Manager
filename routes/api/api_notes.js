@@ -92,7 +92,7 @@ router.get("/list", async (req, res, next) => {
 
     try {
 
-        if (asset) {
+        if (asset && asset != "undefined") {
             const assetCheck = await knex("assets").where({id: asset}).limit(1).select("id");
             if (!assetCheck[0]) {
                 return res.status(404).json({success: false, msg: "Asset not found"});
@@ -109,9 +109,12 @@ router.get("/list", async (req, res, next) => {
         } else {
 
             const notes = await knex("notes").where({"notes.author": req.user.id})
-                .limit(limit).offset(offset).orderBy("created_at", "desc")
+                .innerJoin("asset_notes", "asset_notes.note_id", "=", "notes.id")
+                .innerJoin("assets", "assets.id", "=", "asset_notes.asset_id")
+                .limit(limit).offset(skip).orderBy("created_at", "desc")
                 .select([
-                    "notes.title", "notes.created_at", "notes.updated_at", "notes.preview"
+                    "notes.title", "notes.created_at", "notes.updated_at", "notes.preview",
+                    "assets.name as asset_title", "assets.id as asset_id"
                 ]);
 
             return res.status(200).json({success: true, notes, reachedEnd: notes.length < limit});

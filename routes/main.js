@@ -18,6 +18,7 @@ router.use("/channels", validation.ensureAuthenticated, require('./channels'));
 router.use("/videos", validation.ensureAuthenticated, require('./videos'));
 router.use("/resources", validation.ensureAuthenticated, require('./resources'));
 router.use("/games", validation.ensureAuthenticated, require('./games'));
+router.use("/notes", validation.ensureAuthenticated, require('./notes'));
 
 router.use("/api", require('./api/index'));
 

@@ -250,10 +250,15 @@ block content
                         p You can create private notes for every assets that can only be viewed by yourself if you intend to add more information to this asset that you would like to keep to yourself.
 
                     .block
-                        button.button.has-icon#newNoteButton
-                            span.icon
-                                span note_add
-                            span Create a new note
+                        .buttons
+                            button.button.has-icon#newNoteButton
+                                span.icon
+                                    span note_add
+                                span Create a new note
+                            a.button.has-icon(href="/notes")
+                                span.icon
+                                    span note_stack
+                                span View all my notes
 
                     .block
                         table.table.is-fullwidth.is-striped.is-hoverable
