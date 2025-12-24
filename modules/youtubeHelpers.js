@@ -98,7 +98,7 @@ async function GetVideoInfo(id) {
                 rendered_description: "",
                 compression: "",
                 thumbnail_url: "",
-                uploaded_at: new Date()
+                uploaded_at: new Date(),
             },
             video_info: {
                 views: 0,
@@ -106,7 +106,8 @@ async function GetVideoInfo(id) {
                 dislikes: 0,
                 comments: 0,
                 tags: "",
-                properties: {}
+                properties: {},
+                duration: 0
             }
         }
 
@@ -137,6 +138,11 @@ async function GetVideoInfo(id) {
         videoInfo.video_info.comments = Number.parseInt(statistics.commentCount);
         videoInfo.video_info.dislikes = -1;
         videoInfo.video_info.tags = snippet.tags.join(",");
+
+        if (typeof contentDetails.duration !== "undefined") {
+            videoInfo.video_info.duration = YTDurationToSeconds(contentDetails.duration);
+        }
+
         videoInfo.video_info.properties = {
             category: snippet.categoryId,
             language: snippet.defaultLanguage,
@@ -196,4 +202,21 @@ function IDToCategory(id) {
     return CATEGORY_LOOKUP[id] || "--";
 }
 
-module.exports = { GetChannelInfo, GetVideoInfo, IDToCategory }
+// https://stackoverflow.com/a/30134889
+function YTDurationToSeconds(duration) {
+    var match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+
+    match = match.slice(1).map(function (x) {
+        if (x != null) {
+            return x.replace(/\D/, '');
+        }
+    });
+
+    var hours = (parseInt(match[0]) || 0);
+    var minutes = (parseInt(match[1]) || 0);
+    var seconds = (parseInt(match[2]) || 0);
+
+    return hours * 3600 + minutes * 60 + seconds;
+}
+
+module.exports = { GetChannelInfo, GetVideoInfo, IDToCategory, YTDurationToSeconds }
