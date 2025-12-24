@@ -177,6 +177,10 @@ router.get("/list", async (req, res, next) => {
 
     try {
 
+        if (channel && channel == "any") {
+            channel = undefined;
+        }
+
         let channels = [];
         if (channel) {
             channels = [channel];

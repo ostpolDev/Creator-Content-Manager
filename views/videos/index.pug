@@ -94,6 +94,7 @@ block content
                         .control
                             .select.is-fullwidth
                                 select.input.channelSelect#channelSearch(autocomplete="off", data-list-target="videos", data-list-filter="channel")
+                                    option(value="any", selected=(!selected_channel)) Any
                                     each channel in channels
                                         option(value=channel.id, selected=(!selected_channel ? false : selected_channel == channel.id)) #{channel.name} 
                 .column.is-three-quarters
