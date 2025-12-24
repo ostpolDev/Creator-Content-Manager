@@ -23,6 +23,10 @@ block content
                     p.title #{(toView.asset_count || 0).toLocaleString()}
             .level-item.has-text-centered
                 div
+                    p.heading Downloaded assets
+                    p.title #{totalDownloadCount.toLocaleString()}
+            .level-item.has-text-centered
+                div
                     p.heading Favorites
                     p.title #{(toView.favorite_count || 0).toLocaleString()}
             .level-item.has-text-centered

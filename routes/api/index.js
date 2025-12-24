@@ -13,5 +13,6 @@ router.use("/videos", validation.ensureAuthenticated, require('./api_videos'));
 router.use("/resources", validation.ensureAuthenticated, require('./api_resources'));
 router.use("/comments", validation.ensureAuthenticated, require('./api_comments'));
 router.use("/games", validation.ensureAuthenticated, require('./api_games'));
+router.use("/notes", validation.ensureAuthenticated, require('./api_notes'));
 
 module.exports = router;

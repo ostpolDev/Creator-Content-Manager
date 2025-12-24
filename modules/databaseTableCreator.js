@@ -356,6 +356,80 @@ async function CreateTables(knex) {
         logger.info("Created the channel_descriptions table");
     }
 
+    let hasPlaylists = await knex.schema.hasTable("playlists");
+    if (!hasPlaylists) {
+        logger.info("Creating the playlists table");
+        await knex.schema.createTable("playlists", (table) => {
+            table.string("id").primary().notNullable().defaultTo(knex.fn.uuid());
+            table.string("title").notNullable();
+            table.integer("author_id").notNullable();
+            table.binary("description");
+            table.binary("rendered_description");
+            table.string("compression").defaultTo("none");
+            table.integer("asset_count").unsigned().defaultTo(0);
+            table.boolean("public").defaultTo(false).index();
+            table.foreign("author_id").references("users.id").onDelete("CASCADE");
+            table.timestamps(true, true);
+        })
+        logger.info("Created the playlists table");
+    }
+
+    let hasPlaylistUsers = await knex.schema.hasTable("playlist_users");
+    if (!hasPlaylistUsers) {
+        logger.info("Creating the playlist_users table");
+        await knex.schema.createTable("playlist_users", (table) => {
+            table.string("id").notNullable();
+            table.integer("user_id").notNullable();
+            table.primary(["id", "user_id"]);
+            table.tinyint("type").defaultTo(0).unsigned();
+            table.foreign("id").references("playlists.id").onDelete("CASCADE");
+            table.foreign("user_id").references("users.id").onDelete("CASCADE");
+        })
+        logger.info("Created the playlist_users table");
+    }
+
+    let hasPlaylistAssets = await knex.schema.hasTable("playlist_assets");
+    if (!hasPlaylistAssets) {
+        logger.info("Creating the playlist_assets table");
+        await knex.schema.createTable("playlist_assets", (table) => {
+            table.string("playlist_id").notNullable();
+            table.string("asset_id").notNullable();
+            table.primary(["playlist_id", "asset_id"]);
+            table.foreign("playlist_id").references("playlists.id").onDelete("CASCADE");
+            table.foreign("asset_id").references("assets.id").onDelete("CASCADE");
+        })
+        logger.info("Creating the playlist_assets table");
+    }
+
+    let hasNotes = await knex.schema.hasTable("notes");
+    if (!hasNotes) {
+        logger.info("Creating the notes table");
+        await knex.schema.createTable("notes", (table) => {
+            table.increments("id").notNullable().primary();
+            table.string("title", 255);
+            table.binary("content");
+            table.string("compression", 6);
+            table.timestamps(true, true);
+            table.string("preview", 64);
+            table.integer("author").notNullable();
+            table.foreign("author").references("users.id").onDelete("CASCADE");
+        })
+        logger.info("Created the notes table");
+    }
+
+    let hasAssetNotes = await knex.schema.hasTable("asset_notes");
+    if (!hasAssetNotes) {
+        logger.info("Creating the asset_notes table");
+        await knex.schema.createTable("asset_notes", (table) => {
+            table.increments("id").notNullable().primary();
+            table.integer("note_id").notNullable();
+            table.string("asset_id").notNullable().index();
+            table.foreign("note_id").references("notes.id").onDelete("CASCADE");
+            table.foreign("asset_id").references("assets.id").onDelete("CASCADE");
+        })
+        logger.info("Created the asset_notes table");
+    }
+
     logger.info(`Successfully checked for table changes in ${Date.now() - start}ms`);
 
     await MigrateVersion(knex);

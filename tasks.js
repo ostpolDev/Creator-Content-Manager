@@ -10,6 +10,7 @@ async function Run() {
     try {
 
         await Recount();
+        await RemoveStaleCachedNumbers();
 
     } catch (e) {
         console.error(e);
@@ -51,6 +52,20 @@ async function Recount() {
         }
 
         await Promise.all(proms);
+
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function RemoveStaleCachedNumbers() {
+    console.log("Removing stale cached numbers");
+    try {
+
+        const checkDate = new Date();
+        checkDate.setMinutes(checkDate.getMinutes() - 10);
+
+        await knex("number_cache").where("created_at", "<", checkDate).delete();
 
     } catch (e) {
         console.error(e);

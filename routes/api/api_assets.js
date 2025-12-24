@@ -279,6 +279,7 @@ const SORTS = {
 
 const ORDER_KEYS = Object.keys(ORDERS);
 const SORT_KEYS = Object.keys(SORTS);
+const PLAYLIST_MODES = ["exclusive", "optional"]
 
 router.get("/list", async (req, res, next) => {
     try {
@@ -293,7 +294,9 @@ router.get("/list", async (req, res, next) => {
         let resource = req.query.resource;
         let reference = req.query.reference;
         let user = req.query.user;
-
+        let playlist = req.query.playlist;
+        let playlistMode = req.query.playlistMode
+;
         let sort = req.query.sort;
         let order = req.query.order;
 
@@ -358,6 +361,36 @@ router.get("/list", async (req, res, next) => {
                     .andOn("asset_likes.user", "=", req.user.id)
                 })
                 .offset(skip).limit(limit).select(select)
+        } else if (playlist) {
+            if (!PLAYLIST_MODES.includes(playlistMode)) {
+                playlistMode = PLAYLIST_MODES[0];
+            }
+
+            select.push("asset_likes.asset as like_id");
+            switch (playlistMode) {
+                case "exclusive":
+                    assetQuery = knex("playlist_assets").where({"playlist_assets.playlist_id": playlist})
+                        .innerJoin("assets", "assets.id", "=", "playlist_assets.asset_id")
+                        .innerJoin("users", "users.id", "=", "assets.added_by")
+                        .leftOuterJoin("asset_likes", (f) => {
+                            f.on("asset_likes.asset", "=", "assets.id")
+                            .andOn("asset_likes.user", "=", req.user.id)
+                        })
+                        .offset(skip).limit(limit).select(select);
+                    break;
+                case "optional":
+                    assetQuery = knex("assets")
+                        .innerJoin("users", "users.id", "=", "assets.added_by")
+                        .leftOuterJoin("asset_likes", (f) => {
+                            f.on("asset_likes.asset", "=", "assets.id")
+                            .andOn("asset_likes.user", "=", req.user.id)
+                        })
+                        .leftOuterJoin("playlist_assets", "playlist_assets.asset_id", "=", "assets.id")
+                        .offset(skip).limit(limit).select([...select, "playlist_assets.asset_id as playlist_asset_id"]);
+                    break;
+                default:
+                    return res.status(400).json({ success: false, msg: "Invalid playlist mode", modes: PLAYLIST_MODES, playlistMode });
+            }
         } else {
             select.push("asset_likes.asset as like_id");
             assetQuery = knex("assets")
@@ -411,11 +444,12 @@ router.get("/list", async (req, res, next) => {
             }
         }
 
-        assetQuery.then((assets) => {            
+        assetQuery.then((assets) => {         
             return res.status(200).json({success: true, items: assets.map(x => ({
                 ...x,
                 liked: type == "fav" || x.like_id != null,
-                is_author: x.author_id == req.user.id
+                is_author: x.author_id == req.user.id,
+                isInPlaylist: playlistMode !== "optional" ? null : x.playlist_asset_id != null,
             })), duration: Date.now() - start, reachedEnd: assets.length < limit, sort, order});
         }).catch((err) => {
             return next(err);
@@ -643,5 +677,7 @@ router.post("/modifyReference", async (req, res, next) => {
         return next(e);
     }
 })
+
+router.use("/playlists", require('./api_playlists.js'));
 
 module.exports = router;

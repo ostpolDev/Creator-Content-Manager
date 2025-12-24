@@ -1,3 +1,5 @@
+import "../assets/playlist.js"
+
 const confirmDeleteButton = document.getElementById("confirmDeleteButton");
 const deleteButton = document.getElementById("deleteButton");
 const deleteModal = document.getElementById("deleteModal");

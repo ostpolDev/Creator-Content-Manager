@@ -1,7 +1,13 @@
 import { CreateLikedWhenString, CreateSmartTimeString, MakeButton } from "../helpers.js";
 import { Play } from "../player.js";
 
-function MakeAssetElement(asset) {
+/**
+ * 
+ * @param {any} asset 
+ * @param {string?} customAction 
+ * @returns {HTMLTableRowElement}
+ */
+function MakeAssetElement(asset, customAction) {
     let row = document.createElement("tr");
     row.setAttribute("data-asset", asset.id);
 
@@ -38,26 +44,63 @@ function MakeAssetElement(asset) {
     downloadIcon.appendChild(downloadIconText);
     buttons.appendChild(downloadButton);
 
-    let likeButton = document.createElement("button");
-    likeButton.classList.add("button", "is-rounded", "iconButton");
-    if (asset.liked) {
-        likeButton.classList.add("is-warning");
-        if (asset.like_creation) {
-            likeButton.title = CreateLikedWhenString(asset.like_creation);
+    if (!customAction) {
+        let likeButton = document.createElement("button");
+        likeButton.classList.add("button", "is-rounded", "iconButton");
+        if (asset.liked) {
+            likeButton.classList.add("is-warning");
+            if (asset.like_creation) {
+                likeButton.title = CreateLikedWhenString(asset.like_creation);
+            }
         }
+
+        let likeButtonIcon = document.createElement("span");
+        likeButtonIcon.classList.add("icon");
+    
+        let likeButtonIconText = document.createElement("span");
+        likeButtonIconText.innerText = asset.liked ? "award_star" : "star";
+        likeButtonIcon.appendChild(likeButtonIconText);
+        likeButton.appendChild(likeButtonIcon);
+        buttons.appendChild(likeButton);
+        likeButton.addEventListener("click", () => {
+            LikeAsset(likeButton, asset.id);
+        })
+    } else {
+        const parts = customAction.split(";");
+
+        let customActionButton = document.createElement("button");
+        customActionButton.classList.add("button", "is-rounded", "iconButton");
+        buttons.appendChild(customActionButton);
+
+        let customActionButtonIcon = document.createElement("span");
+        customActionButtonIcon.classList.add("icon");
+        customActionButton.appendChild(customActionButtonIcon);
+
+        let customActionButtonIconText = document.createElement("span");
+        customActionButtonIconText.innerText = parts[1] ? parts[1] : "star";
+        customActionButtonIcon.appendChild(customActionButtonIconText);
+
+        customActionButton.addEventListener("click", () => {
+            customActionButton.classList.add("is-loading");
+            try {
+
+                const func = window[parts[0]];
+                if (!func) {
+                    console.error(`Custom method "${parts[0]} not found"`);
+                    return;
+                }
+
+                func(customActionButton, asset.id);
+                
+
+            } catch (e) {
+                console.error(e);
+            } finally {
+                customActionButton.classList.remove("is-loading");
+            }
+        })
     }
 
-    let likeButtonIcon = document.createElement("span");
-    likeButtonIcon.classList.add("icon");
-
-    let likeButtonIconText = document.createElement("span");
-    likeButtonIconText.innerText = asset.liked ? "award_star" : "star";
-    likeButtonIcon.appendChild(likeButtonIconText);
-    likeButton.appendChild(likeButtonIcon);
-    buttons.appendChild(likeButton);
-    likeButton.addEventListener("click", () => {
-        LikeAsset(likeButton, asset.id);
-    })
 
     let nameElem = document.createElement("td");
     let nameLink = document.createElement("a");

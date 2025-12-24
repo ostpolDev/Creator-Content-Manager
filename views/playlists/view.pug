@@ -1,0 +1,192 @@
+extends ../layout
+
+block head
+    script.
+        const DEF = {
+            playlist: "#{playlist.id}",
+        }
+    script(src="/js/playlists/view.js" defer) 
+    script(src="/js/playlists/playlistcontrols.js" type="module" defer) 
+
+
+    if view == "assets"
+        script(src="/js/assets.js" type="module" defer) 
+    else if view == "members"
+        link(rel="stylesheet", href="/bulma/bulma-list.css")
+        script(src="/js/playlists/members.js" type="module" defer)
+    
+
+block modals
+    .modal#addAssetsModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title Add assets
+                button.delete(data-modal="close")
+            section.modal-card-body
+                .field
+                    label.label(for="assetSearch") Search
+                    .control.has-icons-left
+                        input.input#assetSearch(type="text" placeholder="Search..." autocomplete="off")
+                        span.icon.is-small.is-left
+                            span search
+
+                table.table.is-striped.is-outlined.is-hoverable.is-fullwidth
+                    thead
+                        tr
+                            th Name
+                            th Action
+                    tbody#assetSearchBody
+
+
+            footer.modal-card-foot
+                .buttons
+                    button.button(data-modal="close")
+                        span.icon
+                            span check
+                        span Done
+
+block content
+    .container
+
+        nav.breadcrumb.has-succeeds-separator
+            ul
+                li
+                    a(href="/assets") Assets
+                li
+                    a(href="/assets/playlists") Playlists
+                li.is-active
+                    a(href="#") #{playlist.title}
+
+        .columns
+            .column.is-three-quarters
+                h1.title #{playlist.title}
+                p.subtitle #{assetCount.toLocaleString()} asset#{assetCount == 1 ? '' : 's'}
+
+                .buttons.block
+                    if canAdd
+                        button.button(data-add-assets)
+                            span.icon
+                                span library_add
+                            span Add assets
+
+                if playlist.rendered_description
+                    .content.block
+                        p!=playlist.rendered_description
+
+                    br
+
+                if isAuthor
+                    .tabs.is-boxed#tabs
+                        ul
+                            li(class=(view == "assets" ? "is-active" : ""))
+                                a(href="?view=assets#tabs")
+                                    span.icon.is-small
+                                        span files
+                                    span Assets
+                            li(class=(view == "members" ? "is-active" : ""))
+                                a(href="?view=members#tabs")
+                                    span.icon.is-small
+                                        span people
+                                    span Members
+
+                if view == "assets" || !isAuthor
+                    .columns.block
+                        .column
+                            .field
+                                label.label(for="searchInput") Search
+                                .control.has-icons-left
+                                    input.input#searchInput(type="text" placeholder="Search..." name="q" value=(search || ""), autocomplete="off")
+                                    span.icon.is-small.is-left
+                                        span search
+                        .column.is-3
+                            .field
+                                label.label(for="sort") Sort by 
+                                .control
+                                    .select.is-fullwidth
+                                        select#sort(autocomplete="off")
+                                            option(value="created_at" selected) Upload date
+                                            option(value="name") Name
+                                            option(value="size") Size
+                                            option(value="type") Type
+                        .column.is-3
+                            .field
+                                label.label(for="order") Order 
+                                .control
+                                    .select.is-fullwidth
+                                        select#order(autocomplete="off")
+                                            option(value="1") Ascending
+                                            option(value="-1" selected) Descending
+                    table.table.is-fullwidth.is-striped.is-hoverable
+                        thead
+                            th Action
+                            th Name
+                            th Author
+                            th Uploaded
+                            th Tags
+                        tbody#assetList(data-filter="playlist:" + playlist.id, data-custom-action="removeFromPlaylist;remove")
+
+                    button.button.is-link.is-fullwidth.is-outlined#loadMoreButton
+                        span Load More
+
+                else if view == "members" && isAuthor
+                    .field.block
+                        label.label Search
+                        .control.has-icons-left
+                            input.input#userSearchInput(type="text" placeholder="Search for people..." autocomplete="off" value="")
+                            span.icon.is-small.is-left
+                                span search
+                    
+                    .tags#userSearchResult
+                    
+                    button.button.is-fullwidth.is-loading#membersLoading Loading
+                    .list.has-visible-pointer-controls.has-overflow-ellipsis#userBody
+
+
+            .column.is-one-quarter
+                .is-position-sticky(style="height: fit-content; top: 10px;")
+                    .buttons
+                        if isAuthor
+                            a.button.iconButton.is-rounded(href="/assets/playlists/edit/" + playlist.id) 
+                                span.icon
+                                    span edit
+                        if canAdd
+                            button.button.iconButton.is-rounded(data-add-assets)
+                                span.icon
+                                    span library_add
+
+                        button.button.iconButton.is-rounded#playlistPlay
+                            span.icon
+                                span playlist_play
+
+                        button.button.iconButton.is-rounded#playlistShuffle
+                            span.icon
+                                span shuffle
+
+                        if isAuthor
+                            button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
+                                span.icon
+                                    span delete
+
+                    .box.content
+                        p
+                            strong Created by
+                            br
+                            a.ellipsed(href="/users/v/" + playlist.author_username) #{playlist.author_display_name}
+                        p
+                            strong Creation date
+                            br
+                            time(datetime=playlist.created_at, data-format="smart")
+                        p
+                            strong Assets
+                            br
+                            span #{assetCount.toLocaleString()}
+                        p
+                            strong Public
+                            br
+                            span #{playlist.public}
+                        p
+                            strong ID
+                            br
+                            span.ellipsed #{playlist.id}
+    

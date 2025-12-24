@@ -1,5 +1,6 @@
 import { CreateLikedWhenString } from "../helpers.js";
 import { GetAssetContents } from "./assetFunctions.js";
+import "./playlist.js"
 
 const placeholderButton = document.getElementById("placeholderButton");
 if (placeholderButton) {

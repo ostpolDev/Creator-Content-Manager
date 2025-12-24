@@ -1,6 +1,6 @@
-const VERSION = "SQL-0.12";
+const VERSION = "SQL-0.13";
 
-const CHANNEL_KEYWORDS = {
+const CHANNEL_DESCRIPTION_KEYWORDS = {
     "TITLE": "The current title of the video.",
     "LEGAL": "The combined legal information of all of the assets used in the video.",
     "GAME_NAME": "The name of the game used in the video.",
@@ -10,4 +10,4 @@ const CHANNEL_KEYWORDS = {
     "STARRING": "The names of the people starring in the video."
 }
 
-module.exports = { VERSION, CHANNEL_KEYWORDS }
+module.exports = { VERSION, CHANNEL_KEYWORDS: CHANNEL_DESCRIPTION_KEYWORDS }

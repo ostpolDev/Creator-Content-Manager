@@ -45,9 +45,15 @@ router.get("/v/:username", validation.ensureAuthenticated, async (req, res, next
             return next();
         }
 
+        const totalDownloadCount = await cache.GetCachedNumber(`U:${user[0].id}-total-downloads`, async () => {
+            let newCount = await knex("downloads").where({user: user[0].id}).sum("count");
+            return newCount.sum || 0;
+        })
+
         return res.render("users/view", {
             title: user[0].display_name,
-            toView: user[0]
+            toView: user[0],
+            totalDownloadCount
         })
 
     } catch (e) {

@@ -150,7 +150,7 @@ router.get("/download/:id", async (req, res, next) => {
     }
 })
 
-const VIEWS = ["videos", "comments", "references"];
+const VIEWS = ["videos", "comments", "references", "playlists", "notes"];
 
 router.get("/v/:id", async (req, res, next) => {
     try {
@@ -197,6 +197,22 @@ router.get("/v/:id", async (req, res, next) => {
             .innerJoin("channels", "channels.id", "=", "channel_members.channel")
             .select(["channels.id", "channels.name"])
 
+        const downloadCount = await knex("downloads").where({asset: asset[0].id, user: req.user.id}).select(["count", "updated_at"]).limit(1);
+
+        const videoCount = await GetCachedNumber(`A:${asset[0].id}-video_count-${req.user.id}`, async () => {
+            const videoCount = await knex("video_assets")
+                .innerJoin("videos", "videos.id", "=", "video_assets.video")
+                .whereIn("videos.channel", channels.map(x => x.id)).andWhere("video_assets.asset", "=", asset[0].id).count("videos.id as CNT");
+            
+            return videoCount[0].CNT;
+        })
+
+
+        // TODO: Maybe cache?
+        const noteCount = await knex("asset_notes").where({"asset_notes.asset_id": asset[0].id, "notes.author": req.user.id})
+            .innerJoin("notes", "notes.id", "=", "asset_notes.note_id")
+            .count("notes.id as CNT");
+
         res.render("assets/view", {
             title: asset[0].name,
             asset: asset[0],
@@ -205,7 +221,11 @@ router.get("/v/:id", async (req, res, next) => {
             licenseTypes: assetHelpers.licenseTypes,
             channel: channel ? channel : asset[0].resource_id == "GLOBAL" ? "GLOBAL" : null,
             commentCount,
-            channels
+            channels,
+            downloadCount: downloadCount[0] ? downloadCount[0].count : -1,
+            lastDownload: downloadCount[0] ? downloadCount[0].updated_at : -1,
+            videoCount,
+            noteCount: noteCount[0].CNT
         })
     } catch (e) {
         return next(e);
@@ -316,5 +336,6 @@ router.get("/edit/:id", async (req, res, next) => {
 })
 
 router.use("/batches", require('./batches'));
+router.use("/playlists", require('./playlists'));
 
 module.exports = router;

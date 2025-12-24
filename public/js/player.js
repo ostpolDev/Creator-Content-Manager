@@ -1,3 +1,5 @@
+import { shuffleArray } from "./helpers.js";
+
 const musicPlayer = document.getElementById("musicPlayer");
 
 const ELEM = {
@@ -51,9 +53,7 @@ ELEM.playButton.addEventListener("click", () => {
     }
 })
 
-function Play(asset) {
-    console.log(asset);
-    
+function Play(asset, onDone) {
     return new Promise((res, rej) => {
         if (!asset) {
             musicPlayer.classList.add("is-hidden");
@@ -100,10 +100,96 @@ function Play(asset) {
         }
         ELEM.audio.onended = () => {
             ELEM.playButtonIcon.innerText = "restart_alt"
+            if (onDone) {
+                onDone();
+            }
         }
 
         ELEM.progress.value = 0;
     })
+}
+
+let currentPlaylistIndex = 0;
+let maxPlaylistIndex = 0;
+let playlistIDS = [];
+
+/**
+ * 
+ * @param {HTMLButtonElement?} button 
+ * @param {string} playlistid 
+ * @param {boolean} shuffle 
+ */
+async function PlayPlaylist(button, playlistid, shuffle) {
+    console.log(`Playing playlist: ${playlistid} (Shuffle: ${shuffle})`);
+    if (button) {
+        button.classList.add("is-loading");
+    }
+
+    ELEM.closeButton?.click();
+
+    currentPlaylistIndex = 0;
+    maxPlaylistIndex = 0;
+    playlistIDS = [];
+    
+    try {
+
+        const params = new URLSearchParams({
+            type: "music",
+            playlist: playlistid
+        });
+
+        const res = await fetch(`/api/assets/list?${params.toString()}`);
+        const json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            return;
+        }
+
+        playlistIDS = json.items.map(x => x.id);
+        maxPlaylistIndex = json.items.length;
+        if (shuffle) {
+            shuffleArray(playlistIDS);
+        }
+
+        await progressPlaylist();
+        
+    } catch (e) {
+        console.error(e);
+    } finally {
+        if (button) {
+            button.classList.remove("is-loading");
+        }
+    }
+}
+
+async function progressPlaylist() {
+    try {
+
+        if (currentPlaylistIndex == maxPlaylistIndex) {
+            console.log("Playlist done playing");
+            return;
+        }
+
+        const item = playlistIDS[currentPlaylistIndex];
+        
+        const res = await fetch(`/api/assets/info/${encodeURIComponent(item)}`);
+        const json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            return;
+        }
+
+        currentPlaylistIndex++;
+
+        Play(json.asset, () => {
+            progressPlaylist();
+        })
+
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 function updateProgressText(val) {
@@ -132,4 +218,4 @@ function formatString(string) {
     return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
-export { Play }
+export { Play, PlayPlaylist }

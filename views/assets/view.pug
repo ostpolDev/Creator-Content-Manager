@@ -16,6 +16,12 @@ block head
         if asset.added_by == user.id
             script(src="/js/assets/references.js" type="module" defer) 
 
+    else if view == "playlists"
+        script(src="/js/assets/playlist_tab.js" type="module" defer) 
+
+    else if view == "notes"
+        script(src="/js/assets/notes.js" type="module" defer) 
+
 block modals
     if isAuthor
         .modal#deleteModal
@@ -38,6 +44,9 @@ block modals
                             span.icon
                                 span delete
                             span Delete forever
+
+    include ../modals/playlistAdd.pug
+    include ../modals/assetNotes.pug
 
 block content
     .container
@@ -130,7 +139,7 @@ block content
                             a(href="?view=videos#tabs")
                                 span.icon.is-small
                                     span videocam
-                                span Videos
+                                span Videos#{videoCount > 0 ? ` (${videoCount.toLocaleString()})`: ""}
                         li(class=(view == "comments" ? "is-active" : ""))
                             a(href="?view=comments#tabs")
                                 span.icon.is-small
@@ -141,6 +150,16 @@ block content
                                 span.icon.is-small
                                     span attach_file
                                 span References
+                        li(class=(view == "playlists" ? "is-active" : ""))
+                            a(href="?view=playlists#tabs")
+                                span.icon.is-small
+                                    span playlist_play
+                                span Playlists
+                        li(class=(view == "notes" ? "is-active" : ""))
+                            a(href="?view=notes#tabs")
+                                span.icon.is-small
+                                    span note_stack
+                                span Notes#{noteCount > 0 ? ` (${noteCount.toLocaleString()})` : ""}
 
                 if view == "comments"
 
@@ -208,70 +227,133 @@ block content
                                 th Tags
                             tbody(data-list="assets" data-list-filter=(`reference:${asset.id}`), data-list-load="true")
 
-            .column.is-one-quarter
-                .buttons
-                    if isAuthor
-                        a.button.iconButton.is-rounded(href="/assets/edit/" + asset.id) 
-                            span.icon
-                                span edit
-                    a.button.iconButton.is-rounded(href="/assets/download/" + asset.id) 
-                        span.icon
-                            span download
-                    button.button.is-loading.is-rounded.iconButton#likeButton
-                        span.icon
-                            span star
-                    if asset.source
-                        a.button.iconButton.is-rounded(href=asset.source, title=asset.source)
-                            span.icon
-                                span link 
-                    if isAuthor
-                        button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
-                            span.icon
-                                span delete
+                else if view == "playlists"
 
-                .box.content
-                    p
-                        strong Uploaded by
-                        br
-                        a.ellipsed(href="/users/v/" + asset.author_id) #{asset.author_display_name} 
-                    p
-                        strong Upload date
-                        br
-                        time(datetime=asset.created_at, data-format="smart")
-                    if asset.created_at.getTime() != asset.updated_at.getTime()
+                    .block
+                        button.button.has-icon#playlistAddToPlaylistButton
+                            span.icon
+                                span playlist_add
+                            span Add to playlist
+
+                    table.table.is-fullwidth.is-striped.is-hoverable
+                        thead
+                            tr
+                                th Name
+                                th Action
+                        tbody#playlistTabTableBody
+
+                    button.button.is-fullwidth.is-loading#loadMorePlaylistButton
+
+                else if view == "notes"
+
+                    .notification 
+                        p You can create private notes for every assets that can only be viewed by yourself if you intend to add more information to this asset that you would like to keep to yourself.
+
+                    .block
+                        .buttons
+                            button.button.has-icon#newNoteButton
+                                span.icon
+                                    span note_add
+                                span Create a new note
+                            a.button.has-icon(href="/notes")
+                                span.icon
+                                    span note_stack
+                                span View all my notes
+
+                    .block
+                        table.table.is-fullwidth.is-striped.is-hoverable
+                            thead
+                                tr
+                                    th Title 
+                                    th Content
+                                    th Created at
+                            tbody#notesBody
+
+                    button.button.is-fullwidth.is-loading#loadMoreNotesButton Load More
+
+
+            .column.is-one-quarter
+                .is-position-sticky(style="height: fit-content; top: 10px;")
+                    .buttons
+                        if isAuthor
+                            a.button.iconButton.is-rounded(href="/assets/edit/" + asset.id) 
+                                span.icon
+                                    span edit
+                        a.button.iconButton.is-rounded(href="/assets/download/" + asset.id) 
+                            span.icon
+                                span download
+                        button.button.is-loading.is-rounded.iconButton#likeButton
+                            span.icon
+                                span star
+                        if asset.source
+                            a.button.iconButton.is-rounded(href=asset.source, title=asset.source)
+                                span.icon
+                                    span link 
+                        button.button.iconButton.is-rounded#playlistButton
+                            span.icon
+                                span playlist_add
+                        if isAuthor
+                            button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
+                                span.icon
+                                    span delete
+
+                    .box.content
                         p
-                            strong Last change
+                            strong Uploaded by
                             br
-                            time(datetime=asset.updated_at, data-format="smart")
-                    p
-                        strong Size
-                        br
-                        span(title=asset.size.toLocaleString() + " B") #{bytesToSize(asset.size)}
-                    p
-                        strong Extension
-                        br
-                        | #{asset.extension}
-                    p
-                        strong Type
-                        br
-                        | #{asset.mime}
-                    p
-                        strong Batch
-                        br
-                        a.ellipsed(href="/assets/batches/v/" + asset.batch, title=asset.batch) #{asset.batch_name || asset.batch}
-                    p
-                        strong Original name
-                        br
-                        span.ellipsed(title=asset.original_name) #{asset.original_name}
-                    p
-                        strong Favorites
-                        br
-                        span #{asset.favorites.toLocaleString()}
-                    p
-                        strong Downloads
-                        br
-                        span #{asset.downloads.toLocaleString()}
-                    p
-                        strong ID
-                        br
-                        span.ellipsed(title=asset.id) #{asset.id}
+                            a.ellipsed(href="/users/v/" + asset.author_username) #{asset.author_display_name} 
+                        p
+                            strong Upload date
+                            br
+                            time(datetime=asset.created_at, data-format="smart")
+                        if asset.created_at.getTime() != asset.updated_at.getTime()
+                            p
+                                strong Last change
+                                br
+                                time(datetime=asset.updated_at, data-format="smart")
+                        p
+                            strong Size
+                            br
+                            span(title=asset.size.toLocaleString() + " B") #{bytesToSize(asset.size)}
+                        p
+                            strong Extension
+                            br
+                            | #{asset.extension}
+                        p
+                            strong Type
+                            br
+                            | #{asset.mime}
+                        p
+                            strong Batch
+                            br
+                            a.ellipsed(href="/assets/batches/v/" + asset.batch, title=asset.batch) #{asset.batch_name || asset.batch}
+                        p
+                            strong Original name
+                            br
+                            span.ellipsed(title=asset.original_name) #{asset.original_name}
+                        p
+                            strong Favorites
+                            br
+                            span #{asset.favorites.toLocaleString()}
+                        p
+                            strong Downloads
+                            br
+                            span #{asset.downloads.toLocaleString()}
+                        if downloadCount > 0
+                            p
+                                strong Downloaded by you
+                                br
+                                span #{downloadCount.toLocaleString()}
+                        if lastDownload !== -1
+                            p
+                                strong Last time downloaded by you
+                                br
+                                time(datetime=lastDownload, data-format="smart")
+                        p
+                            strong My videos with this asset
+                            br
+                            span #{videoCount.toLocaleString()}
+                        p
+                            strong ID
+                            br
+                            span.ellipsed(title=asset.id) #{asset.id}
