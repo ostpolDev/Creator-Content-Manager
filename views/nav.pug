@@ -101,7 +101,7 @@ nav.navbar.is-light(role="navigation" aria-label="main navigation")
                             span.icon
                                 span account_circle
                             span Channels
-                        .navbar-dropdown
+                        .navbar-dropdown#channelNavDropdown
                             if last_channel
                                 a.navbar-item(href="/channels/v/" + last_channel.id)
                                     span.icon
@@ -116,6 +116,8 @@ nav.navbar.is-light(role="navigation" aria-label="main navigation")
                                 span.icon
                                     span search
                                 span Search
+                            .navbar-divider.is-hidden#channelNavListDivider
+                            button.button.is-fullwidth.is-loading#channelNavLoading(style="border: none;")
 
                     .navbar-item.has-dropdown.is-hoverable
                         a.navbar-link(href="/users") 

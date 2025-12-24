@@ -345,3 +345,82 @@ function MakeRemoveableTag(user, result) {
 }
 
 //#endregion
+
+//#region Channel nav dropdown
+
+const channelListDivider = document.getElementById("channelNavListDivider");
+const channelDropdown = document.getElementById("channelNavDropdown");
+const channelNavLoading = document.getElementById("channelNavLoading");
+
+let hasCheckedChannels = false;
+let fetchedChannels = 0;
+
+if (channelDropdown) {
+    const item = channelDropdown.closest(".navbar-item");
+    console.log(item);
+    
+    item.addEventListener("mouseover", () => {
+        checkChannels();
+    })
+
+    item.addEventListener("click", () => {
+        checkChannels();
+    })
+
+    async function checkChannels() {
+        if (hasCheckedChannels) {
+            return;
+        }
+
+        hasCheckedChannels = true;
+
+        console.log("Fetching channel list");
+        
+
+        try {
+
+            const res = await fetch("/api/channels/list?limit=5");
+            const json = await res.json();
+
+            if (!json.success) {
+                console.error(json.msg || "Something went wrong...");
+                return;
+            }
+
+            fetchedChannels = json.items.length;
+
+            json.items.forEach(channel => {
+                const navItem = document.createElement("a");
+                navItem.classList.add("navbar-item");
+                navItem.href = `/channels/v/${channel.id}`;
+
+                const icon = document.createElement("span");
+                icon.classList.add("icon");
+                navItem.appendChild(icon);
+
+                const iconText = document.createElement("span");
+                iconText.innerText = "account_circle";
+                icon.appendChild(iconText);
+
+                const text = document.createElement("span");
+                text.innerText = channel.name;
+                navItem.appendChild(text);
+
+                channelListDivider.insertAdjacentElement("afterend", navItem);
+            })
+            
+
+        } catch (e) {
+            console.error(e);
+        } finally {
+            channelNavLoading.remove();
+            if (fetchedChannels <= 0) {
+                channelListDivider.remove();
+            } else {
+                channelListDivider.classList.remove("is-hidden");
+            }
+        }
+    }
+}
+
+//#endregion
