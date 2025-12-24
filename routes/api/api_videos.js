@@ -184,6 +184,8 @@ router.get("/list", async (req, res, next) => {
         let channels = [];
         if (channel) {
             channels = [channel];
+            const accessCheck = await knex("channel_members").whereIn("channel", channels).andWhere({user: req.user.id}).select("channel_members.channel");
+            channels = accessCheck.map(x => x.channel);
         } else {
             channels = await knex("channel_members").where({user: req.user.id}).select("channel");
             channels = channels.map(x => x.channel);
