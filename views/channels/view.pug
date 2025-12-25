@@ -57,7 +57,7 @@ block content
             .level-item.has-text-centered
                 div
                     p.heading Views
-                    p.title(title=channel.views) #{channel.views.toLocaleString()}
+                    p.title(title=channel.views) #{(channel.views || 0).toLocaleString()}
             .level-item.has-text-centered
                 div
                     p.heading Videos
@@ -65,11 +65,11 @@ block content
             .level-item.has-text-centered
                 div
                     p.heading Registered videos
-                    p.title(title=videoCount) #{videoCount.toLocaleString()}
+                    p.title(title=videoCount) #{(videoCount || 0).toLocaleString()}
             .level-item.has-text-centered
                 div
                     p.heading Total duration
-                    p.title(title=`${totalDuration.toLocaleString()} seconds`) #{formatDurationNumber(totalDuration)}
+                    p.title(title=`${(totalDuration || 0).toLocaleString()} seconds`) #{formatDurationNumber(totalDuration || 0)}
 
         .columns.mt-2
             .column.is-three-quarters
