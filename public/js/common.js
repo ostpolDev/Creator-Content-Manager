@@ -357,7 +357,6 @@ let fetchedChannels = 0;
 
 if (channelDropdown) {
     const item = channelDropdown.closest(".navbar-item");
-    console.log(item);
     
     item.addEventListener("mouseover", () => {
         checkChannels();

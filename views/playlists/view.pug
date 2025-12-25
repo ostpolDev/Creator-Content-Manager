@@ -117,6 +117,12 @@ block content
                                         select#order(autocomplete="off")
                                             option(value="1") Ascending
                                             option(value="-1" selected) Descending
+
+                    .block
+                        label.checkbox
+                            input#compactCheck(type="checkbox" autocomplete="off")
+                            |  Compact view
+
                     table.table.is-fullwidth.is-striped.is-hoverable
                         thead
                             th Action
