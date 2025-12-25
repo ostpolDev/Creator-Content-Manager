@@ -98,7 +98,7 @@ router.get("/v/:id", async (req, res, next) => {
             videoCount, commentCount,
             preset,
             keywords: CHANNEL_KEYWORDS,
-            totalDuration
+            totalDuration: typeof totalDuration !== "undefined" ? totalDuration : 0
         })
 
     } catch (e) {
