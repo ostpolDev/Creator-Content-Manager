@@ -114,7 +114,7 @@ router.get("/list", async (req, res, next) => {
                 .limit(limit).offset(skip).orderBy("created_at", "desc")
                 .select([
                     "notes.title", "notes.created_at", "notes.updated_at", "notes.preview",
-                    "assets.name as asset_title", "assets.id as asset_id"
+                    "assets.name as asset_title", "assets.id as asset_id", "notes.id"
                 ]);
 
             return res.status(200).json({success: true, notes, reachedEnd: notes.length < limit});
