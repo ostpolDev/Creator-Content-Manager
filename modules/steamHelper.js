@@ -1,3 +1,4 @@
+const { Knex } = require('knex');
 const logger = require('./logger');
 const { CompressString } = require("./textHelpers");
 
@@ -8,9 +9,10 @@ const URL_ID_REGEX = /\/(\d{1,})\//i;
 /**
  * 
  * @param {string} id 
+ * @param {Knex} knex 
  * @returns 
  */
-async function GetSteamGameInfo(id) {
+async function GetSteamGameInfo(id, knex) {
     if (!id) {
         return null;
     }
@@ -48,6 +50,7 @@ async function GetSteamGameInfo(id) {
         const json = await result.json();
 
         if (Object.keys(json).length <= 0) {
+            logger.error(`Steam request failed. Returned object contains no keys`);
             return null;
         }
 
@@ -61,7 +64,7 @@ async function GetSteamGameInfo(id) {
         const data = game.data;
         gameInfo.game.name = data.name;
 
-        const compressedDescription = CompressString(data.detailed_description || data.about_the_game || data.short_description)
+        const compressedDescription = CompressString(data.detailed_description || data.about_the_game || data.short_description, false, knex)
 
         gameInfo.game.description = compressedDescription.text;
         gameInfo.game.compression = compressedDescription.compression;
@@ -87,6 +90,7 @@ async function GetSteamGameInfo(id) {
 
     } catch (e) {
         logger.error(e);
+        logger.error(e.stack)
         return null;
     }
 }

@@ -36,7 +36,7 @@ router.post("/add", async (req, res, next) => {
         let createdVideoID;
 
         if (videoId && videoId.trim() != "") { // Add YouTube video
-            let videoResult = await GetVideoInfo(videoId);
+            let videoResult = await GetVideoInfo(videoId, knex);
             if (!videoResult) {
                 return res.status(500).json({success: false, msg: "Something went wrong"});
             }
@@ -133,7 +133,7 @@ router.post("/refresh", async (req, res, next) => {
             return res.status(400).json({success: false, msg: "Please wait before refreshing the video again"});
         }
 
-        let videoResult = await GetVideoInfo(video[0].youtube_id);
+        let videoResult = await GetVideoInfo(video[0].youtube_id, knex);
         if (!videoResult) {
             return res.status(500).json({success: false, msg: "Something went wrong"});
         }
@@ -395,7 +395,7 @@ router.post("/edit/:id", async (req, res, next) => {
         if (!video[0].youtube_id && youtube || (youtube && video[0].youtube_id != youtube)) {
             logger.info(`Updating video YouTube information: ${video[0].id}`);
             
-            let videoInfo = await GetVideoInfo(youtube);
+            let videoInfo = await GetVideoInfo(youtube, knex);
             if (!videoInfo) {
                 return res.status(400).json({success: false, msg: [{
                     msg: "Could not get video info",

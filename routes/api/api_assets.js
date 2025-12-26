@@ -128,10 +128,10 @@ router.post("/add", [
                     let shouldCompress = description && renderedDescription.length > 1000;
 
                     if (shouldCompress) {
-                        description = textHelpers.CompressString(description, true).text;
-                        renderedDescription = textHelpers.CompressString(renderedDescription, true).text;
+                        description = textHelpers.CompressString(description, true, knex).text;
+                        renderedDescription = textHelpers.CompressString(renderedDescription, true, knex).text;
                         if (legalText) {
-                            legalText = textHelpers.CompressString(legalText, true).text;
+                            legalText = textHelpers.CompressString(legalText, true, knex).text;
                         }
                     }
 
@@ -230,10 +230,10 @@ router.post("/edit", [
         let renderedDescription = await marked.markAndSanitize(description);
         let shouldCompress = description && renderedDescription.length > 1000;
         if (shouldCompress) {
-            description = textHelpers.CompressString(description, true).text;
-            renderedDescription = textHelpers.CompressString(renderedDescription, true).text;
+            description = textHelpers.CompressString(description, true, knex).text;
+            renderedDescription = textHelpers.CompressString(renderedDescription, true, knex).text;
             if (legalText) {
-                legalText = textHelpers.CompressString(legalText, true).text;
+                legalText = textHelpers.CompressString(legalText, true, knex).text;
             }
         }
 

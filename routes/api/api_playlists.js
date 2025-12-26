@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { knex } = require('../../modules/database');
 const { markAndSanitize } = require('../../modules/marked');
-const { CompressString, UnzipString } = require('../../modules/textHelpers')
+const { CompressString } = require('../../modules/textHelpers')
 
 router.post("/add", async (req, res, next) => {
     const name = req.body.name;
@@ -20,8 +20,8 @@ router.post("/add", async (req, res, next) => {
 
         const rendered_description = await markAndSanitize(description);
 
-        const descCompResult = CompressString(description, true);
-        const renderedCompResult = CompressString(rendered_description, true);
+        const descCompResult = CompressString(description, true, knex);
+        const renderedCompResult = CompressString(rendered_description, true, knex);
 
         const createResult = await knex("playlists").insert({
             title: name,

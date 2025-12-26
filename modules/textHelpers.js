@@ -1,9 +1,16 @@
 const zlib = require("node:zlib");
 const sanitize = require("sanitize-filename");
 const logger = require("./logger");
-const { knex } = require("./database");
+const { Knex } = require("knex");
 
-function CompressString(input, force) {
+/**
+ * 
+ * @param {string} input 
+ * @param {boolean} force 
+ * @param {Knex} knex 
+ * @returns 
+ */
+function CompressString(input, force, knex) {
     if (!input) {
         return undefined;
     }
