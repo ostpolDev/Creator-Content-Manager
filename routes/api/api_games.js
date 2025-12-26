@@ -25,8 +25,8 @@ router.post("/addSteam", async (req, res, next) => {
         if (existing[0]) {
             return res.status(400).json({success: false, msg: "Game already exists", redirect: `/games/v/${encodeURIComponent(existing[0].id)}`});
         }
-
-        const gameData = await Steam.GetSteamGameInfo(id);
+        
+        const gameData = await Steam.GetSteamGameInfo(id, knex);
         if (!gameData) {
             return next(new Error(`Failed to fetch new steam info for game: ${id}`));
         }
@@ -112,7 +112,7 @@ router.post("/add", [
     const name = req.body.name;
     const description = sanitizeFull(req.body.description);
 
-    const compressed = CompressString(description);
+    const compressed = CompressString(description, false, knex);
 
     const image_url = req.body.image;
     const website = req.body.website;

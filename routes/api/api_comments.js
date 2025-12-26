@@ -31,7 +31,7 @@ router.post("/add", async (req, res, next) => {
             }
         }
 
-        content = textHelpers.CompressString(sanitizeFull(content), true).text;
+        content = textHelpers.CompressString(sanitizeFull(content), true, knex).text;
         
 
         if (parent) {

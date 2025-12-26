@@ -18,7 +18,7 @@ router.post("/add", async (req, res, next) => {
             return res.status(400).json({success: false, msg: "Channel already added"});
         }
 
-        let channelInfo = await YoutubeHelpers.GetChannelInfo(username.trim());
+        let channelInfo = await YoutubeHelpers.GetChannelInfo(username.trim(), knex);
         if (!channelInfo) {
             return res.status(404).json({success: false, msg: "Channel not found"});
         }
@@ -113,7 +113,7 @@ router.post("/refresh", async (req, res, next) => {
             return res.status(400).json({success: false, msg: "Please wait before updating"})
         }
 
-        let channelInfo = await YoutubeHelpers.GetChannelInfo(channel[0].handle);
+        let channelInfo = await YoutubeHelpers.GetChannelInfo(channel[0].handle, knex);
         if (!channelInfo) {
             return res.status(404).json({success: false, msg: "Channel not found on Youtube"});
         }
@@ -252,7 +252,7 @@ router.post("/savePreset", async (req, res, next) => {
         let existingDescription = await knex("channel_descriptions").where({id: channelId}).select("id");
         if (!existingDescription[0]) {
             if (preset) {
-                let compressed = CompressString(preset);
+                let compressed = CompressString(preset, false, knex);
                 await knex("channel_descriptions").insert({
                     id: channelId,
                     description: compressed.text,
@@ -265,7 +265,7 @@ router.post("/savePreset", async (req, res, next) => {
             }
         } else {
             if (preset) {
-                let compressed = CompressString(preset);
+                let compressed = CompressString(preset, false, knex);
                 await knex("channel_descriptions").where({id: channelId}).limit(1).update({
                     description: compressed.text || null,
                     compression: compressed.compression,

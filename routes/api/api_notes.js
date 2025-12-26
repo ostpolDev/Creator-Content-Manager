@@ -34,7 +34,7 @@ router.post("/create", async (req, res, next) => {
         content = sanitizeFull(content);
         title = sanitizeFull(title);
 
-        const zipped = CompressString(content);
+        const zipped = CompressString(content, false, knex);
 
         const cleaned = content.trim().replace(/[\n\r]/g, " ");
         const preview = `${cleaned.substring(0, 60)}${cleaned.length > 64 ? '...' : ''}`;

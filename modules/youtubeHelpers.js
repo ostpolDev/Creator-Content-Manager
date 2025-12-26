@@ -1,12 +1,11 @@
 const logger = require("./logger");
 const { CompressString, ParseYouTubeTags } = require("./textHelpers");
 const { GetCountryInfo } = require('./countryHelpers');
-const { knex } = require("./database");
 
 const CHANNEL_URL = `https://www.googleapis.com/youtube/v3/channels?key=${process.env.CREATOR_YT_API}`;
 const VIDEO_URL = `https://www.googleapis.com/youtube/v3/videos?key=${process.env.CREATOR_YT_API}`;
 
-async function GetChannelInfo(username) {
+async function GetChannelInfo(username, knex) {
     try {
         if (username.startsWith("@")) {
             username = username.substring(1);
@@ -58,7 +57,7 @@ async function GetChannelInfo(username) {
         channelInfo.description = snippet.description;
         channelInfo.country = await GetCountryInfo(snippet.country);
 
-        let compResult = CompressString(channelInfo.description);
+        let compResult = CompressString(channelInfo.description, false, knex);
         if (compResult) {
             channelInfo.description = compResult.text; 
             channelInfo.compression = compResult.compression;
@@ -79,7 +78,7 @@ async function GetChannelInfo(username) {
 }
 
 //Ot5FQobG33A
-async function GetVideoInfo(id) {
+async function GetVideoInfo(id, knex) {
     if (id.startsWith("http")) {
         let params = new URLSearchParams("?" + id.split("?")[1]);
         let v = params.get("v");
@@ -149,7 +148,7 @@ async function GetVideoInfo(id) {
             contentDetails
         }
 
-        let comp = CompressString(videoInfo.video.rendered_description);
+        let comp = CompressString(videoInfo.video.rendered_description, false, knex);
         if (comp) {
             videoInfo.video.rendered_description = comp.text;
             videoInfo.video.compression = comp.compression;
