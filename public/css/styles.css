@@ -376,3 +376,12 @@ article.media[data-comment] {
 .calendar > .day.current span.number::before {
     content: "*"
 }
+
+table.compact .iconButton {
+    font-size: 12px;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background: none;
+    margin-right: 10px;
+}

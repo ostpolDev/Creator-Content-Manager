@@ -80,6 +80,15 @@ router.get("/v/:id", async (req, res, next) => {
             }
         }
 
+        let totalDuration = await GetCachedNumber(`C:${channel[0].id}-video_duration`, async () => {
+            let newDuration = await knex("video_infos")
+                .where({"videos.channel": channel[0].id})
+                .innerJoin("videos", "videos.id", "=", "video_infos.id")
+                .sum("video_infos.duration");
+            
+            return newDuration[0].sum;
+        })
+
         return res.render("channels/view", {
             title: channel[0].name,
             channel: channel[0],
@@ -88,7 +97,8 @@ router.get("/v/:id", async (req, res, next) => {
             view,
             videoCount, commentCount,
             preset,
-            keywords: CHANNEL_KEYWORDS
+            keywords: CHANNEL_KEYWORDS,
+            totalDuration: typeof totalDuration !== "undefined" ? totalDuration : 0
         })
 
     } catch (e) {

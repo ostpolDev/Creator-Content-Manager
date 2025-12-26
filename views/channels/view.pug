@@ -15,6 +15,28 @@ block head
 
 
 block content
+    -
+        function formatDurationNumber(seconds) {
+            const units = [
+                { name: 'year', seconds: 31536000 },
+                { name: 'month', seconds: 2592000 },
+                { name: 'week', seconds: 604800 },
+                { name: 'day', seconds: 86400 },
+                { name: 'hour', seconds: 3600 },
+                { name: 'minute', seconds: 60 },
+                { name: 'second', seconds: 1 }
+            ];
+
+            for (const unit of units) {
+                if (seconds >= unit.seconds) {
+                    const value = Math.floor(seconds / unit.seconds);
+                    return `${value} ${unit.name}${value !== 1 ? 's' : ''}`;
+                }
+            }
+
+            return '0 seconds';
+        }
+
     .container
         nav.breadcrumb.has-succeeds-separator
             ul
@@ -35,7 +57,7 @@ block content
             .level-item.has-text-centered
                 div
                     p.heading Views
-                    p.title(title=channel.views) #{channel.views.toLocaleString()}
+                    p.title(title=channel.views) #{(channel.views || 0).toLocaleString()}
             .level-item.has-text-centered
                 div
                     p.heading Videos
@@ -43,7 +65,11 @@ block content
             .level-item.has-text-centered
                 div
                     p.heading Registered videos
-                    p.title(title=videoCount) #{videoCount.toLocaleString()}
+                    p.title(title=videoCount) #{(videoCount || 0).toLocaleString()}
+            .level-item.has-text-centered
+                div
+                    p.heading Total duration
+                    p.title(title=`${(totalDuration || 0).toLocaleString()} seconds`) #{formatDurationNumber(totalDuration || 0)}
 
         .columns.mt-2
             .column.is-three-quarters

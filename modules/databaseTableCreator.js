@@ -1,6 +1,7 @@
-const {Knex} = require('knex');
+const { Knex } = require('knex');
 const logger = require('./logger.js');
 const { VERSION } = require('./data.js');
+const MigrationHelpers = require('./databaseMigrationHelpers.js');
 
 /**
  * 
@@ -176,6 +177,7 @@ async function CreateTables(knex) {
             table.integer("likes").unsigned().defaultTo(0);
             table.integer("dislikes").unsigned().defaultTo(0);
             table.integer("comments").unsigned().defaultTo(0);
+            table.integer("duration").unsigned().defaultTo(0);
             table.string("tags", 512);
             table.json("properties").defaultTo({props: []});
             table.foreign("id").references("videos.id").onDelete("CASCADE");
@@ -445,12 +447,14 @@ async function MigrateVersion(knex) {
         await knex("system_info").insert({key: "version", value: VERSION});
         return;
     }
+
     if (current[0].value == VERSION) {
         logger.info("Database is up to date");
         return;
     }
-
+    
     logger.info(`Checking migration from version ${current[0].value} > ${VERSION}`);
+
 
     switch (current[0].value) {
         case "SQL-0.2":
@@ -479,6 +483,13 @@ async function MigrateVersion(knex) {
             await knex.schema.alterTable("games", (table) => {
                 table.binary("description");
             })
+            break;
+        case "SQL-0.13":
+            logger.info("Migration from SQL-0.13");
+            await knex.schema.alterTable("video_infos", (table) => {
+                table.integer("duration").unsigned().defaultTo(0);
+            })
+            await MigrationHelpers.CalculateVideoDurations(knex);
             break;
         default:
             logger.info(`No migration instructions found`)

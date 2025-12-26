@@ -35,6 +35,7 @@ class List {
         this.loadMoreButton = null;
 
         this.#makeLoadMoreButton();
+        this.#init();
     }
 
     #randomID() {
@@ -180,6 +181,33 @@ class List {
             let type = elem.getAttribute("data-list-filter");
             this.externalFilters[type] = elem.value;
         })
+    }
+
+    #init() {
+        this.table = this.element.closest("table");
+        this.compactCheck = document.getElementById("compactCheck");
+
+        if (this.table && this.compactCheck && window.localStorage) {
+            const localStorageItem = localStorage.getItem("compact_lists");
+            if (localStorageItem == "true") {
+                this.compactCheck.checked = true;
+            }
+
+            this.compactCheck.addEventListener("input", () => {
+                localStorage.setItem("compact_lists", this.compactCheck.checked.toString())
+                this.#checkChecked();
+            })
+
+            this.#checkChecked();
+        }
+    }
+
+    #checkChecked() {
+        if (this.compactCheck.checked) {
+            this.table.classList.add("compact")
+        } else {
+            this.table.classList.remove("compact");
+        }
     }
 
 }

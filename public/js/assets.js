@@ -191,3 +191,32 @@ window.addEventListener("scroll", (event) => {
         }
     }
 })
+
+//#region Compact mode checkmark
+
+const table = assetList.closest("table");
+const compactCheck = document.getElementById("compactCheck");
+
+if (table && compactCheck && window.localStorage) {
+    const localStorageItem = localStorage.getItem("compact_lists");
+    if (localStorageItem == "true") {
+        compactCheck.checked = true;
+    }
+
+    compactCheck.addEventListener("input", () => {
+        localStorage.setItem("compact_lists", compactCheck.checked.toString())
+        checkChecked();
+    })
+
+    checkChecked();
+
+    function checkChecked() {
+        if (compactCheck.checked) {
+            table.classList.add("compact")
+        } else {
+            table.classList.remove("compact");
+        }
+    }
+}
+
+//#endregion
