@@ -77,8 +77,7 @@ async function GetChannelInfo(username, knex) {
     }
 }
 
-//Ot5FQobG33A
-async function GetVideoInfo(id, knex) {
+async function GetVideoInfo(id, knex, customProps) {
     if (id.startsWith("http")) {
         let params = new URLSearchParams("?" + id.split("?")[1]);
         let v = params.get("v");
@@ -146,6 +145,13 @@ async function GetVideoInfo(id, knex) {
             category: snippet.categoryId,
             language: snippet.defaultLanguage,
             contentDetails
+        }
+
+        if (customProps) {
+            videoInfo.video_info.properties = {
+                ...videoInfo.video_info.properties,
+                ...customProps
+            }
         }
 
         let comp = CompressString(videoInfo.video.rendered_description, false, knex);
