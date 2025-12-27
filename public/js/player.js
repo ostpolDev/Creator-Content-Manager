@@ -53,19 +53,28 @@ ELEM.playButton.addEventListener("click", () => {
     }
 })
 
+let buttonElement;
+
 function Play(asset, onDone) {
-    return new Promise((res, rej) => {
+    document.querySelector(`tr.active[data-asset]`)?.classList.remove("active");
+    if (buttonElement) {
+        updatePlayButton(buttonElement, false);
+    }
+
+    return new Promise((res, _) => {
         if (!asset) {
             musicPlayer.classList.add("is-hidden");
             ELEM.audio.pause();
             return res();
         }
 
+        const tableElement = document.querySelector(`tr[data-asset='${asset.id}']`);
+
         ELEM.title.innerText = asset.name || "";
         ELEM.subtitle.innerText = asset.batch_artist_name || formatString(asset.type);
         ELEM.linkButton.href = `/assets/v/${asset.id}`;
 
-        
+        buttonElement = tableElement ? tableElement.querySelector("button[data-asset-button='play']") : null;
         
         if (asset.batch_image_url) {
             ELEM.art.src = asset.batch_image_url;
@@ -81,11 +90,15 @@ function Play(asset, onDone) {
             ELEM.progress.max = ELEM.audio.duration;
             ELEM.audio.play();
             updateProgressText(0);
+            tableElement?.classList.add("active");
+            updatePlayButton(buttonElement, true);
             return res();
         }
         ELEM.audio.onerror = (err) => {
             console.error(err);
             musicPlayer.classList.add("is-hidden");
+            tableElement?.classList.remove("active");
+            updatePlayButton(buttonElement, false);
             return res();
         }
         ELEM.audio.ontimeupdate = () => {
@@ -94,12 +107,16 @@ function Play(asset, onDone) {
         }
         ELEM.audio.onpause = () => {
             ELEM.playButtonIcon.innerText = "play_arrow";
+            updatePlayButton(buttonElement, false);
         }
         ELEM.audio.onplay = () => {
             ELEM.playButtonIcon.innerText = "pause";
+            updatePlayButton(buttonElement, true);
         }
         ELEM.audio.onended = () => {
             ELEM.playButtonIcon.innerText = "restart_alt"
+            tableElement?.classList.remove("active");
+            updatePlayButton(buttonElement, false);
             if (onDone) {
                 onDone();
             }
@@ -216,6 +233,23 @@ ELEM.closeButton.addEventListener("click", () => {
 function formatString(string) {
     const result = string.replace(/([A-Z])/g, " $1");
     return result.charAt(0).toUpperCase() + result.slice(1);
+}
+
+/**
+ * 
+ * @param {HTMLButtonElement} buttonElement 
+ * @param {boolean} isPlaying 
+ * @returns 
+ */
+function updatePlayButton(buttonElement, isPlaying) {
+    if (!buttonElement) {
+        return;
+    }
+    const iconInfo = buttonElement.getAttribute("data-asset-button-icon");
+    if (iconInfo) {
+        const parts = iconInfo.split(":");
+        buttonElement.querySelector("span span").innerText = parts[isPlaying ? 1 : 0];
+    }
 }
 
 export { Play, PlayPlaylist }

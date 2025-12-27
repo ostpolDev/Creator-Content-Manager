@@ -31,6 +31,11 @@ function MakeAssetElement(asset, customAction) {
         Interact(interactButton, asset);
     }
 
+    if (asset.type == "music" || asset.type == "soundEffect") {
+        interactButton.setAttribute("data-asset-button", "play");
+        interactButton.setAttribute("data-asset-button-icon", `${interactButton.innerText}:pause`);
+    }
+
     let downloadButton = document.createElement("a");
     downloadButton.classList.add("button", "is-rounded", "iconButton");
     downloadButton.href = `/assets/download/${asset.id}`

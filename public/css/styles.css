@@ -385,3 +385,10 @@ table.compact .iconButton {
     background: none;
     margin-right: 10px;
 }
+
+table tbody tr.active {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    outline: 1px solid rgb(208, 208, 208);
+    position: relative;
+    z-index: 10;
+}
