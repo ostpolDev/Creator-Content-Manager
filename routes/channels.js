@@ -86,7 +86,7 @@ router.get("/v/:id", async (req, res, next) => {
                 .innerJoin("videos", "videos.id", "=", "video_infos.id")
                 .sum("video_infos.duration");
             
-            return newDuration[0].sum;
+            return newDuration[0].sum || 0;
         })
 
         return res.render("channels/view", {

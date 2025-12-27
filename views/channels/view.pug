@@ -37,6 +37,18 @@ block content
             return '0 seconds';
         }
 
+        function formatLargeNumber(number) {
+            if (typeof number == "undefined") {
+                return 0;
+            }
+
+            return Intl.NumberFormat(getLocale(), {notation: "compact"}).format(number);
+        }
+
+        function getLocale() {
+            return ((navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.language) || "en-US";
+        }
+
     .container
         nav.breadcrumb.has-succeeds-separator
             ul
@@ -53,19 +65,19 @@ block content
             .level-item.has-text-centered
                 div
                     p.heading Subscribers
-                    p.title(title=channel.subscribers) #{(channel.subscribers || 0).toLocaleString()}
+                    p.title(title=(channel.subscribers || 0).toLocaleString()) #{formatLargeNumber(channel.subscribers)}
             .level-item.has-text-centered
                 div
                     p.heading Views
-                    p.title(title=channel.views) #{(channel.views || 0).toLocaleString()}
+                    p.title(title=(channel.views || 0).toLocaleString()) #{formatLargeNumber(channel.views)}
             .level-item.has-text-centered
                 div
                     p.heading Videos
-                    p.title(title=(channel.settings.videoCount || 0)) #{(channel.settings.videoCount || 0).toLocaleString()}
+                    p.title(title=(channel.settings.videoCount || 0).toLocaleString()) #{formatLargeNumber(channel.settings.videoCount)}
             .level-item.has-text-centered
                 div
                     p.heading Registered videos
-                    p.title(title=videoCount) #{(videoCount || 0).toLocaleString()}
+                    p.title(title=(videoCount || 0).toLocaleString()) #{formatLargeNumber(videoCount)}
             .level-item.has-text-centered
                 div
                     p.heading Total duration
