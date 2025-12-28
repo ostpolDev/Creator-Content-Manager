@@ -73,7 +73,7 @@ block modals
 
 block content
     .container
-        h1.title #{title}
+        h1.title(data-scroll-target) #{title}
         p.subtitle There are currently #{videoCount} video#{videoCount != 1 ? "s" : ""} registered across your channels.
 
         .buttons.block
@@ -88,7 +88,7 @@ block content
 
         .block
             .columns
-                .column.is-one-quarter
+                .column.is-2
                     .field
                         label.label(for="channelSearch") Channel
                         .control
@@ -97,7 +97,7 @@ block content
                                     option(value="any", selected=(!selected_channel)) Any
                                     each channel in channels
                                         option(value=channel.id, selected=(!selected_channel ? false : selected_channel == channel.id)) #{channel.name} 
-                .column.is-three-quarters
+                .column
                     .field
                         label.label Search
                         .control.has-icons-left
@@ -105,4 +105,24 @@ block content
                             span.icon.is-small.is-left
                                 span search
 
-        .columns.is-multiline(data-list="videos" data-list-limit="10", data-list-load="true")
+                .column.is-2
+                    .field
+                        label.label Sort by
+                        .control
+                            .select.is-fullwidth
+                                select#sort(autocomplete="off" data-list-target="videos" data-list-filter="sort")
+                                    option(value="videos.created_at" selected) Created at
+                                    option(value="videos.uploaded_at") Uploaded at
+                                    option(value="videos.title") Title
+                                    option(value="video_infos.likes") Likes
+                                    option(value="video_infos.views") Views
+                .column.is-2
+                    .field
+                        label.label(for="order") Order
+                        .control
+                            .select.is-fullwidth
+                                select#order(autocomplete="off" data-list-target="videos" data-list-filter="order")
+                                    option(value="asc") Ascending
+                                    option(value="desc" selected) Descending
+
+        .columns.is-multiline(data-list="videos" data-list-limit="25", data-list-load="true")

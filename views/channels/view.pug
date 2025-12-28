@@ -13,6 +13,27 @@ block head
         link(rel="stylesheet", href="/bulma/bulma-list.css")
         script(src="/js/channels/members.js" type="module" defer) 
 
+block modals
+    .modal#deleteModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title Are you sure?
+                button.delete(data-modal="close")
+            section.modal-card-body
+                .content
+                    p Deleting this channel cannot be undone and will also remove any content associated with the channel, like videos and resource assets.
+                    
+            footer.modal-card-foot
+                .buttons
+                    button.button.is-success.has-icon(data-modal="close")
+                        span.icon
+                            span close
+                        span Cancel
+                    button.button.is-danger.is-outlined#confirmDeleteButton
+                        span.icon
+                            span delete
+                        span Delete forever
 
 block content
     -
@@ -37,6 +58,18 @@ block content
             return '0 seconds';
         }
 
+        function formatLargeNumber(number) {
+            if (typeof number == "undefined") {
+                return 0;
+            }
+
+            return Intl.NumberFormat(getLocale(), {notation: "compact"}).format(number);
+        }
+
+        function getLocale() {
+            return ((navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.language) || "en-US";
+        }
+
     .container
         nav.breadcrumb.has-succeeds-separator
             ul
@@ -53,19 +86,19 @@ block content
             .level-item.has-text-centered
                 div
                     p.heading Subscribers
-                    p.title(title=channel.subscribers) #{(channel.subscribers || 0).toLocaleString()}
+                    p.title(title=(channel.subscribers || 0).toLocaleString()) #{formatLargeNumber(channel.subscribers)}
             .level-item.has-text-centered
                 div
                     p.heading Views
-                    p.title(title=channel.views) #{(channel.views || 0).toLocaleString()}
+                    p.title(title=(channel.views || 0).toLocaleString()) #{formatLargeNumber(channel.views)}
             .level-item.has-text-centered
                 div
                     p.heading Videos
-                    p.title(title=(channel.settings.videoCount || 0)) #{(channel.settings.videoCount || 0).toLocaleString()}
+                    p.title(title=(channel.settings.videoCount || 0).toLocaleString()) #{formatLargeNumber(channel.settings.videoCount)}
             .level-item.has-text-centered
                 div
                     p.heading Registered videos
-                    p.title(title=videoCount) #{(videoCount || 0).toLocaleString()}
+                    p.title(title=(videoCount || 0).toLocaleString()) #{formatLargeNumber(videoCount)}
             .level-item.has-text-centered
                 div
                     p.heading Total duration
@@ -117,7 +150,7 @@ block content
                                 span.icon.is-small.is-left
                                     span search
                                     
-                    .columns.is-multiline(data-list="videos" data-list-limit="8", data-list-load="true", data-list-filter="channel:" + channel.id, data-list-size="one-quarter")
+                    .columns.is-multiline(data-list="videos" data-list-limit="16", data-list-load="true", data-list-filter="channel:" + channel.id, data-list-size="one-quarter")
 
                 else if view == "comments"
 
@@ -187,7 +220,7 @@ block content
                         span.icon
                             span description 
                     if isAuthor
-                        button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
+                        button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton(data-modal="#deleteModal")
                             span.icon
                                 span delete
                         button.button.iconButton.is-rounded#refreshButton(disabled=!canUpdate)
@@ -218,6 +251,17 @@ block content
                         strong Joined YouTube
                         br
                         time(datetime=channel.channel_creation, data-format="smart")
+
+                    if channel.handle
+                        p
+                            strong Handle
+                            br
+                            span #{channel.handle}
+
+                    p
+                        strong YouTube ID
+                        br
+                        span #{channel.id}
                     
                     if channel.country
                         p

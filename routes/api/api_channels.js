@@ -1,14 +1,19 @@
 const router = require('express').Router();
 const { knex } = require('../../modules/database');
 const logger = require('../../modules/logger');
-const { CompressString } = require('../../modules/textHelpers');
+const { CompressString, bytesToSize } = require('../../modules/textHelpers');
 const YoutubeHelpers = require('../../modules/youtubeHelpers');
+const path = require('path');
+const fs = require('fs');
+const paths = require('../../modules/paths');
 
 router.post("/add", async (req, res, next) => {
     let username = req.body.username;
     if (!username || username.trim().length <= 0 || username.length > 256) {
         return res.status(400).json({success: false, msg: "Invalid username"});
     }
+
+    const getVideos = typeof req.body.getVideos === "boolean" ? req.body.getVideos : req.body.getVideos == "true" ? true : false;
 
     try {
 
@@ -42,6 +47,10 @@ router.post("/add", async (req, res, next) => {
             user: req.user.id,
             access: -1
         });
+
+        if (getVideos) {
+            await YoutubeHelpers.CreateVideosForChannel(channel[0].id, knex, req.user.id);
+        }
 
         return res.status(200).json({success: true, channel: channel[0].id});
 
@@ -279,6 +288,51 @@ router.post("/savePreset", async (req, res, next) => {
                 })
             }
         }
+
+        return res.status(200).json({success: true});
+
+    } catch (e) {
+        return next(e);
+    }
+})
+
+router.post("/delete", async (req, res, next) => {
+    const channel = req.body.channel;
+    if (!channel) {
+        return res.status(400).json({success: false, msg: "Invalid Channel"});
+    }
+
+    try {
+
+        const channelAccessCheck = await knex("channel_members").where({channel, user: req.user.id, access: -1}).limit(1);
+        if (!channelAccessCheck[0]) {
+            return res.status(404).json({success: false, msg: "Channel not found"});
+        }
+
+        logger.info(`Deleting channel: ${channelAccessCheck[0].channel}`);
+
+        // Assets
+        const assets = await knex("assets").where({resource_id: channelAccessCheck[0].channel});
+        
+        logger.info(`Deleting ${assets.length} assets for channel ${channelAccessCheck[0].channel}`)
+        let size = 0;
+
+        for (let i = 0; i < assets.length; i++) {
+            const asset = assets[i];
+            const fullPath = path.join(paths.uploads, asset.path);
+            if (fs.existsSync(fullPath)) {
+                fs.unlinkSync(fullPath);
+                size += asset.size;
+            } else {
+                logger.info(`Failed to delete ${asset.id} for channel ${channelAccessCheck[0].channel}: ${asset.path}`);
+            }
+        }
+
+        logger.info(`Cleared ${bytesToSize(size)} by deleting resource assets for channel ${channelAccessCheck[0].channel}`);
+
+        await knex("assets").where({resource_id: channelAccessCheck[0].channel}).delete();
+
+        await knex("channels").where({id: channelAccessCheck[0].channel}).limit(1).delete();
 
         return res.status(200).json({success: true});
 

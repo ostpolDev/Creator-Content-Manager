@@ -155,6 +155,9 @@ router.post("/refresh", async (req, res, next) => {
 
 })
 
+const VALID_SORTS = ["videos.created_at", "videos.title", "videos.uploaded_at", "video_infos.views", "video_infos.likes"];
+const VALID_ORDERS = ["asc", "desc"];
+
 router.get("/list", async (req, res, next) => {
     let search = req.query.q;
     let skip = req.query.skip;
@@ -162,6 +165,9 @@ router.get("/list", async (req, res, next) => {
     let channel = req.query.channel;
     let asset = req.query.asset;
     let game = req.query.game;
+
+    let sort = req.query.sort;
+    let order = req.query.order; 
 
     if (isNaN(skip) || skip < 0) {
         skip = 0;
@@ -174,6 +180,17 @@ router.get("/list", async (req, res, next) => {
         "videos.id", "videos.title", "videos.created_at", "videos.thumbnail_url", "videos.added_by", "videos.uploaded_at", "videos.youtube_id",
         "channels.id as channel_id", "channels.name as channel_name"
     ];
+
+    if (!VALID_ORDERS.includes(order)) {
+        order = VALID_ORDERS[1];
+    }
+    if (!VALID_SORTS.includes(sort)) {
+        sort = VALID_SORTS[0];
+    }
+
+    if (!select.includes(sort)) {
+        select.push(sort);
+    }
 
     try {
 
@@ -196,25 +213,31 @@ router.get("/list", async (req, res, next) => {
         if (asset) {
             videoQuery = knex("video_assets").where({"video_assets.asset": asset})
                 .innerJoin("videos", "videos.id", "=", "video_assets.video")
-                .innerJoin("channels", "channels.id", "=", "videos.channel").orderBy("videos.created_at", "desc")
+                .innerJoin("channels", "channels.id", "=", "videos.channel")
                 .whereIn("videos.channel", channels).limit(limit).offset(skip)
                 .select(select)
         } else if (game) {
             videoQuery = knex("video_games").where({"video_games.game": game})
                 .innerJoin("videos", "videos.id", "=", "video_games.video")
-                .innerJoin("channels", "channels.id", "=", "videos.channel").orderBy("videos.created_at", "desc")
+                .innerJoin("channels", "channels.id", "=", "videos.channel")
                 .whereIn("videos.channel", channels).limit(limit).offset(skip)
                 .select(select)
         } else {
             videoQuery = knex("videos").whereIn("channel", channels).limit(limit).offset(skip)
-                .innerJoin("channels", "channels.id", "=", "videos.channel").orderBy("created_at", "desc")
+                .innerJoin("channels", "channels.id", "=", "videos.channel")
                 .select(select)
         }
 
+        if (sort.startsWith("video_infos")) {
+            videoQuery.innerJoin("video_infos", "video_infos.id", "=", "videos.id")
+        }
             
         if (search) {
             videoQuery.whereILike("title", `%${search}%`);
         }
+
+        videoQuery.orderBy(sort, order);
+        
 
         videoQuery.then((videos) => {
             return res.status(200).json({success: true, items: videos.map(x => ({

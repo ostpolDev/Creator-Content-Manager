@@ -1,9 +1,11 @@
 const addChannelButton = document.getElementById("addChannelButton");
 const channelUsername = document.getElementById("channelHandle");
 const submitChannelButton = document.getElementById("submitChannelButton");
+const channelVideosCheck = document.getElementById("channelVideosCheck");
 
 addChannelButton.addEventListener("click", () => {
     channelUsername.value = "";
+    channelVideosCheck.checked = true;
     SetModalOpen("#addModal", true);
     channelUsername.focus();
 })
@@ -38,7 +40,8 @@ async function AddChannel() {
         let res = await fetch("/api/channels/add", {
             method: "POST",
             body: JSON.stringify({
-                username
+                username,
+                getVideos: channelVideosCheck.checked
             }),
             headers: {
                 "Content-Type": "application/json"

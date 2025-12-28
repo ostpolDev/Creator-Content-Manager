@@ -118,3 +118,47 @@ async function SavePreset() {
         savePresetButton.classList.remove("is-loading");
     }
 }
+
+//#region Deleting
+
+const confirmDeleteButton = document.getElementById("confirmDeleteButton");
+
+confirmDeleteButton.addEventListener("click", () => {
+    if (confirmDeleteButton.classList.contains("is-loading"))
+        return;
+
+    DeleteChannel();
+})
+
+async function DeleteChannel() {
+    console.log("Deleting channel");
+
+    confirmDeleteButton.classList.add("is-loading");
+
+    try {
+
+        const res = await fetch("/api/channels/delete", {
+            method: "POST",
+            body: JSON.stringify({ channel: DEF.channel }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        const json = await res.json();
+
+        if (!json.success) {
+            console.error(json.msg || "Something went wrong...");
+            return;
+        }
+
+        window.location = "/channels";
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        confirmDeleteButton.classList.remove("is-loading");
+    }
+}
+
+//#endregion
