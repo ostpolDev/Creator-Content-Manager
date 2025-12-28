@@ -32,6 +32,22 @@ router.get("/", async (req, res, next) => {
 
 const VIEWS = ["videos", "comments", "members", "description_preset"];
 
+router.get("/v/@:handle", async (req, res, next) => {
+    try {
+        const channel = await knex("channel_members").where({"channel_members.user": req.user.id, "channels.handle": `@${req.params.handle}`})
+            .innerJoin("channels", "channels.id", "=", "channel_members.channel")
+            .limit(1).select("channels.id");
+            
+        if (!channel[0]) {
+            return next();
+        }
+
+        return res.redirect(`/channels/v/${encodeURIComponent(channel[0].id)}`);
+    } catch (e) {
+        return next(e);
+    }
+})
+
 router.get("/v/:id", async (req, res, next) => {
     try {
 
