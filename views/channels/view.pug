@@ -13,6 +13,27 @@ block head
         link(rel="stylesheet", href="/bulma/bulma-list.css")
         script(src="/js/channels/members.js" type="module" defer) 
 
+block modals
+    .modal#deleteModal
+        .modal-background(data-modal="close")
+        .modal-card
+            header.modal-card-head
+                p.modal-card-title Are you sure?
+                button.delete(data-modal="close")
+            section.modal-card-body
+                .content
+                    p Deleting this channel cannot be undone and will also remove any content associated with the channel, like videos and resource assets.
+                    
+            footer.modal-card-foot
+                .buttons
+                    button.button.is-success.has-icon(data-modal="close")
+                        span.icon
+                            span close
+                        span Cancel
+                    button.button.is-danger.is-outlined#confirmDeleteButton
+                        span.icon
+                            span delete
+                        span Delete forever
 
 block content
     -
@@ -199,7 +220,7 @@ block content
                         span.icon
                             span description 
                     if isAuthor
-                        button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton
+                        button.button.iconButton.is-rounded.is-danger.is-outlined#deleteButton(data-modal="#deleteModal")
                             span.icon
                                 span delete
                         button.button.iconButton.is-rounded#refreshButton(disabled=!canUpdate)
