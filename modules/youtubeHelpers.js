@@ -1,9 +1,11 @@
 const logger = require("./logger");
 const { CompressString, ParseYouTubeTags } = require("./textHelpers");
 const { GetCountryInfo } = require('./countryHelpers');
+const { Knex } = require("knex");
 
 const CHANNEL_URL = `https://www.googleapis.com/youtube/v3/channels?key=${process.env.CREATOR_YT_API}`;
 const VIDEO_URL = `https://www.googleapis.com/youtube/v3/videos?key=${process.env.CREATOR_YT_API}`;
+const VIDEO_SEARCH_URL = `https://www.googleapis.com/youtube/v3/search?key=${process.env.CREATOR_YT_API}&maxResults=50&type=video`
 
 async function GetChannelInfo(username, knex) {
     try {
@@ -88,9 +90,34 @@ async function GetVideoInfo(id, knex, customProps) {
     }
 
     try {
+
+        let fullURL = `${VIDEO_URL}&id=${id}&part=snippet,statistics,contentDetails`;
+        let result = await fetch(fullURL, {
+            headers: {
+                "Accept": "application/json"
+            }
+        })
+        let json = await result.json();
+
+        if (!json.items || json.items.length <= 0) {
+            logger.error(`Failed to find video`);
+            return null;
+        }
+
+        const item = json.items[0];
+        return await FormatVideoInfo(item, knex, customProps);
+
+    } catch (e) {
+        logger.error(e);
+        return null;
+    }
+}
+
+async function FormatVideoInfo(item, knex, customProps) {
+    try {
         let videoInfo = {
             video: {
-                youtube_id: id,
+                youtube_id: item.id,
                 title: "",
                 description: "",
                 rendered_description: "",
@@ -109,19 +136,6 @@ async function GetVideoInfo(id, knex, customProps) {
             }
         }
 
-        let fullURL = `${VIDEO_URL}&id=${id}&part=snippet,statistics,contentDetails`;
-        let result = await fetch(fullURL, {
-            headers: {
-                "Accept": "application/json"
-            }
-        })
-        let json = await result.json();
-
-        if (!json.items || json.items.length <= 0) {
-            return null;
-        }
-
-        const item = json.items[0];
         const snippet = item.snippet;
         const statistics = item.statistics;
         const contentDetails = item.contentDetails;
@@ -164,7 +178,150 @@ async function GetVideoInfo(id, knex, customProps) {
 
     } catch (e) {
         logger.error(e);
-        return null;
+        return false;
+    }
+}
+
+async function CreateVideosForChannel(channel_id, knex, userId) {
+    logger.info(`Importing videos for channel: ${channel_id}`);
+
+    try {
+
+        const start = Date.now();
+
+        let videoIds = await ListVideoIDsForChannel(channel_id);
+        if (!videoIds) {
+            logger.error(`Failed to fetch video ids for channel ${channel_id}`);
+            return false;
+        }
+
+        logger.info(`Found ${videoIds.length} videos to import for channel ${channel_id}`);
+
+        let idParts = [];
+
+        while (videoIds.length > 0) {
+            idParts.push(videoIds.splice(0, 25).map(x => encodeURIComponent(x)).join(","));
+        }
+
+        logger.info(`Video fetching split into ${idParts.length} parts for channel ${channel_id}`);
+        
+        for (let i = 0; i < idParts.length; i++) {
+            logger.info(`Processing part ${i + 1} / ${idParts.length} for channel ${channel_id}`);
+            await ProcessVideoPage(idParts[i], knex, userId, channel_id);
+        }
+
+        logger.info(`Successfully imported channel videos for channel ${channel_id} in ${Date.now() - start}ms`);
+
+        return true;
+    } catch (e) {
+        logger.error(`Failed video import for channel: ${channel_id}`);
+        logger.error(e);
+        return false;
+    }
+}
+
+/**
+ * 
+ * @param {string} channel_id 
+ * @param {string?} pageToken 
+ * @param {[string]?} existing 
+ * @returns {Promise<[string]>}
+ */
+async function ListVideoIDsForChannel(channel_id, pageToken, existing) {
+    let url = `${VIDEO_SEARCH_URL}&channelId=${encodeURIComponent(channel_id)}`;
+    if (pageToken) {
+        url = `${url}?pageToken=${encodeURIComponent(pageToken)}`;
+    }
+
+    try {
+
+        let ids = existing ? existing : [];
+        const res = await fetch(url, {
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+        const json = await res.json();
+
+        if (!json.items) {
+            return [];
+        }
+
+        ids = json.items.filter(x => x.id.kind == "youtube#video").map(x => x.id.videoId);
+
+        if (!json.nextPageToken || (pageToken && json.nextPageToken == pageToken)) {
+            return ids;
+        }
+
+        return await ListVideoIDsForChannel(channel_id, json.nextPageToken, ids);
+
+    } catch (e) {
+        logger.error(e);
+        return false;
+    }
+}
+
+/**
+ * 
+ * @param {string} idPart 
+ * @param {Knex} knex 
+ * @returns 
+ */
+async function ProcessVideoPage(idPart, knex, userId, channel, pageToken) {
+    let url = `${VIDEO_URL}&id=${idPart}&part=snippet,statistics,contentDetails&maxResults=50`;
+
+    if (pageToken) {
+        url = `${url}&pageToken=${encodeURIComponent(pageToken)}`;
+    }
+
+    try {
+
+        const start = Date.now();
+
+        const res = await fetch(url, {
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+        const json = await res.json();
+
+        if (!json.items || json.items.length <= 0) {
+            logger.error(`Failed to find videos`);
+            return false;
+        }
+
+        logger.info(`Importing ${json.items.length} videos`);
+        for (let i = 0; i < json.items.length; i++) {
+
+            const videoResult = await FormatVideoInfo(json.items[i], knex, { autoImport: true, actualDate: new Date() });
+            const newVideo = await knex("videos").insert({
+                ...videoResult.video,
+                added_by: userId,
+                channel,
+                created_at: videoResult.video.uploaded_at || new Date()
+            }, "id");
+
+            if (!newVideo[0]) {
+                logger.error(`Failed to insert video into database for ${channel}: ${json.items[i].id}`);
+                continue;
+            }
+
+            await knex("video_infos").insert({
+                ...videoResult.video_info,
+                id: newVideo[0].id
+            });
+            
+        }
+        logger.info(`Successfully imported videos in ${Date.now() - start}ms`);
+        
+        if (json.nextPageToken && (!pageToken || pageToken != json.nextPageToken)) {
+            logger.info(`Checking next page for videos`);
+            await ProcessVideoPage(idPart, knex, userId, channel, json.nextPageToken);
+        }
+
+    } catch (e) {
+        logger.error(e);
+        return false;
     }
 }
 
@@ -224,4 +381,4 @@ function YTDurationToSeconds(duration) {
     return hours * 3600 + minutes * 60 + seconds;
 }
 
-module.exports = { GetChannelInfo, GetVideoInfo, IDToCategory, YTDurationToSeconds }
+module.exports = { GetChannelInfo, GetVideoInfo, IDToCategory, YTDurationToSeconds, CreateVideosForChannel }

@@ -13,6 +13,8 @@ router.post("/add", async (req, res, next) => {
         return res.status(400).json({success: false, msg: "Invalid username"});
     }
 
+    const getVideos = typeof req.body.getVideos === "boolean" ? req.body.getVideos : req.body.getVideos == "true" ? true : false;
+
     try {
 
         let usernameToCheck = !username.startsWith("@") ? `@${username}` : username;
@@ -45,6 +47,10 @@ router.post("/add", async (req, res, next) => {
             user: req.user.id,
             access: -1
         });
+
+        if (getVideos) {
+            await YoutubeHelpers.CreateVideosForChannel(channel[0].id, knex, req.user.id);
+        }
 
         return res.status(200).json({success: true, channel: channel[0].id});
 
