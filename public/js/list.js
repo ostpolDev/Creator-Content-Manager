@@ -27,6 +27,8 @@ class List {
         this.element.innerHTML = "";
         this.searchTimeout = undefined;
 
+        this.scrolltarget = document.querySelector('[data-scroll-target]') || this.element;
+
         this.#registerListeners();
 
         /**
@@ -168,7 +170,7 @@ class List {
                         this.externalFilters[filterType] = elem.value;
                         this.skip = 0;
                         await this.LoadMore(true);
-                        this.element.scrollIntoView()
+                        this.scrolltarget.scrollIntoView()
                     }, 200)
                 })
             }
