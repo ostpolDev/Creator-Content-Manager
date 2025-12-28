@@ -228,10 +228,20 @@ block content
                         strong Added by
                         br
                         a.ellipsed(href="/users/v/" + video.author_username) #{video.author_display_name}
-                    p
-                        strong Added date
-                        br
-                        time(datetime=video.created_at, data-format="smart")
+                    
+                    if video.properties && !video.properties.autoImport
+                        p
+                            strong Added date
+                            br
+                            span
+                                time(datetime=video.created_at, data-format="smart")
+
+                    if video.properties && video.properties.actualDate
+                        p
+                            strong Import date
+                            br
+                            span
+                                time(datetime=video.properties.actualDate, data-format="smart")
                     if video.created_at.getTime() != video.updated_at.getTime()
                         p
                             strong Last change
@@ -270,7 +280,7 @@ block content
                             p
                                 strong Duration
                                 br
-                                time(datetime=video.properties.contentDetails.duration, data-format="HH:mm:ss", data-time="duration")
+                                time(datetime=video.properties.contentDetails.duration, data-format="HH:mm:ss", data-time="duration" title=video.properties.contentDetails.duration)
                             p
                                 strong Definition
                                 br
