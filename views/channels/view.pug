@@ -251,6 +251,17 @@ block content
                         strong Joined YouTube
                         br
                         time(datetime=channel.channel_creation, data-format="smart")
+
+                    if channel.handle
+                        p
+                            strong Handle
+                            br
+                            span #{channel.handle}
+
+                    p
+                        strong YouTube ID
+                        br
+                        span #{channel.id}
                     
                     if channel.country
                         p
