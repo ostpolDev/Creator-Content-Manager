@@ -67,7 +67,7 @@ block content
         }
 
         function getLocale() {
-            return ((navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.language) || "en-US";
+            return !navigator ? "en-US" : ((navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.language) || "en-US";
         }
 
     .container
