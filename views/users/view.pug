@@ -62,21 +62,21 @@ block content
                 span.icon
                     span star
 
-            br
+        br
 
-            .block
-                label.checkbox
-                    input#compactCheck(type="checkbox" autocomplete="off")
-                    |  Compact view
-                    
-            table.table.is-fullwidth.is-striped.is-hoverable
-                thead
-                    th Action
-                    th Name
-                    th Author
-                    th Uploaded
-                    th Tags
-                tbody(data-filter=("user:" + toView.id))#assetList
+        .block
+            label.checkbox
+                input#compactCheck(type="checkbox" autocomplete="off")
+                |  Compact view
+                
+        table.table.is-fullwidth.is-striped.is-hoverable
+            thead
+                th Action
+                th Name
+                th Author
+                th Uploaded
+                th Tags
+            tbody(data-filter=("user:" + toView.id))#assetList
 
-            button.button.is-link.is-fullwidth.is-outlined#loadMoreButton
-                span Load More
+        button.button.is-link.is-fullwidth.is-outlined#loadMoreButton
+            span Load More
