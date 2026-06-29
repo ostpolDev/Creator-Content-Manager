@@ -55,6 +55,11 @@ block content
             ul
                 li
                     a(href="/assets") Assets
+                if asset.batch_type == "album"
+                    li
+                        a(href="/assets/batches?type=album") Batches 
+                    li
+                        a(href="/assets/batches/v/" + encodeURIComponent(asset.batch)) #{asset.batch_name} 
                 if channel
                     li
                         a(href="/resources") Resources

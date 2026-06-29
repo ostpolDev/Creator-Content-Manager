@@ -169,7 +169,7 @@ router.get("/v/:id", async (req, res, next) => {
                 "assets.*",
                 "asset_infos.*",
                 "users.id as author_id", "users.username as author_username", "users.display_name as author_display_name", "users.profile_image_url as author_image_url",
-                "batches.name as batch_name"
+                "batches.name as batch_name", "batches.type as batch_type"
             ]);
         if (!asset[0]) {
             return next();
