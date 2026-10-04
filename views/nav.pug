@@ -1,4 +1,4 @@
-nav.navbar.is-light(role="navigation" aria-label="main navigation")
+nav.navbar.is-autotheme(role="navigation" aria-label="main navigation")
     .container
         .navbar-brand
             a.navbar-burger.burger(role='button', aria-label='menu', aria-expanded='false', data-target='navbar')
@@ -160,13 +160,16 @@ nav.navbar.is-light(role="navigation" aria-label="main navigation")
 
             .navbar-end
                 .buttons
+                    button.button.is-text.is-text-decoration-none#themeToggle
+                        span.icon
+                            span light_mode
                     if !user
-                        a.button.is-light(href="/users/login")
+                        a.button.is-text.is-text-decoration-none(href="/users/login")
                             span.icon
                                 span person
                             span Login
                     else
-                        a.button.is-light(href="/users/v/"+user.username)
+                        a.button.is-text.is-text-decoration-none(href="/users/v/"+user.username)
                             | #{user.username}
                         a.button(href="/logout") 
                             span.icon

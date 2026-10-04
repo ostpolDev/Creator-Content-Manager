@@ -399,3 +399,27 @@ table tbody tr.active {
     position: relative;
     z-index: 10;
 }
+
+.is-text-decoration-none, .is-text-decoration-none > * {
+    text-decoration: none !important;
+}
+
+html[data-theme="dark"] .navbar.is-autotheme {
+    background-color: var(--bulma-dark) !important;
+}
+
+html[data-theme="light"] .navbar.is-autotheme {
+    background-color: var(--bulma-light) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    html[data-theme="auto"] .navbar.is-autotheme {
+        background-color: var(--bulma-dark) !important;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    html[data-theme="auto"] .navbar.is-autotheme {
+        background-color: var(--bulma-light) !important;
+    }
+}

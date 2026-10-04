@@ -423,3 +423,58 @@ if (channelDropdown) {
 }
 
 //#endregion
+
+//#region Theme
+
+const themeToggle = document.querySelector("#themeToggle");
+
+const THEMES = ["auto", "light", "dark"];
+const DEFAULT_THEME = THEMES[0];
+let currentTheme = DEFAULT_THEME;
+
+let selectedTheme = localStorage.getItem("theme");
+let selectThemeIndex = THEMES.indexOf(selectedTheme);
+
+if (selectThemeIndex == -1) {
+    selectThemeIndex = 0;
+    currentTheme = DEFAULT_THEME;
+    localStorage.setItem("theme", currentTheme);
+} else {
+    currentTheme = THEMES[selectThemeIndex];
+}
+
+UpdateThemeButton();
+
+themeToggle.addEventListener("click", () => {
+    selectThemeIndex++;
+    selectThemeIndex %= 3;
+
+    selectedTheme = THEMES[selectThemeIndex];
+    localStorage.setItem("theme", selectedTheme);
+
+    UpdateThemeButton();
+})
+
+function UpdateThemeButton() {
+    const icon = themeToggle.querySelector("span>span");
+
+    switch (selectedTheme) {
+        case "light":
+            icon.innerText = "light_mode";
+            break;
+        case "dark":
+            icon.innerText = "dark_mode";
+            break;
+        case "auto":
+            icon.innerText = "routine";
+            break;
+        default:
+            icon.innerText = "error";
+            break;
+    }
+
+    document.querySelector("html").setAttribute("data-theme", selectedTheme)
+}
+
+
+//#endregion
